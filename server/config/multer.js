@@ -19,7 +19,8 @@ const imageFilter = (req, file, cb) => {
 // ============== User Image Upload (Uupload) ==============
 const Storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../../client/public/uploads/ExpanceImg'));
+        // cb(null, path.join(__dirname, '../../client/public/uploads/ExpanceImg'));
+        cb(null, path.join(__dirname, '../client/public/uploads/ExpanceImg'));
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname)); // Adds timestamp to avoid file name collisions

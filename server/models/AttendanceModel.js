@@ -1,58 +1,17 @@
-    // const mongoose = require("mongoose");
-
-    // const AttendanceSchema = mongoose.Schema({
-    //     employeeName:{
-    //         type:String,
-    //         required:[true,"Employee Name is Required"],
-    //         minLength: 3,
-    //         trim: true
-    //     },
-    //     employeeEmail:{
-    //         type:String,
-    //         required:[true,"Employee Email is Required"],
-    //         minLength: 3,
-    //         trim: true
-    //     },
-    //     timeIn:{
-    //         type:Date,
-    //         required:true
-    //     },
-    //     timeOut:{
-    //         type:Date,
-    //         required:true
-    //     },
-    //     Date:{
-    //         type:Date,
-    //         required:true,
-    //         default:Date.now
-    //     },
-    //     totalHours:{
-    //         type:Number,
-    //         required:[true,"total hours per month is Required"]
-    //     },
-    //     totalHoursPerMonth:{
-    //         type:Number,
-    //         required:[true,"total hours per month is Required"]
-    //     },
-    // },
-    // {
-    //     timestamps:true
-    // });
-
-    // module.exports = mongoose.model("attendanceModel",AttendanceSchema);
-    const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const AttendanceSchema = mongoose.Schema({
-    employeeName: {
-        type: String,
-        required: [true, "Employee Name is required"],
-        minLength: 3,
-        trim: true
+    employee: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "employeeModel",  // Reference to Employee model
+        required: true
     },
-    employeeEmail: {
-        type: String,
-        required: [true, "Employee Email is required"],
-        trim: true
+    attendanceDate: {
+        type: Date,
+        required: true,
+        default: Date.now,
+            // Ensure unique entry for each employee per day
+      unique: true,
     },
     timeIn: {
         type: Date,
@@ -60,23 +19,22 @@ const AttendanceSchema = mongoose.Schema({
     },
     timeOut: {
         type: Date,
-        required: true
+        default: null  // Optional unless the employee checks out
     },
-    attendanceDate: {
-        type: Date,
-        required: true,
-        default: Date.now
+    status: {
+        type: String,
+        enum: ["On Time", "Late", "Absence", "Holiday"],
+        default: "On Time"
+    },
+    lateBy: {
+        type: Number,
+        default: 0  // Calculate late time in minutes, if needed
     },
     totalHours: {
         type: Number,
-        required: [true, "Total hours is required"],
+        required: [true, "Total hours worked is required"],
         min: 0
     },
-    totalHoursPerMonth: {
-        type: Number,
-        required: [true, "Total hours per month is required"],
-        min: 0
-    }
 }, { timestamps: true });
 
 module.exports = mongoose.model("AttendanceModel", AttendanceSchema);

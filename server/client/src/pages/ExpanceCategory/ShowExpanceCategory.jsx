@@ -12,6 +12,12 @@ const ShowExpanceCategory = () => {
   const [filteredData, setFilteredData] = useState([]); // Filtered data for rendering
   const [statusFilter, setStatusFilter] = useState(""); // State to store selected status
 
+      // Pagination states
+      const [page, setPage] = useState(1);
+      const [pageSize, setPageSize] = useState(10);
+      const [totalPages, setTotalPages] = useState(0);
+  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +49,7 @@ const ShowExpanceCategory = () => {
   useEffect(() => {
     const fetchExpanceCategory = async () => {
       try {
-        const res = await axios.get("/api/expance/category/");
+        const res = await axios.get("/api/expance/category");
         setExpanceCategoryData(res.data);
         setFilteredData(res.data); // Initialize filteredData with full data
       } catch (error) {
@@ -53,6 +59,17 @@ const ShowExpanceCategory = () => {
     fetchExpanceCategory();
   }, []);
 
+    // Handle pagination logic on changes
+      useEffect(() => {
+        setTotalPages(Math.ceil(filteredData.length / pageSize));
+      }, [filteredData, pageSize]);
+    
+      const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+          setPage(newPage);
+        }
+      };
+
   useEffect(() => {
     // Filter data whenever search query or data changes
     const filteredCategories = ExpanceCategoryData.filter((category) =>{
@@ -61,8 +78,6 @@ const ShowExpanceCategory = () => {
       return matchesName && matchesStatus; // Both conditions must be true
     }
 
-      // (category.ExpanceCategoryName || "").toLowerCase().includes(search.toLowerCase()) ||
-      // (category.ExpanceCategoryStatus || "").toLowerCase().includes(search.toLowerCase())
     );
     setFilteredData(filteredCategories);
   }, [search, statusFilter, ExpanceCategoryData]);
@@ -94,6 +109,13 @@ const deleteExpanceCategory = async (ExpanceCategoryid) => {
     }
   });
 };
+
+    // Pagination slice
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+    const currentData = filteredData.slice(startIndex, endIndex);
+  
+
 
   return (
     <>
@@ -138,10 +160,30 @@ const deleteExpanceCategory = async (ExpanceCategoryid) => {
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title">Expance Categories</h4>
+                                                {/* Pagination Controls */}
+                                                {filteredData.length > pageSize && (    <div className="mt-5 mb-2">
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
+
                 <div className="table-responsive">
                   <table className="table header-border">
                     <thead>
                       <tr>
+                        <th>#</th>
                         <th>Expance Category Name</th>
                         <th>Expance Category Color</th>
                         <th>Expance Category Status</th>
@@ -149,11 +191,12 @@ const deleteExpanceCategory = async (ExpanceCategoryid) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredData.length > 0 ? (
-                        filteredData.map((category, index) => (
+                      {currentData.length > 0 ? (
+                        currentData.map((category, index) => (
                           <tr key={index}>
+                                  <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
                             <td>{category.ExpanceCategoryName || "N/A"}</td>
-                            <td>{category.ExpanceCategoryColor || "N/A"}</td>
+                            <td><div style={{height:"50px",width:"50px",borderRadius:"50%",backgroundColor:`${category.ExpanceCategoryColor || "N/A"}`}}></div>{category.ExpanceCategoryColor || "N/A"} </td>
                             <td>{category.ExpanceCategoryStatus || "N/A"}</td>
                             <td>
                               <span>
@@ -179,6 +222,25 @@ const deleteExpanceCategory = async (ExpanceCategoryid) => {
                     </tbody>
                   </table>
                 </div>
+                                                {/* Pagination Controls */}
+                                                {filteredData.length > pageSize && ( <div>
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
+
               </div>
             </div>
           </div>

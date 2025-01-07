@@ -1,8 +1,8 @@
 import React from 'react'
 import {Outlet} from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import Sidebar from '../components/Sidebar'
-import Footer from '../components/Footer'
+import Navbar from '../components/AdminComponents/Navbar'
+import Sidebar from '../components/AdminComponents/Sidebar'
+import Footer from '../components/AdminComponents/Footer'
 
 const AdminOutlet = () => {
   return (

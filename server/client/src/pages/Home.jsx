@@ -370,7 +370,7 @@ const Home = () => {
                             <div className="card-body mb-4">
                                 <h4 className="mt-2">Category Totals</h4>
                                 <div className="table-responsive">
-                                    <table className="table header-border mt-4">
+                                    <table className="table header-border mt-4 zero-configuration">
                                         <thead>
                                             <tr>
                                                 <th>Expense Category</th>

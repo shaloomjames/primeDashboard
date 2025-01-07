@@ -1,5 +1,5 @@
 const express = require("express");
-const {  getExpance, getSingleExpance,  createExpance, updateExpance, deleteExpance, getTb1Expance, getTb2Expance } = require("../controller/ExpanceController");
+const {  getExpance, getSingleExpance,createExpance, updateExpance, deleteExpance, getTb1Expance, getTb2Expance } = require("../controller/ExpanceController");
 const router = express.Router();
 const {upload} = require("../config/multer")
 

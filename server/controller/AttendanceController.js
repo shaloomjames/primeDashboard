@@ -1,12 +1,86 @@
-const mongoose = require("mongoose");
-const attendanceModel = require("./../models/AttendanceModel");
+const moment = require("moment");
+const AttendanceModel = require("../models/AttendanceModel");
+
+// Generate a Monthly Attendance Report
+// @Request   GET
+// @Route     http://localhost:5000/api/attendance//report/:employeeId/:month
+// @Access    Private for admin
+const getAttendanceReport = async (req, res) => {
+  const { employeeId, month } = req.params; // Ex: 2024-12 for December
+
+  // Set the start and end date of the month
+  const startDate = moment(`${month}-01`).startOf("month");
+  const endDate = moment(startDate).endOf("month");
+
+  const totalDays = endDate.date(); // Total days in the month (e.g., 31 for December)
+
+  try {
+    // Fetch all attendance records for the employee within the selected month
+    const attendanceLogs = await AttendanceModel.find({
+      employee: employeeId,
+      attendanceDate: { $gte: startDate.toDate(), $lte: endDate.toDate() },
+    }).populate("employee");
+
+    // Calculate "On Time" and "Late" days
+    const daysLate = attendanceLogs.filter((log) => log.status === "Late").length;
+    const daysOnTime = attendanceLogs.filter((log) => log.status === "On Time").length;
+
+    // ** Calculate Sundays in the month **
+    let totalSundays = 0;
+    for (let date = startDate.clone(); date.isSameOrBefore(endDate); date.add(1, "day")) {
+      if (date.day() === 0) { // 0 represents Sunday in moment.js
+        totalSundays++;
+      }
+    }
+
+    // ** Calculate Absent Days (exclude Sundays) ** // ** Calculate Working Days **
+    const workingDays = totalDays - totalSundays; // Exclude Sundays from the total days
+    const loggedDays = daysOnTime + daysLate; // Only consider days with logs
+    const absentDays = workingDays - loggedDays; // Absent days exclude Sundays
+
+
+    // ** Handle Late-to-Absent Conversion and Remaining Late Days **
+    const calculateAbsentDays = (lates) => {
+      let effectiveAbsentDays = Math.floor(lates / 3); // 3 lates convert to 1 absent day
+      let remainingLates = lates % 3; // Remaining late days
+      return { effectiveAbsentDays, remainingLates };
+    };
+
+    const { effectiveAbsentDays, remainingLates } = calculateAbsentDays(daysLate);
+
+    // ** Combine Absents **
+    const totalAbsentDays = Math.min(
+      absentDays + effectiveAbsentDays,
+      workingDays
+    ); // Cap to working days
+
+    // Send the response
+    res.status(200).json({
+      employee: attendanceLogs[0]?.employee,  // Include employee data (from populated model)
+      reportMonth: month,
+      totalDays,            // Total days in the month
+      totalSundays,         // Total number of Sundays
+      workingDays,          // Total working days (excluding Sundays)
+      absentDays,           // Correct number of absent days (excluding Sundays)
+      daysLate,             // Total late days
+      daysOnTime,           // Total on-time days
+      effectiveAbsentDays,    // Effective absent days due to late-to-absent conversion
+      remainingLates,         // Late days left after conversion
+      totalAbsentDays,        // Final total absent days (combined manual + effective)
+    });
+  } catch (error) {
+    console.error("Error generating attendance report:", error);
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+};
+
 
 // @Request   GET
-// @Route     http://localhost:5000/api/role/
-// @Access    Private
+// @Route     http://localhost:5000/api/attendance
+// @Access    Private for admin
 const getAttendance = async (req, res) => {
     try {
-        const Attendance = await attendanceModel.find();
+        const Attendance = await AttendanceModel.find().populate("employee");
 
         if (!Attendance.length) return res.status(404).json({ err: "No Data Found" });
 
@@ -18,14 +92,30 @@ const getAttendance = async (req, res) => {
 }
 
 // @Request   GET
-// @Route     http://localhost:5000/api/role/:id
+// @Route     http://localhost:5000/api/attendance/:id
+// @Access    Private
+const getAttendanceByEmployeeId = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract the employee ID from the request parameters
+
+    // Fetch attendance records for the specified employee ID
+    const attendanceRecords = await AttendanceModel.find({ employee: id }).populate("employee");
+    res.status(200).json(attendanceRecords);
+  } catch (error) {
+    console.error("Error fetching attendance records:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// @Request   GET
+// @Route     http://localhost:5000/api/attendance
 // @Access    Private
 const getSingleAttendance = async (req, res) => {
     try {
         const _id = req.params.id;
         if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid ID Format" });
 
-        const Attendance = await attendanceModel.findById(_id);
+        const Attendance = await AttendanceModel.findById(_id).populate("employee");
         if (!Attendance) return res.status(404).json({ err: "No Data Found" });
 
         return res.status(200).json(Attendance)
@@ -35,191 +125,73 @@ const getSingleAttendance = async (req, res) => {
     }
 }
 
-// @Request   post
-// @Route     http://localhost:5000/api/hall/
-// @access    private
-// const createAttendance = async (req, res) => {
-//     try {
-//         const { employeeName, employeeEmail, timeIn, timeOut, attendanceDate, totalHours, totalHoursPerMonth } = req.body;
 
-//         const nameRegex = /^[A-Za-z\s]+$/;
-//         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//         // const dateRegex = /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])-\d{4}$/;  // Date in 'MM-DD-YYYY' format
-//         const numberRegex = /^\d+$/;               // Only digits
-
-//         // Combine attendanceDate with timeIn and timeOut to create full Date objects
-//     const timeInDate = new Date(`${attendanceDate}T${timeIn}:00`);
-//     const timeOutDate = new Date(`${attendanceDate}T${timeOut}:00`);
-
-//         // Validate employeeName
-//         if (!employeeName || !nameRegex.test(employeeName)) return res.status(400).json({ err: "Invalid Username. Only letters and spaces are allowed." });
-
-//         // Validate employeeEmail
-//         if (!employeeEmail || !emailRegex.test(employeeEmail)) return res.status(400).json({ err: "Invalid Email Address." });
-
-//         // Validate timeIn and timeOut
-//         if (!timeIn || !timeOut) return res.status(400).json({ err: "Both Time In and Time Out are required." });
-//         if (new Date(timeOut) <= new Date(timeIn)) return res.status(400).json({ err: "Time Out must be after Time In." });
-
-
-//         // Validate totalHoursPerMonth
-//         if (!totalHours || !numberRegex.test(totalHours)) return res.status(400).json({ err: "Invalid input for Total Hours per Month. Only numbers are allowed." });
-
-//         // Validate totalHoursPerMonth
-//         if (!totalHoursPerMonth || !numberRegex.test(totalHoursPerMonth)) return res.status(400).json({ err: "Invalid input for Total Hours per Month. Only numbers are allowed." });
-
-//          // Validate attendanceDate
-//          if (!attendanceDate) return res.status(400).json({ err: "Invalid Date. Date is required." });
-
-//         const attendance = await attendanceModel.create({
-//             employeeName,
-//             employeeEmail,
-//             attendanceDate,
-//             timeIn: timeInDate,
-//             timeOut: timeOutDate,
-//             totalHours,
-//             totalHoursPerMonth
-//         })
-
-//         return res.status(201).json({ msg: "Attendance Added Successfully", attendance });
-
-//     } catch (error) {
-//         console.log("Error Adding Attendance", error);
-//         return res.status(500).json({ err: "Internal Server Server", error: error.message });
-//     }
-// }
-
-// @route   POST /api/attendance
-// @desc    Create attendance record
-// @access  Private
+// @Request   PODT
+// @Route     http://localhost:5000/api/attendance
+// @Access    Private
 const createAttendance = async (req, res) => {
-    try {
-        const { employeeName, employeeEmail, timeIn, timeOut, attendanceDate, totalHours, totalHoursPerMonth } = req.body;
+  try {
+    const { employee, attendanceDate, timeIn, timeOut, status, lateBy, totalHours } = req.body;
 
-        // Basic input validation
-        const nameRegex = /^[A-Za-z\s]+$/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const numberRegex = /^\d+$/;
+    if (!employee) return res.status(400).json({ err: "Employee ID is required." });
 
-        // Validate employeeName
-        if (!employeeName || !nameRegex.test(employeeName)) 
-            return res.status(400).json({ err: "Invalid Username. Only letters and spaces are allowed." });
+      // Check for existing attendance record for the employee on the same day
+      const existingAttendance = await AttendanceModel.findOne({ employee, attendanceDate });
+      if (existingAttendance) {
+        return res.status(400).json({ err: "Attendance already marked for today." });
+      }
 
-        // Validate employeeEmail
-        if (!employeeEmail || !emailRegex.test(employeeEmail)) 
-            return res.status(400).json({ err: "Invalid Email Address." });
+    if (!timeIn) return res.status(400).json({ err: "Check-in time is required." });
 
-        // Validate timeIn and timeOut
-        if (!timeIn || !timeOut) 
-            return res.status(400).json({ err: "Both Time In and Time Out are required." });
-        if (new Date(timeOut) <= new Date(timeIn)) 
-            return res.status(400).json({ err: "Time Out must be after Time In." });
+    const timeInDate = new Date(timeIn);
+    const timeOutDate = timeOut ? new Date(timeOut) : null;
 
-        // Validate totalHours
-        if (!totalHours || !numberRegex.test(totalHours)) 
-            return res.status(400).json({ err: "Invalid input for Total Hours. Only numbers are allowed." });
+    if (timeOutDate && timeOutDate <= timeInDate)
+      return res.status(400).json({ err: "Check-out time must be after check-in time." });
 
-        // Validate totalHoursPerMonth
-        if (!totalHoursPerMonth || !numberRegex.test(totalHoursPerMonth)) 
-            return res.status(400).json({ err: "Invalid input for Total Hours per Month. Only numbers are allowed." });
+    const attendance = await AttendanceModel.create({
+      employee,
+      attendanceDate: new Date(attendanceDate || Date.now()),
+      timeIn: timeInDate,
+      timeOut: timeOutDate,
+      status: status || "On Time",
+      lateBy: lateBy || 0,
+      totalHours: totalHours || 0,
+    });
 
-        // Validate attendanceDate
-        if (!attendanceDate) 
-            return res.status(400).json({ err: "Invalid Date. Date is required." });
-
-        // Combine attendanceDate with timeIn and timeOut to create full Date objects
-        const timeInDate = new Date(`${attendanceDate}T${timeIn}:00`);
-        const timeOutDate = new Date(`${attendanceDate}T${timeOut}:00`);
-
-        // Create a new attendance record
-        const attendance = await attendanceModel.create({
-            employeeName,
-            employeeEmail,
-            attendanceDate,
-            timeIn: timeInDate,
-            timeOut: timeOutDate,
-            totalHours,
-            totalHoursPerMonth
-        });
-
-        return res.status(201).json({ msg: "Attendance Added Successfully", attendance });
-    } catch (error) {
-        console.log("Error Adding Attendance", error);
-        return res.status(500).json({ err: "Internal Server Error", error: error.message });
-    }
+    return res.status(201).json({ msg: "Attendance added successfully", attendance });
+  } catch (error) {
+    console.error("Error creating attendance:", error);
+    return res.status(500).json({ err: "Internal Server Error", error: error.message });
+  }
 };
 
 
-
-
 // @Request   PUT
-// @Route     http://localhost:5000/api/employee/:id
+// @Route     http://localhost:5000/api/attendance/:id
 // @Access    Private
 const updateAttendance = async (req, res) => {
-    try {
-        const { employeeName, employeeEmail, timeIn, timeOut, Date,totalHours, totalHoursPerMonth } = req.body;
+  try {
+    const { timeOut } = req.body;
 
-        const nameRegex = /^[A-Za-z\s]+$/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        // const dateRegex = /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])-\d{4}$/;  // Date in 'MM-DD-YYYY' format
+    const attendance = await AttendanceModel.findById(req.params.id);
+    if (!attendance) return res.status(404).json({ err: "Attendance not found." });
 
-        
-        
-        // Validate employeeName
-        if (!employeeName || !nameRegex.test(employeeName)) return res.status(400).json({ err: "Invalid Username. Only letters and spaces are allowed." });
-        
-        // Validate employeeEmail
-        if (!employeeEmail || !emailRegex.test(employeeEmail)) return res.status(400).json({ err: "Invalid Email Address." });
-        
-        // Validate timeIn and timeOut
-        if (!timeIn || !timeOut) return res.status(400).json({ err: "Time In and Time Out are required." });
-        if (new Date(timeOut) <= new Date(timeIn)) return res.status(400).json({ err: "Time Out must be after Time In." });
+    if (timeOut) {
+      const timeOutDate = new Date(timeOut);
+      const totalHours = (timeOutDate - new Date(attendance.timeIn)) / (1000 * 60 * 60);
 
-        // Validate Date
-        if (!Date) return res.status(400).json({ err: "Date is Required" });
-        
-        // Validate totalHoursPerMonth
-        if (!totalHours || !numberRegex.test(totalHours)) return res.status(400).json({ err: "Invalid input for Total Hours per Month. Only numbers are allowed." });
-
-        // Validate totalHoursPerMonth
-        if (!totalHoursPerMonth || !numberRegex.test(totalHoursPerMonth)) return res.status(400).json({ err: "Invalid input for Total Hours per Month. Only numbers are allowed." });
-
-        const updatedData = {
-            employeeName,
-            employeeEmail,
-            Date,
-            timeIn,
-            timeOut,
-            totalHours,
-            totalHoursPerMonth
-        };
-
-        const updatedAttendance = await attendanceModel.findByIdAndUpdate(_id, updatedData, { new: true, omitUndefined: true });
-
-        return res.status(201).json({ msg: "Attendance Updated Successfully", updatedData })
-    } catch (error) {
-        console.log("Error Updating Attendance", error);
-        return res.status(500).json({ err: "Internal Server Error", error: error.message });
+      attendance.timeOut = timeOutDate;
+      attendance.totalHours = totalHours;
     }
-}
 
-// @Request   DELETE
-// @Route     http://localhost:5000/api/employee/:id
-// @Access    Private
-const deleteAttendance = async (req, res) => {
-    try {
-        const _id = req.params.id;
-        if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid ID Format" });
+    await attendance.save();
 
-        const deletedAttendance = await AttendanceModel.findByIdAndDelete(_id);
-        if (!deletedAttendance) return res.status(404).json({ err: "Attendance Not Found" });
+    return res.status(200).json({ msg: "Attendance updated successfully", attendance });
+  } catch (error) {
+    console.error("Error updating attendance:", error);
+    return res.status(500).json({ err: "Internal Server Error", error: error.message });
+  }
+};
 
-        return res.status(200).json({ msg: "Attendance Deleted Successfully", deletedAttendance });
-    } catch (error) {
-        console.log("Error Deleting Attendance", error);
-        return res.status(500).json({ err: "Internal Server Error", error: error.message });
-    }
-}
-
-module.exports = { getAttendance, getSingleAttendance, createAttendance, updateAttendance, deleteAttendance }
+module.exports = {getAttendance,getSingleAttendance,getAttendanceByEmployeeId, createAttendance, updateAttendance ,getAttendanceReport};

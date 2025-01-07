@@ -1,0 +1,95 @@
+.nk-sidebar {
+  width: 15.1875rem;
+  padding-bottom: 112px;
+  height: 100%;
+  position: absolute;
+  top: 5rem;
+  padding-top: 0;
+  z-index: 99;
+  background: #fff;
+  transition: all .2s ease; }
+  
+  .nk-sidebar .nk-nav-scroll {
+    overflow-y: auto;
+    height: 100%;
+  }
+  
+  .metismenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    transition: all 0.4s ease-in-out;
+  }
+  
+  .metismenu li {
+    position: relative;
+  }
+  
+  .metismenu li a {
+    display: flex;
+    align-items: center;
+    padding: 0.8125rem 1.25rem;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .metismenu li a:hover,
+  .metismenu li a:active,
+  .metismenu li a.active {
+    background-color: #f3f1fa;
+    color: #7571f9; /* Custom hover color */
+    text-decoration: none;
+  }
+  
+  .metismenu li a i {
+    font-size: 0.95rem;
+    margin-right: 10px;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  .metismenu li:hover i {
+    color: #7571f9;
+  }
+  
+  .has-arrow::after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    width: 5px;
+    height: 5px;
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+    transform: rotate(135deg);
+    transition: all 0.3s ease;
+  }
+  
+  .has-arrow[aria-expanded='true']::after {
+    transform: rotate(225deg);
+  }
+  
+  .metismenu ul {
+    list-style: none;
+    padding-left: 20px;
+    display: none;
+    transition: all 0.3s ease;
+  }
+  
+  .metismenu ul a {
+    padding: 0.625rem 1rem;
+    color: #ccc;
+  }
+  
+  .metismenu ul a:hover {
+    color: #fff;
+  }
+  
+  .nk-sidebar .nav-text {
+    font-size: 0.9rem;
+  }
+  
+  .nk-sidebar li:hover > a {
+    background: #f3f1fa;
+  }
+  

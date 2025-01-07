@@ -23,7 +23,7 @@ const Login = () => {
 
 
     const showErrorAlert = (message) => {
-        Swal.fire({
+        Swal.fire({ 
             icon: 'error',
             title: 'Oops...',
             text: message,
@@ -37,7 +37,7 @@ const Login = () => {
             icon: 'success',
             title: 'Success',
             text: message,
-            timer: 2000,
+            timer: 2700,
             showConfirmButton: false,
         });
     };
@@ -51,17 +51,25 @@ const Login = () => {
 
         try {
             const response = await axios.post("/api/employee/login", formData);
-            // successNotify(response.data.msg);
             showSuccessAlert(response.data.msg);
-
-
+                
             const userToken = response.data.token;
             const decodedToken = jwtDecode(userToken);
+            const userRole = decodedToken.userrole;
             Cookies.set("UserAuthToken", userToken);
+                console.log(decodedToken)
+                if(Array.isArray(userRole)  && userRole.includes("Admin") && // Array case
+                userRole !== "Admin"                                       // String case
+                ){
 
-            setTimeout(() => {
-                navigate("/");
-            }, 2000);
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 2800);
+                }else{
+                    setTimeout(() => {
+                        navigate("/employee");
+                    }, 2800);
+                }
         } catch (error) {
             showErrorAlert(error.response?.data?.err || 'Failed to Login');
         }

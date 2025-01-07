@@ -13,6 +13,13 @@ const ShowEmployee = () => {
   const [RoleFilter, setRoleFilter] = useState(""); // State to store selected role filter
   const [salaryRange, setSalaryRange] = useState({ min: "", max: "" }); // State for salary range filter
 
+
+    // Pagination states
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,6 +60,17 @@ const ShowEmployee = () => {
     };
     fetchEmployees();
   }, []);
+
+    // Handle pagination logic on changes
+    useEffect(() => {
+      setTotalPages(Math.ceil(filteredData.length / pageSize));
+    }, [filteredData, pageSize]);
+  
+    const handlePageChange = (newPage) => {
+      if (newPage >= 1 && newPage <= totalPages) {
+        setPage(newPage);
+      }
+    };
 
   useEffect(() => {
     // Filter employees whenever search, RoleFilter, or salaryRange changes
@@ -117,6 +135,13 @@ const ShowEmployee = () => {
       }
     });
   };
+
+  
+    // Pagination slice
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+    const currentData = filteredData.slice(startIndex, endIndex);
+  
 
   return (
     <>
@@ -199,22 +224,43 @@ const ShowEmployee = () => {
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title">Employee</h4>
+                                                {/* Pagination Controls */}
+                                                {filteredData.length > pageSize && (    <div className="my-3">
+        <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
                 <div className="table-responsive">
                   <table className="table header-border">
                     <thead>
                       <tr>
+                      <th>#</th>
                         <th>Employee Id</th>
                         <th>Employee Name</th>
                         <th>Employee Email</th>
                         <th>Employee Role</th>
                         <th>Employee Salary</th>
+                        <th>Employee Allowances</th> {/* New column for allowances */}
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredData.length > 0 ? (
-                        filteredData.map((employee, index) => (
+                      {currentData.length > 0 ? (
+                        currentData.map((employee, index) => (
                           <tr key={index}>
+                             <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
                             <td>{employee.employeeId || "N/A"}</td>
                             <td>{employee.employeeName || "N/A"}</td>
                             <td>{employee.employeeEmail || "N/A"}</td>
@@ -224,6 +270,14 @@ const ShowEmployee = () => {
                                 .join(", ") || "N/A"}
                             </td>
                             <td>{employee.employeeSalary || "N/A"}</td>
+                            <td>
+                              {/* Show allowances if available */}
+                              {employee.employeeallowances && employee.employeeallowances.length > 0
+                                ? employee.employeeallowances
+                                    .map((allowance, idx) => `${allowance.name}: ${allowance.amount}`)
+                                    .join(", ")
+                                : "No Allowances"}
+                            </td>
                             <td>
                               <span>
                                 <Link
@@ -259,6 +313,24 @@ const ShowEmployee = () => {
                     </tbody>
                   </table>
                 </div>
+                                {/* Pagination Controls */}
+                                {filteredData.length > pageSize && ( <div>
+        <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
               </div>
             </div>
           </div>

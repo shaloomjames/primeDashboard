@@ -14750,3 +14750,73 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
   }
 }
 
+
+
+/* Add this in your CSS file (employee.css) */
+/* @media print { */
+  /* Styles specific for print */
+  /* body * { */
+    /* visibility: hidden; Hide everything by default */
+  /* } */
+  /* .container-fluid .card, .container-fluid .card * { */
+    /* visibility: visible; Only the content within the print container is visible */
+  /* } */
+  /* .container-fluid {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+} */
+/* Add this in your CSS file (employee.css) */
+@media print {
+  /* Ensure that the body and html fill the whole page */
+  html, body {
+    height: 100%;  /* Take up the full height of the page */
+    margin: 0;     /* Remove all margins */
+  }
+
+  /* Hide all elements except for the print content */
+  body * {
+    visibility: hidden;  /* Hide all page content */
+  }
+
+  /* Show only the card */
+  .container-fluid .card,
+  .container-fluid .card * {
+    visibility: visible;  /* Only the card should be visible when printing */
+  }
+
+  /* Ensure the .card class takes up the whole page */
+  .container-fluid .card {
+    position: absolute;
+    top: 0;      /* Align to the top */
+    left: 0;     /* Align to the left */
+    width: 100%; /* Set width to full page */
+    height: 100%; /* Set height to full page */
+    margin: 0;   /* Remove margin */
+    padding: 0;  /* Remove padding */
+    box-sizing: border-box; /* Ensure proper layout */
+  }
+
+  /* Optional: Adjust font size for readability when printing */
+  .container-fluid .card * {
+    font-size: 12px;   /* Modify to suit your preference */
+  }
+
+  /* Optional: Add additional styling for page breaks */
+  .page-break {
+    page-break-before: always; /* Forces a page break */
+  }
+
+  /* Optional: Adjust page margins for print */
+  @page {
+    margin: 0; /* Remove any page margins */
+    size: A4;  /* Adjust to A4 size if necessary */
+  }
+}
+/* Hide hamburger on screens 769px or larger */
+@media (max-width: 769px) {
+  .hamburger,.brand-title {
+    display: none;
+  }
+}

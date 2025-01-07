@@ -1,46 +1,50 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import axios from "axios";
+import Swal from "sweetalert2";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode"; // Correct import for jwt-decode
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import "./Modal.css"; // Custom CSS for the modal
 
 const ShowExpance = () => {
   const [ExpanceData, setExpanceData] = useState([]);
-  const [search, setSearch] = useState(""); // State to store search query
-  const [filteredData, setFilteredData] = useState([]); // State for filtered data
-  const [startingDate, setStartingDate] = useState(""); // Starting date filter
-  const [endingDate, setEndingDate] = useState(""); // Ending date filter
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [startingDate, setStartingDate] = useState("");
+  const [endingDate, setEndingDate] = useState("");
+  const [selectedExpance, setSelectedExpance] = useState(null); // State for modal data
+  const [CategoryFilter, setCategoryFilter] = useState(""); // State to store selected category filter
+
+
+      // Pagination states
+      const [page, setPage] = useState(1);
+      const [pageSize, setPageSize] = useState(10);
+      const [totalPages, setTotalPages] = useState(0);
+    
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const userToken = Cookies.get("UserAuthToken");
-
     if (userToken) {
       try {
-        const decodedToken = jwtDecode(userToken); // Decode the JWT token
-        const userRole = decodedToken.userrole;   // Get the user role(s)
-
-        // Redirect to login if the user is not an Admin
+        const decodedToken = jwtDecode(userToken);
+        const userRole = decodedToken.userrole;
         if (
-          !(Array.isArray(userRole) && userRole.includes("Admin")) && // Array case
-          userRole !== "Admin"                                       // String case
+          !(Array.isArray(userRole) && userRole.includes("Admin")) &&
+          userRole !== "Admin"
         ) {
           navigate("/login");
         }
       } catch (error) {
-        // Handle token decoding failure
         console.error("Token decoding failed:", error);
         navigate("/login");
       }
     } else {
-      // Redirect if no token is found
       navigate("/login");
     }
   }, [navigate]);
-
 
   useEffect(() => {
     const fetchExpance = async () => {
@@ -53,6 +57,20 @@ const ShowExpance = () => {
     };
     fetchExpance();
   }, []);
+
+
+      // Handle pagination logic on changes
+      useEffect(() => {
+        setTotalPages(Math.ceil(filteredData.length / pageSize));
+      }, [filteredData, pageSize]);
+    
+      const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+          setPage(newPage);
+        }
+      };
+      
+  
 
   const deleteExpance = async (expanceid) => {
     Swal.fire({
@@ -83,154 +101,264 @@ const ShowExpance = () => {
       const startDate = startingDate ? new Date(startingDate) : null;
       const endDate = endingDate ? new Date(endingDate) : null;
 
-      // Check if expance falls within the selected date range
       const isWithinDateRange =
         (!startDate || expanceDate >= startDate) &&
         (!endDate || expanceDate <= endDate);
 
+      const matchesCategory = CategoryFilter
+        ? expance.expanceCategory?.ExpanceCategoryName.toLowerCase().includes(CategoryFilter.toLowerCase())
+        : true;
+
       return (
         isWithinDateRange &&
+        matchesCategory &&
         ((expance.expanceName || "").toLowerCase().includes(search.toLowerCase()) ||
-          // (expance.expanceAmount || "").toString().includes(search.toLowerCase()) ||
-          (expance.expanceCategory?.ExpanceCategoryName || "").toLowerCase().includes(search.toLowerCase()) ||
           (expance.addedBy.employeeName || "").toLowerCase().includes(search.toLowerCase()))
       );
     });
 
     setFilteredData(filteredExpances);
-  }, [search, ExpanceData, startingDate, endingDate]);
+  }, [search, ExpanceData, startingDate, endingDate, CategoryFilter]);
 
-  // Function to clear filters
+  const allCategories = [
+    ...new Set(
+      ExpanceData
+        .map((expance) => expance.expanceCategory?.ExpanceCategoryName)
+    ),
+  ];
+
   const clearFilters = () => {
     setSearch("");
     setStartingDate("");
     setEndingDate("");
   };
 
+  const openModal = (expance) => {
+    setSelectedExpance(expance || { expanceName: "No data available" });
+  };
+
+  const closeModal = () => {
+    setSelectedExpance(null);
+  };
+
+  // Close the modal if the user clicks outside of it
+  const handleClickOutside = (e) => {
+    if (e.target.classList.contains("custom-modal")) {
+      closeModal();
+    }
+  };
+
+    
+    // Pagination slice
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+    const currentData = filteredData.slice(startIndex, endIndex);
+  
+
+
   return (
-    <>
-      <div className="container-fluid">
-        <div className="row" style={{ display: "flex", justifyContent: "flex-end", marginRight: "3%" }}>
-          <Link type="button" className="btn mb-1 btn-primary" to="/addexpance" >
-            Add Expance
-            <span className="btn-icon-right">
-              <i className="fa-solid fa-sack-dollar"></i>
-            </span>
-          </Link>
+    <div className="container-fluid">
+      <div className="row" style={{ display: "flex", justifyContent: "flex-end", marginRight: "3%" }}>
+        <Link type="button" className="btn mb-1 btn-primary" to="/addexpance">
+          Add Expance
+          <span className="btn-icon-right">
+            <i className="fa-solid fa-sack-dollar"></i>
+          </span>
+        </Link>
+      </div>
+
+      <div className="row">
+        <div className="col-lg-4 col-md-5 col-sm-6 mt-5">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by Expance Name or Added By"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
-        {/* Search Field */}
-        <div className="row ">
-          <div className="col-lg-5 col-md-5 col-sm-10 mt-3">
-            <label style={{ visibility: "hidden" }}>E </label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by Category Name, Expance Name or Added By"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+        <div className="col-lg-3 col-md-5 col-sm-5 mt-5">
+          <select
+            id="inputState"
+            className="form-control"
+            onChange={(e) => setCategoryFilter(e.target.value)}
+          >
+            <option disabled selected>
+              Search By Category
+            </option>
+            <option value={""}>All</option>
+            {allCategories.length > 0
+              ? allCategories.map((category, index) => (
+                  <option value={category || ""} key={index}>
+                    {category || "N/A"}
+                  </option>
+                ))
+              : <option disabled>No Categories Available</option>}
+          </select>
+        </div>
 
-          <div className="col-lg-6 col-md-6 mt-3">
-            <div className="row" style={{marginRight:"10px"}}>
-              <div className="col-lg-4 col-md-5 col-sm-4">
-                <label>Starting Date:</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={startingDate}
-                  onChange={(e) => setStartingDate(e.target.value)}
-                />
-              </div>
-              <div className="col-lg-4 col-md-5 col-sm-4">
-                <label>Ending <span style={{visibility:"hidden"}}></span> Date:</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={endingDate}
-                  onChange={(e) => setEndingDate(e.target.value)}
-                />
-              </div>
-              <div className="col-lg-3 col-md-1 col-sm-2 d-flex align-items-end mt-2" >
-                <button className="btn btn-secondary" onClick={clearFilters}>
-                  Clear Filters
-                </button>
-              </div>
+        <div className="col-lg-5 col-md-10 col-sm-11 mt-3">
+          <div className="row" style={{ marginRight: "10px" }}>
+            <div className="col-lg-4 col-md-5 col-sm-4">
+              <label>Starting Date:</label>
+              <input
+                type="date"
+                className="form-control"
+                value={startingDate}
+                onChange={(e) => setStartingDate(e.target.value)}
+              />
             </div>
-          </div>
-        </div>
-
-        <div className="row mt-5 mb-5">
-          <div className="col-lg-12">
-            <div className="card">
-              <div className="card-body">
-                <h4 className="card-title">Expances</h4>
-                <div className="table-responsive">
-                  <table className="table header-border">
-                    <thead>
-                      <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Expance Category</th>
-                        <th>Added By</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredData.length > 0 ? (
-                        filteredData.map((expance, index) => (
-                          <tr key={index}>
-                            <td>
-                              <img
-                                src={
-                                  expance.expanceImage
-                                    ? `/uploads/ExpanceImg/${expance.expanceImage}`
-                                    : `/uploads/ExpanceImg/defaultExpance.jpg` // Path to your default image
-                                }
-                                width={90} height={90}
-                                style={{ borderRadius: "40px" }}
-                                alt={expance.expanceName || "Default Expance"}
-                              />
-                            </td>
-
-                            <td>{expance.expanceName}</td>
-                            <td>{expance.expanceAmount}</td>
-                            <td>{new Date(expance.expanceDate).toLocaleString()}</td>
-                            <td>{expance.expanceCategory?.ExpanceCategoryName}</td>
-                            <td>{expance.addedBy?.employeeName || "N/A"}</td>
-                            <td>
-                              <span>
-                                <Link data-toggle="tooltip" data-placement="top" title="Edit" to={`/updateexpance/${expance._id}`}>
-                                  <button className="btn btn-primary btn-sm my-2">
-                                    <i className="fa fa-pencil color-muted mx-2"></i> Edit
-                                  </button>
-                                </Link>
-                                <button data-toggle="tooltip" data-placement="top" title="Delete" className="btn btn-danger btn-sm mx-2"
-                                  onClick={() => deleteExpance(expance._id)}>
-                                  <i className="fa fa-trash"></i> Delete
-                                </button>
-                              </span>
-                            </td>
-
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="7">No Expances Found</td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+            <div className="col-lg-4 col-md-5 col-sm-4">
+              <label>Ending Date:</label>
+              <input
+                type="date"
+                className="form-control"
+                value={endingDate}
+                onChange={(e) => setEndingDate(e.target.value)}
+              />
+            </div>
+            <div className="col-lg-3 col-md-1 col-sm-2 d-flex align-items-end mt-2">
+              <button className="btn btn-secondary" onClick={clearFilters}>
+                Clear Filters
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </>
+
+      <div className="row mt-5 mb-5">
+        <div className="col-lg-12">
+          <div className="card">
+            <div className="card-body">
+              <h4 className="card-title">Expances</h4>
+                                                {/* Pagination Controls */}
+                                                {filteredData.length > pageSize && (                                <div className="mt-5 mb-2">
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
+
+              <div className="table-responsive">
+                <table className="table header-border">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Amount</th>
+                      <th>Date</th>
+                      <th>Expance Category</th>
+                      <th>Added By</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentData.length > 0 ? (
+                      currentData.map((expance, index) => (
+                        <tr key={index}>
+                                 <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
+                          <td>
+                            <img
+                              src={expance.expanceImage && expance.expanceImage !== "null" 
+                                ? `/uploads/ExpanceImg/${expance.expanceImage}` 
+                                : "/uploads/ExpanceImg/defaultExpance.jpg"}
+                              
+                              width={90}
+                              height={90}
+                              className="expance-img"
+                              alt={expance.expanceName || "Default Expance"}
+                              onClick={() => openModal(expance)}
+                            />
+                          </td>
+
+                          <td>{expance.expanceName}</td>
+                          <td>{expance.expanceAmount}</td>
+                          <td>{new Date(expance.expanceDate).toLocaleString()}</td>
+                          <td>{expance.expanceCategory?.ExpanceCategoryName}</td>
+                          <td>{expance.addedBy?.employeeName || "N/A"}</td>
+                          <td>
+                            <Link
+                              to={`/updateexpance/${expance._id}`}
+                              className="btn btn-primary btn-sm my-2"
+                            >
+                              <i className="fa fa-pencil color-muted mx-2"></i> Edit
+                            </Link>
+                            <button
+                              className="btn btn-danger btn-sm mx-2"
+                              onClick={() => deleteExpance(expance._id)}
+                            >
+                              <i className="fa fa-trash"></i> Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="text-center" >No Expances Found</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+                                                              {/* Pagination Controls */}
+                                                              {filteredData.length > pageSize && (                                                 <div className="mt-5 mb-2">
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {selectedExpance && (
+        <div className="custom-modal" onClick={handleClickOutside}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <button className="close-btn" onClick={closeModal}>
+                &times;
+              </button>
+            </div>
+            <div className="modal-body">
+              <h5>Expance Details</h5>
+              <p>Name: {selectedExpance.expanceName}</p>
+              <img
+                src={selectedExpance.expanceImage ? `/uploads/ExpanceImg/${selectedExpance.expanceImage}` : "/uploads/ExpanceImg/defaultExpance.jpg"}
+                width={200}
+                height={200}
+                alt="Expance"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

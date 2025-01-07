@@ -11,6 +11,11 @@ const ShowRoles = () => {
   const [statusFilter, setStatusFilter] = useState(""); // State to store selected status
   const [filteredData, setFilteredData] = useState([]); // State for filtered data
 
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +45,7 @@ const ShowRoles = () => {
   }, [navigate]);
   
 
+  // Fetch roles from the API
   useEffect(() => {
     const fetchRole = async () => {
       try {
@@ -53,6 +59,18 @@ const ShowRoles = () => {
     };
     fetchRole();
   }, []);
+
+
+  // Handle pagination logic on changes
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredData.length / pageSize));
+  }, [filteredData, pageSize]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   useEffect(() => {
     // Update filteredData based on both search and statusFilter
@@ -88,6 +106,12 @@ const ShowRoles = () => {
     });
   };
 
+
+    // Pagination slice
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+    const currentData = filteredData.slice(startIndex, endIndex);
+  
   return (
     <>
       <div className="container-fluid mb-5">
@@ -131,19 +155,40 @@ const ShowRoles = () => {
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title">Roles</h4>
+                        {/* Pagination Controls */}
+                        {filteredData.length > pageSize && ( <div className="mt-5 mb-2">
+        <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
                 <div className="table-responsive">
                   <table className="table header-border">
                     <thead>
                       <tr>
+                        <th>#</th>
                         <th>Role Name</th>
                         <th>Role Status</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredData.length > 0 ? (
-                        filteredData.map((role, index) => (
+                      {currentData.length > 0 ? (
+                        currentData.map((role, index) => (
                           <tr key={index}>
+                            {/* <td>{index+1 || "N/A"}</td> */}
+                            <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
                             <td>{role.roleName || "N/A"}</td>
                             <td>{role.roleStatus || "N/A"}</td>
                             <td>
@@ -172,8 +217,8 @@ const ShowRoles = () => {
                           </tr>
                         ))
                       ) : (
-                        <tr>
-                          <td colSpan="3" className="text-center">
+                        <tr className="my-5">
+                          <td colSpan="3" className="text-center ">
                             No Role Found
                           </td>
                         </tr>
@@ -181,6 +226,24 @@ const ShowRoles = () => {
                     </tbody>
                   </table>
                 </div>
+                {/* Pagination Controls */}
+                {filteredData.length > pageSize &&( <div>
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
               </div>
             </div>
           </div>

@@ -18,29 +18,6 @@ const ExpanceCategoryModel = require("../models/ExpanceCategoryModel");
 //     }
 // }
 
-const getExpance = async (req, res) => {
-    try {
-        const { startingDate, endingDate } = req.query;
-
-        let filter = {};
-        
-        if (startingDate && endingDate) {
-            filter.expanceDate = { 
-                $gte: new Date(startingDate), 
-                $lte: new Date(endingDate) 
-            };
-        }
-        
-        const expenses = await ExpanceModel.find(filter).populate("addedBy").populate("expanceCategory");
-        
-        if (!expenses.length) return res.status(404).json({ err: "No data found" });
-
-        return res.status(200).json(expenses);
-    } catch (error) {
-        console.log("Error Reading Expenses:", error);
-        return res.status(500).json({ err: "Internal Server Error" });
-    }
-};
 
 const getTb1Expance = async (req, res) => {
     try {
@@ -91,7 +68,7 @@ const getTb2Expance = async (req, res) => {
     }
 };
 
-// useEffect(() => {
+     // useEffect(() => {
     //         const fetchExpance = async () => {
     //             try {
     //                 const res = await axios.get("http://localhost:5000/api/expance", {
@@ -106,8 +83,36 @@ const getTb2Expance = async (req, res) => {
     //     }, [startingDate, endingDate]); // Re-run whenever dates change
 
 // @Request   GET
-// @Route     http://localhost:5000/api/role/:id
-// @Access    Private
+// @Route     http://localhost:5000/api/hall/:id
+// @access    private
+const getExpance = async (req, res) => {
+    try {
+        const { startingDate, endingDate } = req.query;
+
+        let filter = {};
+        
+        if (startingDate && endingDate) {
+            filter.expanceDate = { 
+                $gte: new Date(startingDate), 
+                $lte: new Date(endingDate) 
+            };
+        }
+        
+        const expenses = await ExpanceModel.find(filter).populate("addedBy").populate("expanceCategory");
+        
+        if (!expenses.length) return res.status(404).json({ err: "No data found" });
+
+        return res.status(200).json(expenses);
+    } catch (error) {
+        console.log("Error Reading Expenses:", error);
+        return res.status(500).json({ err: "Internal Server Error" });
+    }
+};
+
+
+// @Request   GET
+// @Route     http://localhost:5000/api/hall/:id
+// @access    private
 const getSingleExpance = async (req, res) => {
     try {
         const _id = req.params.id;
@@ -123,7 +128,7 @@ const getSingleExpance = async (req, res) => {
     }
 }
 
-// @Request   post
+// @Request   POST
 // @Route     http://localhost:5000/api/hall/
 // @access    private
 const createExpance = async (req, res) => {
@@ -240,4 +245,4 @@ const deleteExpance = async (req, res) => {
     }
 }
 
-module.exports = { getExpance,getTb1Expance,getTb2Expance, getSingleExpance, createExpance, updateExpance, deleteExpance }
+module.exports = { getExpance,getTb1Expance,getTb2Expance, getSingleExpance, createExpance, updateExpance, deleteExpance }      

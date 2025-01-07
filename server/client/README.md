@@ -350,3 +350,23 @@ export default Sidebar;
 <!-- 1) implemented sweet alert on ervery page except show page of employee -->
 <!-- 2) implemented a select dropdown to search by role status on show role page and removed search by role status from search bar -->
 <!-- 3) implemented a select dropdown to search by category status on show category page and removed search by category status from search bar -->
+
+
+<!-- 
+
+Employee Side 
+1)salary module
+....)can see history of his salary filtering by month
+2)attendance module
+....)can add attendance and see history of his attendance filtering by month and year
+3)profile
+....)can read only his profile 
+
+Admin Side 
+1)salary module
+....) admin should be able to add salary , view salary , print salary history of a specific user
+2)attendance module
+....)view attendance of any user 
+ 
+
+ -->

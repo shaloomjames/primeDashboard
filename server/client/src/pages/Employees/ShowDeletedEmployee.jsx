@@ -13,6 +13,14 @@ const ShowDeletedEmployee = () => {
   const [RoleFilter, setRoleFilter] = useState(""); // State to store selected role filter
   const [salaryRange, setSalaryRange] = useState({ min: "", max: "" }); // State for salary range filter
 
+
+    // Pagination states
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+  
+
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,6 +61,17 @@ const ShowDeletedEmployee = () => {
     };
     fetchDeletedEmployees();
   }, []);
+
+     // Handle pagination logic on changes
+      useEffect(() => {
+        setTotalPages(Math.ceil(filteredData.length / pageSize));
+      }, [filteredData, pageSize]);
+    
+      const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+          setPage(newPage);
+        }
+      };
 
   useEffect(() => {
     // Filter deleted employees whenever search, RoleFilter, or salaryRange changes
@@ -145,6 +164,13 @@ const ShowDeletedEmployee = () => {
     });
   };
 
+  
+    // Pagination slice
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+    const currentData = filteredData.slice(startIndex, endIndex);
+  
+
   return (
     <>
       <div className="container-fluid mb-5">
@@ -160,7 +186,7 @@ const ShowDeletedEmployee = () => {
             />
           </div>
 
-          <div className="col-lg-3 col-md-5 col-sm-5 my-2">
+          {/* <div className="col-lg-3 col-md-5 col-sm-5 my-2">
             <select
               id="inputState"
               className="form-control"
@@ -180,7 +206,7 @@ const ShowDeletedEmployee = () => {
                 <option disabled>No Roles Available</option>
               )}
             </select>
-          </div>
+          </div> */}
 
           {/* Salary Range Filter */}
           <div className="col-lg-5 col-md-10 col-sm-11 d-flex align-items-center my-2">
@@ -220,6 +246,25 @@ const ShowDeletedEmployee = () => {
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title">Deleted Employees</h4>
+                                                {/* Pagination Controls */}
+                                                {filteredData.length > pageSize && (    <div className="mt-5 mb-2">
+        <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
+
                 <div className="table-responsive">
                   <table className="table header-border">
                     <thead>
@@ -229,6 +274,7 @@ const ShowDeletedEmployee = () => {
                         <th>Employee Email</th>
                         <th>Employee Role</th>
                         <th>Employee Salary</th>
+                        <th>Employee Allowances</th> {/* New column for allowances */}
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -245,6 +291,14 @@ const ShowDeletedEmployee = () => {
                                 .join(", ") || "N/A"}
                             </td>
                             <td>{employee.employeeSalary || "N/A"}</td>
+                            <td>
+                              {/* Show allowances if available */}
+                              {employee.employeeallowances && employee.employeeallowances.length > 0
+                                ? employee.employeeallowances
+                                    .map((allowance, idx) => `${allowance.name}: $${allowance.amount}`)
+                                    .join(", ")
+                                : "No Allowances"}
+                            </td>
                             <td style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                               <span>
                               <span>
@@ -276,12 +330,31 @@ const ShowDeletedEmployee = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="6">No Deleted Employees</td>
+                          <td colSpan="6" className="text-center">No Deleted Employees</td>
                         </tr>
                       )}
                     </tbody>
                   </table>
                 </div>
+                                                {/* Pagination Controls */}
+                                                {filteredData.length > pageSize && ( <div>
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {page} of {totalPages}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+          Last
+        </button>
+      </div>)}
+
               </div>
             </div>
           </div>

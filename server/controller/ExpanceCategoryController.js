@@ -36,7 +36,7 @@ const getActiveExpanceCategory = async (req, res) => {
 }
 
 // @Request   GET
-// @Route     http://localhost:5000/api/expance/category
+// @Route     http://localhost:5000/api/expance/category/:id
 // @Access    Private
 const getSingleExpanceCategory = async (req, res) => {
     try {

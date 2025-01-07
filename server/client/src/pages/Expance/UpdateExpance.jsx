@@ -8,7 +8,7 @@ import { jwtDecode } from 'jwt-decode';  // Correct import for jwt-decode
 const UpdateExpance = () => {
     const [expanceName, setExpanceName] = useState('');
     const [expanceAmount, setExpanceAmount] = useState('');
-    const [expanceImage, setExpanceImage] = useState('');
+    const [expanceImage, setExpanceImage] = useState(null);
     const [expanceDate, setExpanceDate] = useState('');
     const [addedBy, setAddedBy] = useState('');
     const [imageFile, setImageFile] = useState(null); // Store image file if uploaded

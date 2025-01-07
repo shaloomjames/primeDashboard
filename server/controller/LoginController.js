@@ -58,7 +58,7 @@ const loginController = async (req, res) => {
         username: checkUserExistance.employeeName,
       },
       process.env.Jwt_secret_key,
-      { expiresIn: "30d" }
+      { expiresIn: "1d" }
     );
 
     res.status(200).json({ msg: "Login Successfull", token: token });

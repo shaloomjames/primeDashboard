@@ -18,7 +18,9 @@ import UpdateExpanceCategory from './pages/ExpanceCategory/UpdateExpanceCategory
 
 import UpdateEmployee from './pages/Employees/UpdateEmployee'
 import ShowAttendance from './pages/Attendance/ShowAttendance'
-import AddAttendance from './pages/Attendance/AddAttendance'
+import ShowSalary from './pages/Salary/ShowSalaries'
+import AddSalary from './pages/Salary/AddSalary'
+import SalaryUser from './pages/Salary/SelectSalaryUser'
 import AdminOutlet from './Outlets/AdminOutlet'
 import NotFound from './pages/NotFound'
 import ShowDeletedEmployee from './pages/Employees/ShowDeletedEmployee'
@@ -26,6 +28,11 @@ import ResetPassword from './pages/ResetPassword'
 import ForgotPassword from './pages/ForgotPassword'
 
 
+import EmployeeOutlet from './Outlets/EmployeeOutlet'
+import EmployeeHome from './EmployeePages/EmployeeHome'
+import EmployeeShowAttendance from './EmployeePages/EmployeeShowAttendance'
+import EmployeeShowProfile from './EmployeePages/EmployeeShowProfile'
+import EmployeeShowSalary from './EmployeePages/EmployeeShowSalary'
 
 const App = () => {
   return (
@@ -43,7 +50,6 @@ const App = () => {
             <Route path='/' element={<Home />} />
               {/* Role routes */}
               <Route path='/showrole' element={<ShowRoles />} />
-              {/* <Route path='/cattotal' element={<CategoryToatl/>} /> */}
               <Route path='/addrole' element={<AddRole />} />
               <Route path='/updaterole/:id' element={<UpdateRole />} />
               {/* Employee Routes */}
@@ -60,9 +66,20 @@ const App = () => {
               <Route path='/addexpance' element={<AddExpance />} />
               <Route path='/updateexpance/:id' element={<UpdateExpance />} />
               {/* Attendance Routes */}
-              <Route path='/showattendance' element={<ShowAttendance />} />
-              <Route path='/addattendance' element={<AddAttendance />} />
+              <Route path='/showattendance' element={<ShowAttendance/>} />
+              {/* Salary Routes */}
+              <Route path='/showSalaries' element={<ShowSalary/>} />
+              <Route path='/addSalary/:month/:id' element={<AddSalary />} />
+              <Route path='/SelectSalaryusers' element={<SalaryUser/>} />
             </Route>
+
+            <Route  path='/employee' element={<EmployeeOutlet/>}>
+              <Route path='/employee' element={<EmployeeHome/>}/>
+              <Route path='/employee/showattendance' element={<EmployeeShowAttendance/>}/>
+              <Route path='/employee/showsalary' element={<EmployeeShowSalary/>}/>
+              <Route path='/employee/showprofile' element={<EmployeeShowProfile/>}/>
+            </Route>
+
             <Route path='*' element={<NotFound />} />
 
 

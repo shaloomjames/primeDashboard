@@ -3,14 +3,15 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const UpdateEmployee = () => {
     const [RoleData, setRoleData] = useState([]);
     const [employeeName, setEmployeeName] = useState('');
     const [employeeEmail, setEmployeeEmail] = useState('');
     const [employeeSalary, setEmployeeSalary] = useState('');
-    const [employeeRoles, setEmployeeRoles] = useState(['']); // Array for roles
+    const [employeeRoles, setEmployeeRoles] = useState(['']);
+    const [employeeAllowances, setEmployeeAllowances] = useState([{ name: '', amount: '' }]);
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -38,28 +39,28 @@ const UpdateEmployee = () => {
         const userToken = Cookies.get("UserAuthToken");
       
         if (userToken) {
-          try {
-            const decodedToken = jwtDecode(userToken); // Decode the JWT token
-            const userRole = decodedToken.userrole;   // Get the user role(s)
-      
-            // Redirect to login if the user is not an Admin
-            if (
-              !(Array.isArray(userRole) && userRole.includes("Admin")) && // Array case
-              userRole !== "Admin"                                       // String case
-            ) {
-              navigate("/login");
+            try {
+                const decodedToken = jwtDecode(userToken); // Decode the JWT token
+                const userRole = decodedToken.userrole;   // Get the user role(s)
+        
+                // Redirect to login if the user is not an Admin
+                if (
+                  !(Array.isArray(userRole) && userRole.includes("Admin")) && // Array case
+                  userRole !== "Admin"                                       // String case
+                ) {
+                  navigate("/login");
+                }
+            } catch (error) {
+                // Handle token decoding failure
+                console.error("Token decoding failed:", error);
+                navigate("/login");
             }
-          } catch (error) {
-            // Handle token decoding failure
-            console.error("Token decoding failed:", error);
-            navigate("/login");
-          }
         } else {
-          // Redirect if no token is found
-          navigate("/login");
+            // Redirect if no token is found
+            navigate("/login");
         }
-      }, [navigate]);
-      
+    }, [navigate]);
+
     // Fetch Employee Data
     useEffect(() => {
         const fetchEmployee = async () => {
@@ -69,6 +70,7 @@ const UpdateEmployee = () => {
                 setEmployeeEmail(res.data.employeeEmail);
                 setEmployeeSalary(res.data.employeeSalary);
                 setEmployeeRoles(res.data.employeeRoles.map(role => role._id)); // Pre-fill roles
+                setEmployeeAllowances(res.data.employeeallowances || [{ name: '', amount: '' }]); // Pre-fill allowances
             } catch (error) {
                 console.error("Error Fetching Employee Data", error);
             }
@@ -80,7 +82,7 @@ const UpdateEmployee = () => {
     useEffect(() => {
         const fetchRoles = async () => {
             try {
-                const res = await axios.get("/api/role/active/R    ");
+                const res = await axios.get("/api/role/active/R");
                 setRoleData(res.data);
             } catch (error) {
                 console.error("Error Fetching Roles", error);
@@ -105,14 +107,53 @@ const UpdateEmployee = () => {
         setEmployeeRoles(roles);
     };
 
+    const handleAllowanceChange = (index, key, value) => {
+        const updatedAllowances = [...employeeAllowances];
+        if (key === 'amount') {
+            updatedAllowances[index][key] = String(value); // Ensure amount is treated as a string
+        } else {
+            updatedAllowances[index][key] = value;
+        }
+        setEmployeeAllowances(updatedAllowances);
+    };
+
+    const addAllowanceField = () => {
+        setEmployeeAllowances([...employeeAllowances, { name: '', amount: '' }]);
+    };
+
+    const removeAllowanceField = (index) => {
+        const updatedAllowances = [...employeeAllowances];
+        updatedAllowances.splice(index, 1);
+        setEmployeeAllowances(updatedAllowances);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Filter allowances that have valid names and amounts
+        const filteredAllowances = employeeAllowances.filter(
+            (allowance) => allowance.name.trim() !== '' || String(allowance.amount).trim() !== ''  // Convert amount to string
+        );
+
+        // Check if partial allowances (only one field filled) exist
+        const invalidAllowance = filteredAllowances.find(
+            (allowance) => (allowance.name.trim() !== '' && String(allowance.amount).trim() === '') ||  // Convert amount to string
+                           (String(allowance.amount).trim() !== '' && allowance.name.trim() === '')    // Convert amount to string
+        );
+
+        if (invalidAllowance) {
+            showErrorAlert("Both 'Allowance Name' and 'Allowance Amount' are required if either is provided.");
+            return;
+        }
+
         const formData = {
             employeeName,
             employeeEmail,
             employeeSalary,
             employeeRoles, // Array of roles
+            employeeallowances: filteredAllowances, // Only send non-empty allowances
         };
+
         try {
             const res = await axios.put(`/api/employee/${id}`, formData);
             showSuccessAlert(res.data.msg);
@@ -171,10 +212,11 @@ const UpdateEmployee = () => {
                                             required
                                         />
                                     </div>
-                                    
                                 </div>
+
+                                {/* Employee Roles */}
                                 <div className="form-row">
-                                <div className="form-group col-md-12">
+                                    <div className="form-group col-md-12">
                                         <label>Employee Roles:</label>
                                         {employeeRoles.map((role, index) => (
                                             <div key={index} className="d-flex align-items-center mb-2">
@@ -182,6 +224,7 @@ const UpdateEmployee = () => {
                                                     className="form-control"
                                                     value={role}
                                                     onChange={(e) => handleRoleChange(index, e.target.value)}
+                                                    required
                                                 >
                                                     <option disabled value="">
                                                         Choose Role
@@ -210,6 +253,46 @@ const UpdateEmployee = () => {
                                         </button>
                                     </div>
                                 </div>
+
+                                {/* Employee Allowances */}
+                                <div className="form-row">
+                                    <div className="form-group col-md-12">
+                                        <label>Employee Allowances:</label>
+                                        {employeeAllowances.map((allowance, index) => (
+                                            <div key={index} className="d-flex align-items-center mb-2">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Allowance Name"
+                                                    className="form-control mr-2"
+                                                    value={allowance.name}
+                                                    onChange={(e) => handleAllowanceChange(index, 'name', e.target.value)}
+                                                />
+                                                <input
+                                                    type="number"
+                                                    placeholder="Allowance Amount"
+                                                    className="form-control mr-2"
+                                                    value={allowance.amount}
+                                                    onChange={(e) => handleAllowanceChange(index, 'amount', e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-danger ml-2"
+                                                    onClick={() => removeAllowanceField(index)}
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            className="btn btn-success mt-2"
+                                            onClick={addAllowanceField}
+                                        >
+                                            Add Allowance
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <button type="submit" className="btn btn-dark">
                                     Update Employee
                                 </button>

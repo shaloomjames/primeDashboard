@@ -21,7 +21,7 @@ const getEmployee = async (req, res) => {
 };
 
 // @Request   GET
-// @Route     http://localhost:5000/api/employee/
+// @Route     http://localhost:5000/api/employee/deletedemployee/d
 // @Access    Private
 const getDeletedEmployee = async (req, res) => {
     try {
@@ -57,22 +57,22 @@ const getSingleEmployee = async (req, res) => {
 // @Access    Private
 const createEmployee = async (req, res) => {
     try {
-        const { employeeName, employeeEmail, employeePassword, employeeSalary, employeeRoles } = req.body;
+        const { employeeName, employeeEmail, employeePassword, employeeSalary, employeeRoles,employeeallowances } = req.body;
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         // const nameRegex = /^[A-Za-z\s]+$/;
         const nameRegex = /^[A-Za-z\s]{3,}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         const numberRegex = /^\d+$/;
 
         if (!employeeName || !nameRegex.test(employeeName))
-            return res.status(400).json({ err: "Invalid Employee Name.Employee name must be at least 3 characters long and contain only letters and spaces." });
+            return res.status(400).json({ err: "Invalid Employee Name. Name must contain at least 3 characters and consist of only letters and spaces." });
         if (!employeeEmail || !emailRegex.test(employeeEmail))
-            return res.status(400).json({ err: "Invalid Employee Email." });
+            return res.status(400).json({ err: "Invalid Employee Email. Provide a valid email address (e.g., example@domain.com)." });
         if (!employeePassword || !passwordRegex.test(employeePassword))
-            return res.status(400).json({ err: "Invalid Employee Password." });
+            return res.status(400).json({ err: "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character." });
         if (!employeeSalary || !numberRegex.test(employeeSalary))
-            return res.status(400).json({ err: "Invalid Employee Salary." });
+            return res.status(400).json({ err: "Invalid Salary. Salary should only contain numeric values." });
 
         if (!employeeRoles || !Array.isArray(employeeRoles) || !employeeRoles.length)
             return res.status(400).json({ err: "At least one role is required." });
@@ -126,6 +126,7 @@ const createEmployee = async (req, res) => {
             employeePassword: hashedPassword,
             employeeSalary,
             employeeRoles,
+            employeeallowances
         });
 
         // Extract role names for the email
@@ -211,10 +212,13 @@ const createEmployee = async (req, res) => {
     }
 };
 
+// @Request   PUT
+// @Route     http://localhost:5000/api/employee/:id
+// @Access    Private
 const updateEmployee = async (req, res) => {
     try {
         const _id = req.params.id;
-        const { employeeName, employeeEmail, employeeSalary, employeeRoles } = req.body;
+        const { employeeName, employeeEmail, employeeSalary, employeeRoles ,employeeallowances } = req.body;
 
         // Regex for validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -223,11 +227,11 @@ const updateEmployee = async (req, res) => {
 
         // Validate the provided fields
         if (employeeName && !nameRegex.test(employeeName))
-            return res.status(400).json({ err: "Invalid Employee Name. Only letters and spaces are allowed." });
+            return res.status(400).json({ err: "Invalid Employee Name. Name must contain at least 3 characters and consist of only letters and spaces." });
         if (employeeEmail && !emailRegex.test(employeeEmail))
-            return res.status(400).json({ err: "Invalid Email Address." });
+            return res.status(400).json({ err: "Invalid Employee Email. Provide a valid email address (e.g., example@domain.com)." });
         if (employeeSalary && !numberRegex.test(employeeSalary))
-            return res.status(400).json({ err: "Invalid Salary. Only numbers are allowed." });
+            return res.status(400).json({ err: "Invalid Salary. Salary should only contain numeric values." });
 
         // If roles are provided, validate them
         if (employeeRoles) {
@@ -255,6 +259,7 @@ const updateEmployee = async (req, res) => {
         if (employeeEmail) updatedData.employeeEmail = employeeEmail;
         if (employeeSalary) updatedData.employeeSalary = employeeSalary;
         if (employeeRoles) updatedData.employeeRoles = employeeRoles;
+        if (employeeallowances !== undefined) updatedData.employeeallowances = employeeallowances; // Only update if allowances are provided
 
         // Update employee in the database
         const updatedEmployee = await employeeModel.findByIdAndUpdate(_id, updatedData, {
@@ -310,7 +315,7 @@ const deleteEmployee = async (req, res) => {
 };
 
 // @Request   DELETE
-// @Route      http://localhost:5000/api/employee
+// @Route      http://localhost:5000/api/employee/deletedemployee/delete/:id
 // @Access    Private
 const deleteEmployeePermanently = async (req, res) => {
     try {
@@ -330,7 +335,7 @@ const deleteEmployeePermanently = async (req, res) => {
 }
 
 // @Request   POST
-// @Route     http://localhost:5000/api/employee
+// @Route     http://localhost:5000/api/employee/deletedemployee/restoreemployee/:id
 // @Access    Private
 const restoreEmployee = async (req, res) => {
     try {
@@ -377,7 +382,7 @@ const restoreEmployee = async (req, res) => {
 
 
 // @Request   POST
-// @Route     http://localhost:5000/api/employee/login
+// @Route     http://localhost:5000/api/employee/forgotpassword
 // @Access    Private
 const forgotPasswordController = async (req, res) => {
     const { employeeEmail } = req.body;
@@ -445,7 +450,7 @@ const forgotPasswordController = async (req, res) => {
 
 
 // @Request   POST
-// @Route     http://localhost:5000/api/employee/login
+// @Route     http://localhost:5000/api/employee/resetpassword
 // @Access    Private
 const resetPasswordController = async (req, res) => {
     

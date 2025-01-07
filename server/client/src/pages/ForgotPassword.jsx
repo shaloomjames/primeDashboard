@@ -34,7 +34,7 @@ const ForgotPassword = () => {
             icon: 'success',
             title: 'Success',
             text: message,
-            timer: 2000,
+            timer: 3600,
             showConfirmButton: false,
         });
     };
@@ -46,14 +46,14 @@ const ForgotPassword = () => {
         };
 
         try {
-            const response = await axios.post("http://localhost:3000/api/employee/forgotpassword", formData);
+            const response = await axios.post("/api/employee/forgotpassword", formData);
             // successNotify(response.data.msg);
             showSuccessAlert(response.data.msg);
 
 
             setTimeout(() => {
                 navigate("/login");
-            }, 2000);
+            }, 3700);
         } catch (error) {
             showErrorAlert(error.response?.data?.err || 'Failed to Login');
         }
@@ -78,7 +78,7 @@ const ForgotPassword = () => {
                                 <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 19%)" }}>
                                     <div className="card-body pt-5">
                                         <a className="text-center" href="index.html">
-                                            <h4><img src="/images/Primevertex--Logo-light.png" alt="" /></h4>
+                                            <h4><img src="/images/Primevertex-Logo-01-dark.png" width={"270px"} alt="" /></h4>
                                         </a>
                                         <form className="mt-5 mb-5 login-input" onSubmit={handleSubmit}>
                                             <h4  style={{color:"white",fontWeight:"500"}}>Enter your email address and we will send you Password Reset Link</h4>

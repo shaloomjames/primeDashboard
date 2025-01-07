@@ -107,7 +107,7 @@ const AddExpance = () => {
             showSuccessAlert(response.data.msg);
 
             // Redirect after 4 seconds
-            setTimeout(() => {
+            setTimeout(() => {  
                 navigate("/showexpance");
             }, 4000);
         } catch (error) {
