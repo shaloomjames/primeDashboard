@@ -1,5 +1,12 @@
 const moment = require("moment");
 const AttendanceModel = require("../models/AttendanceModel");
+const  EmployeeModel = require("../models/EmployeeModel");
+
+// if(daysLate === 0 && daysOnTime === 0 )
+//   {
+//     res.status(400).json({err:"No Attendance Found"})
+//     console.log(2)
+//   }
 
 // Generate a Monthly Attendance Report
 // @Request   GET
@@ -20,6 +27,26 @@ const getAttendanceReport = async (req, res) => {
       employee: employeeId,
       attendanceDate: { $gte: startDate.toDate(), $lte: endDate.toDate() },
     }).populate("employee");
+
+        // ** Check if no attendance records exist **
+        if (attendanceLogs.length === 0) {
+          // Fetch the employee's name separately if logs are empty
+          const employee = await EmployeeModel.findById(employeeId);
+    
+          if (!employee) {
+            return res.status(404).json({
+              err: `Employee with ID ${employeeId} not found.`,
+            });
+          }
+    
+          // return res.status(404).json({
+          //   err: `No attendance data found for ${employee.employeeName} in the month of ${moment(startDate).format("MMMM YYYY")}.`,
+          // });
+          return res.status(404).json({
+            err: `No attendance records were found for ${employee.employeeName} for the month of ${moment(startDate).format("MMMM YYYY")}. Please check if the employee's attendance is recorded in the system for this month.`,
+          });
+          
+        }
 
     // Calculate "On Time" and "Late" days
     const daysLate = attendanceLogs.filter((log) => log.status === "Late").length;

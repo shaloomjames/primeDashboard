@@ -297,12 +297,12 @@ const Home = () => {
                 </div>
                 <div className="row">
                    
-                    <div className="col-lg-6 col-sm-6">
+                    <div className="col-lg-6 col-md-6">
                         <div className="card">
                         <div className="row mx-4 mt-4">
                                 <div className="col-lg-12 col-md-12">
                                 <div className="row">
-                                    <div className="col-lg-4 ">
+                                    <div className="col-lg-4 mt-3">
                                         <label style={{fontWeight:"900"}}>Starting Date:</label>
                                         <input
                                             type="date"
@@ -311,7 +311,7 @@ const Home = () => {
                                             onChange={(e) => setChartStartDate(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-lg-4 ">
+                                    <div className="col-lg-4 mt-3">
                                         <label style={{fontWeight:"900"}}>Ending Date:</label>
                                         <input
                                             type="date"
@@ -320,7 +320,7 @@ const Home = () => {
                                             onChange={(e) => setChartEndDate(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-lg-3 d-flex  align-items-end">
+                                    <div className="col-lg-3 mt-3 d-flex  align-items-end">
                                         <button  className="btn btn-secondary" onClick={clearChartFilters}>
                                             Clear Filters
                                         </button>
@@ -336,12 +336,12 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-6 ">
+                    <div className="col-lg-6 col-md-6">
                         <div className="card ">
                         <div className="row mx-4 mt-4">
                                 <div className="col-lg-12 col-md-12">
                                 <div className="row">
-                                    <div className="col-lg-4 ">
+                                    <div className="col-lg-4 mt-3">
                                         <label style={{fontWeight:"900"}}>Starting Date:</label>
                                         <input 
                                             type="date"
@@ -350,7 +350,7 @@ const Home = () => {
                                             onChange={(e) => setTable1StartDate(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-lg-4 ">
+                                    <div className="col-lg-4 mt-3">
                                         <label style={{fontWeight:"900"}}>Ending Date:</label>
                                         <input
                                             type="date"
@@ -359,7 +359,7 @@ const Home = () => {
                                             onChange={(e) => setTable1EndDate(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-lg-3 d-flex  align-items-end">
+                                    <div className="col-lg-3 mt-3 d-flex  align-items-end">
                                         <button className="btn btn-secondary" onClick={clearTable1Filters}>
                                             Clear Filters
                                         </button>
@@ -368,7 +368,7 @@ const Home = () => {
                             </div>
                             </div>
                             <div className="card-body mb-4">
-                                <h4 className="mt-2">Category Totals</h4>
+                                <h4 className="mt-5">Category Totals</h4>
                                 <div className="table-responsive">
                                     <table className="table header-border mt-4 zero-configuration">
                                         <thead>
@@ -385,7 +385,7 @@ const Home = () => {
                                                 </tr>
                                             ))}
                                         </tbody>
-                                        <tfoot>
+                                        <tfoot >
                                             <tr>
                                                 <td colSpan="1"><strong style={{ fontSize: "1.1rem" }}>Grand Total:</strong></td>
                                                 <td colSpan="2">
@@ -411,9 +411,9 @@ const Home = () => {
                             <div className="row mx-4 my-3">
                                 <div className="col-lg-3 col-md-3"></div>
                                 <div className="col-lg-3 col-md-3"></div>
-                                <div className="col-lg-6 col-md-3">
+                                <div className="col-lg-6 col-md-12">
                                 <div className="row">
-                                    <div className="col-lg-4 ">
+                                    <div className="col-lg-4 mt-3">
                                         <label style={{fontWeight:"900"}}>Starting Date:</label>
                                         <input
                                             type="date"
@@ -422,7 +422,7 @@ const Home = () => {
                                             onChange={(e) => setTable2StartDate(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-lg-4 ">
+                                    <div className="col-lg-4 mt-3">
                                         <label style={{fontWeight:"900"}}>Ending Date:</label>
                                         <input
                                             type="date"
@@ -431,7 +431,7 @@ const Home = () => {
                                             onChange={(e) => setTable2EndDate(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-lg-3 d-flex  align-items-end">
+                                    <div className="col-lg-3 mt-3 d-flex  align-items-end">
                                         <button className="btn btn-secondary" onClick={clearTable2Filters}>
                                             Clear Filters
                                         </button>

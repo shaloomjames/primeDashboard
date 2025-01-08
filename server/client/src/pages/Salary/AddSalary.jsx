@@ -29,21 +29,32 @@ const AddSalary = () => {
   const navigate = useNavigate();
   const { month, id } = useParams();
 
-  
+
   const showErrorAlert = (message) => {
-    Swal.fire({ icon: 'error', title: 'Oops...', text: message });
-};
-
-const showSuccessAlert = (message) => {
     Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: message,
-        timer: 2000,
-        showConfirmButton: false,
+      icon: 'error',
+      title: 'Oops...',
+      text: message,
+      timer: 3000, // 3 seconds
+      timerProgressBar: true, // Show progress bar for timer
+      showConfirmButton: false,
+      willClose: () => {
+        navigate('/SelectSalaryusers'); // Navigate after the alert closes
+      },
     });
-};
+  };
 
+  const showSuccessAlert = (message) => {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: message,
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  };
+
+  // secure page
   useEffect(() => {
     const userToken = Cookies.get("UserAuthToken");
 
@@ -77,18 +88,19 @@ const showSuccessAlert = (message) => {
       try {
         if (!id) return;
         const response = await axios.get(`/api/attendance/report/${id}/${month}`);
+        console.log(response.data)
         setAttendanceReport(response.data);
         setMonthtotalDays(response.data?.totalDays);
         setBasicSalary(response.data?.employee?.employeeSalary || 0);
         setemployeeId(response.data?.employee?._id || 0);
-          // Properly updating employeeAllowances with correct data format
-      const allowancesFromBackend = response.data?.employee?.employeeallowances || [];
-      const formattedAllowances = allowancesFromBackend.map(allowance => ({
-        name: allowance.name || '',
-        amount: allowance.amount || 0
-      }));
-      
-      setEmployeeAllowances(formattedAllowances);
+        // Properly updating employeeAllowances with correct data format
+        const allowancesFromBackend = response.data?.employee?.employeeallowances || [];
+        const formattedAllowances = allowancesFromBackend.map(allowance => ({
+          name: allowance.name || '',
+          amount: allowance.amount || 0
+        }));
+
+        setEmployeeAllowances(formattedAllowances);
         setAbsentDays(response.data?.absentDays || 0);
         setDaysOnTime(response.data?.daysOnTime || 0);
         setDaysLate(response.data?.daysLate || 0);
@@ -97,11 +109,14 @@ const showSuccessAlert = (message) => {
         setEffectiveAbsentDays(response.data?.effectiveAbsentDays);
         setDaysLateLeft(response.data?.remainingLates);
         setTotalAbsentDays(response.data?.totalAbsentDays);
-        
+
         setSalarySubtotal(response.data?.employee?.employeeSalary || 0);
         setNetSalary(response.data?.employee?.employeeSalary || 0);
       } catch (error) {
-        showErrorAlert('Error fetching attendance report');
+        showErrorAlert(error.response.data.err || 'Error fetching attendance report');
+        setTimeout(() => {
+          navigate("/SelectSalaryusers")
+        }, 3000);
       }
     };
     fetchAttendanceReport();
@@ -128,7 +143,7 @@ const showSuccessAlert = (message) => {
 
   // Calculate deductions and net salary
   useEffect(() => {
-    
+
     // const deduction = TotalAbsentDays * salaryPerDay; // Calculate deduction for absent days
     const absentsDeduction = totalAbsentDays * salaryPerDay;
 
@@ -144,14 +159,14 @@ const showSuccessAlert = (message) => {
     );
 
     const netSalaryCalculation = salarySubtotal - totalDeductions; // Calculate net salary
-    
-    
+
+
     setEmployeeDeductions(deductionsWithAbsents); //
     setTotalDeduction(totalDeductions); // Update total deduction
     setNetSalary(netSalaryCalculation < 0 ? 0 : netSalaryCalculation); // Update net salary
 
     // setNetSalary(netSalaryCalculation); // Update net salary
-  }, [totalAbsentDays, salaryPerDay, salarySubtotal]);
+  }, [totalAbsentDays, salaryPerDay, salarySubtotal,totalDeduction]);
 
   // Handle form submission to post salary data
   const handleSubmit = async (e) => {
@@ -173,33 +188,44 @@ const showSuccessAlert = (message) => {
       netSalary,
       allowances: employeeAllowances,
       totalAllowanceAmount,
-      deductions:employeeDeductions,
+      deductions: employeeDeductions,
       totalDeduction,
       remarks,
 
     };
-console.log(formData)
+    console.log(formData)
     try {
       const res = await axios.post('/api/salary', formData);
       showSuccessAlert(res.data.msg);
       setTimeout(() => {
-        navigate('/showsalary');
+        navigate('/showSalaries');
       }, 4000);
     } catch (error) {
       showErrorAlert(error.response?.data?.err || 'Failed to add salary');
     }
   };
 
-    // Update total allowance amount when employeeAllowances changes
-    useEffect(() => {
-      const calculateTotalAllowance = () => {
-        return employeeAllowances.reduce(
-          (total, allowance) => total + parseFloat(allowance.amount || 0),
-          0
-        );
-      };
-      setTotalAllowanceAmount(calculateTotalAllowance());
-    }, [employeeAllowances]);
+  // Update total allowance amount when employeeAllowances changes
+  useEffect(() => {
+    const calculateTotalAllowance = () => {
+      return employeeAllowances.reduce(
+        (total, allowance) => total + parseFloat(allowance.amount || 0),
+        0
+      );
+    };
+    setTotalAllowanceAmount(calculateTotalAllowance());
+  }, [employeeAllowances]);
+
+  // Update total allowance amount when employeeAllowances changes
+  useEffect(() => {
+    const calculateTotalDeduction = () => {
+      return employeeDeductions.reduce(
+        (total, deduction) => total + parseFloat(deduction.amount || 0),
+        0
+      );
+    };
+    setTotalDeduction(calculateTotalDeduction());
+  }, [employeeDeductions]);
 
   // Handle allowance input changes
   const handleAllowanceChange = (index, key, value) => {
@@ -212,14 +238,14 @@ console.log(formData)
   const addAllowanceField = () => {
     setEmployeeAllowances([...employeeAllowances, { name: '', amount: 0 }]);
   };
-  
+
   // Remove allowance input field by index
   const removeAllowanceField = (index) => {
     const updatedAllowances = [...employeeAllowances];
     updatedAllowances.splice(index, 1);
     setEmployeeAllowances(updatedAllowances);
   };
-// -------------------------------------------------------------------
+  // -------------------------------------------------------------------
   // Handle allowance input changes
   const handleDeductionChange = (index, key, value) => {
     const updatedDeductions = [...employeeDeductions];
@@ -246,7 +272,7 @@ console.log(formData)
         <Link className="btn mb-3 btn-primary" onClick={() => navigate(-1)}>
           <i className="fa-solid fa-arrow-left-long" style={{ fontSize: '20px', fontWeight: '900' }}></i>
         </Link>
-        
+
         <div className="row mb-5">
           <div className="col-lg-12">
             <div className="card">
@@ -312,7 +338,7 @@ console.log(formData)
                           placeholder="Allowance Amount"
                           className="form-control mr-2"
                           min={0}
-                          value={(Number(allowance.amount) || 0).toFixed(2)}
+                          value={(Number(allowance.amount) || 0).toFixed()}
                           onChange={(e) => handleAllowanceChange(index, 'amount', e.target.value)}
                         />
                         {employeeAllowances.length > 1 && (
@@ -364,24 +390,16 @@ console.log(formData)
                           value={deduction.name}
                           onChange={(e) => handleDeductionChange(index, 'name', e.target.value)}
                         />
-                        {/* <input
+                        <input
                           type="number"
                           placeholder="Deduction Amount"
                           className="form-control mr-2"
                           min={0}
-                          value={(Number(deduction.amount) || 0).toFixed(2)}
+                          value={(Number(deduction.amount) || 0).toFixed()}
                           onChange={(e) => handleDeductionChange(index, 'amount', e.target.value)}
-                        /> */}
-                        <input
-  type="number"
-  placeholder="Deduction Amount"
-  className="form-control mr-2"
-  min={0}
-  value={(Number(deduction.amount) || 0).toFixed(2)}
-  onChange={(e) => handleDeductionChange(index, 'amount', e.target.value)}
-  step="any" // Allows any decimal value
-  required // You can customize whether you need this for validation
-/>
+                          step="any" // Allows any decimal value
+                          required // You can customize whether you need this for validation
+                        />
 
                         {employeeDeductions.length > 1 && (
                           <button
@@ -438,8 +456,6 @@ console.log(formData)
           </div>
         </div>
       </div>
-
-      {/* <ToastContainer /> */}
     </>
   );
 };

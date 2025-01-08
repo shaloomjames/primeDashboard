@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-
+// import '../AdminComponents/sidebar.css'
 const EmployeeSidebar = () => {
   // State to manage the visibility of submenus
   const [openMenu, setOpenMenu] = useState(null);
@@ -17,7 +17,17 @@ const EmployeeSidebar = () => {
       {/* <!--**********************************
             Sidebar start
         ***********************************--> */}
-      <div className="nk-sidebar" style={{ height: "100%"}}>
+      {/* <div className="nk-sidebar" style={{ height: "100%"}}  ref={(el) => {
+    if (el) el.style.setProperty('height', '100%', 'important');
+  }}> */}
+    <div
+  className="nk-sidebar"
+  style={{ height: "100%" , backgroundColor:"#1b2b42"}}
+  ref={(el) => {
+    if (el) el.style.setProperty('height', '100%', 'important');
+    if (el) el.style.setProperty('backgroundColor', '#1b2b42', 'important');
+  }}
+>
         <div className="nk-nav-scroll">
           <ul className="metismenu" id="menu">
             <li className='mt-3' >
@@ -44,7 +54,7 @@ const EmployeeSidebar = () => {
                 </ul>
               )}
             </li>
-            <li>
+            <li className='mt-1'>
               <a
                 className="has-arrow"
 
@@ -61,8 +71,8 @@ const EmployeeSidebar = () => {
                   </li>
                 </ul>
               )}
-            </li>
-            <li>
+            </li  >
+            <li className='mt-1'>
               <a
                 className="has-arrow"
 
@@ -80,7 +90,8 @@ const EmployeeSidebar = () => {
                 </ul>
               )}
             </li>
-
+           
+          
           </ul>
         </div>
       </div>

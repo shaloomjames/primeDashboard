@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+// import './sidebar.css'
 
 const Sidebar = () => {
   // State to manage the visibility of submenus
@@ -17,8 +18,21 @@ const Sidebar = () => {
       {/* <!--**********************************
             Sidebar start
         ***********************************--> */}
-      <div className="nk-sidebar" style={{ height: "100%"}}>
-        <div className="nk-nav-scroll">
+      {/* <div className="nk-sidebar" style={{ height: "100% !important"}}> */}
+      {/* <div className="nk-sidebar"   style={{ height: "100%" , backgroundColor:"#1b2b42 iMPORTANT"}}  ref={(el) => {
+    if (el) el.style.setProperty('height', '100%', 'important');
+    if (el) el.style.setProperty('backgroundColor', '#1b2b42', 'important');
+  }}> */}
+  <div
+  className="nk-sidebar"
+  style={{ height: "100%" , backgroundColor:"#1b2b42"}}
+  ref={(el) => {
+    if (el) el.style.setProperty('height', '100%', 'important');
+    if (el) el.style.setProperty('backgroundColor', '#1b2b42', 'important');
+  }}
+>
+
+        {/* <div className="nk-nav-scroll"> */}
           <ul className="metismenu" id="menu">
             <li className='mt-3' >
               {/* #1d2c42 */}
@@ -164,7 +178,7 @@ const Sidebar = () => {
               )}
             </li>
           </ul>
-        </div>
+        {/* </div> */}
       </div>
       {/* <!--**********************************
             Sidebar end

@@ -218,7 +218,7 @@ const EmployeeShowAttendance = () => {
                     <th>Time Out</th>
                     <th>Status</th>
                     <th>Late By (minutes)</th>
-                    <th>Total Hours</th>
+                    <th>Total Hours Worked</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -231,7 +231,7 @@ const EmployeeShowAttendance = () => {
                         <td>{record.timeOut ? new Date(record.timeOut).toLocaleTimeString() : "-"}</td>
                         <td>{record.status || "N/A"}</td>
                         <td>{record.lateBy || 0}</td>
-                        <td>{record.totalHours || 0}</td>
+                        <td>{record.totalHours.toFixed(2) || 0}</td>
                       </tr>
                     ))
                   ) : (
