@@ -39,9 +39,6 @@ const getAttendanceReport = async (req, res) => {
             });
           }
     
-          // return res.status(404).json({
-          //   err: `No attendance data found for ${employee.employeeName} in the month of ${moment(startDate).format("MMMM YYYY")}.`,
-          // });
           return res.status(404).json({
             err: `No attendance records were found for ${employee.employeeName} for the month of ${moment(startDate).format("MMMM YYYY")}. Please check if the employee's attendance is recorded in the system for this month.`,
           });

@@ -17,15 +17,10 @@ const EmployeeSidebar = () => {
       {/* <!--**********************************
             Sidebar start
         ***********************************--> */}
-      {/* <div className="nk-sidebar" style={{ height: "100%"}}  ref={(el) => {
-    if (el) el.style.setProperty('height', '100%', 'important');
-  }}> */}
     <div
   className="nk-sidebar"
-  style={{ height: "100%" , backgroundColor:"#1b2b42"}}
   ref={(el) => {
     if (el) el.style.setProperty('height', '100%', 'important');
-    if (el) el.style.setProperty('backgroundColor', '#1b2b42', 'important');
   }}
 >
         <div className="nk-nav-scroll">
