@@ -247,7 +247,7 @@ const ShowDeletedEmployee = () => {
               <div className="card-body">
                 <h4 className="card-title">Deleted Employees</h4>
                                                 {/* Pagination Controls */}
-                                                {filteredData.length > pageSize && (    <div className="mt-5 mb-2">
+                                                {filteredData.length > pageSize && (    <div className="mt-5 mb-2 d-flex  justify-content-end">
         <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
           First
         </button>
@@ -337,7 +337,7 @@ const ShowDeletedEmployee = () => {
                   </table>
                 </div>
                                                 {/* Pagination Controls */}
-                                                {filteredData.length > pageSize && ( <div>
+                                                {filteredData.length > pageSize && ( <div className=" d-flex  justify-content-end">
         <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
           First
         </button>

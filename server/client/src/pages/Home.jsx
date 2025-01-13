@@ -10,16 +10,16 @@ const Home = () => {
     const [ExpanceData, setExpanceData] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
     const [categoryTotals, setCategoryTotals] = useState({});
-    
+
     // for table 1
     const [Tb1ExpanceData, setTb1ExpanceData] = useState([]);
     const [Tb1totalAmount, setTb1TotalAmount] = useState(0);
     const [Tb1categoryTotals, setTb1CategoryTotals] = useState({});
-    
+
     // for table 2
     const [Tb2ExpanceData, setTb2ExpanceData] = useState([]);
     const [Tb2totalAmount, setTb2TotalAmount] = useState(0);
-    const [Tb2categoryTotals,setTb2CategoryTotals] = useState({});
+    const [Tb2categoryTotals, setTb2CategoryTotals] = useState({});
 
     const [employeeData, setEmployeeData] = useState([]);
     const [RoleData, setRoleData] = useState([]);
@@ -27,16 +27,27 @@ const Home = () => {
     const [GExpanceData, setGExpanceData] = useState([]);
     const [GExpanceTotal, setGExpanceTotal] = useState(0);
 
-        // Separate date states for two tables and one chart
-        const [table1StartDate, setTable1StartDate] = useState("");
-        const [table1EndDate, setTable1EndDate] = useState("");
-        const [table2StartDate, setTable2StartDate] = useState("");
-        const [table2EndDate, setTable2EndDate] = useState("");
-        const [chartStartDate, setChartStartDate] = useState("");
-        const [chartEndDate, setChartEndDate] = useState("");
+    // Separate date states for two tables and one chart
+    const [table1StartDate, setTable1StartDate] = useState("");
+    const [table1EndDate, setTable1EndDate] = useState("");
+    const [table2StartDate, setTable2StartDate] = useState("");
+    const [table2EndDate, setTable2EndDate] = useState("");
+    const [chartStartDate, setChartStartDate] = useState("");
+    const [chartEndDate, setChartEndDate] = useState("");
+
+    // Pagination states Table 1
+    const [pageTable1, setPageTable1] = useState(1);
+    const [pageSizeTable1, setPageSizeTable1] = useState(5);
+    const [totalPagesTable1, setTotalPagesTable1] = useState(0);
+
+
+    // Pagination states Table 2
+    const [pageTable2, setPageTable2] = useState(1);
+    const [pageSizeTable2, setPageSizeTable2] = useState(10);
+    const [totalPagesTable2, setTotalPagesTable2] = useState(0);
 
     const navigate = useNavigate();
-    
+
     //Peotecting page 
     useEffect(() => {
         const userToken = Cookies.get("UserAuthToken");
@@ -64,46 +75,49 @@ const Home = () => {
         }
     }, [navigate]);
 
-       // fetch Role
-       useEffect(() => {
+
+
+
+    // fetch Role
+    useEffect(() => {
         const fetchRole = async () => {
-          try {
-            const res = await axios.get("/api/role");
-            setRoleData(res.data);
-          } catch (error) {
-            console.error("Error Fetching Roles Data:", error);
-           }
+            try {
+                const res = await axios.get("/api/role");
+                setRoleData(res.data);
+            } catch (error) {
+                console.error("Error Fetching Roles Data:", error);
+            }
         };
         fetchRole();
-      }, []);
+    }, []);
 
-       //fetch Expance Category 
-      useEffect(() => {
+    //fetch Expance Category 
+    useEffect(() => {
         const fetchExpanceCategory = async () => {
-          try {
-            const res = await axios.get("/api/expance/category/");
-            setExpanceCategoryData(res.data);
-          } catch (error) {
-            console.log("Error Fetching Expance Category Data", error);
-          }
+            try {
+                const res = await axios.get("/api/expance/category/");
+                setExpanceCategoryData(res.data);
+            } catch (error) {
+                console.log("Error Fetching Expance Category Data", error);
+            }
         };
         fetchExpanceCategory();
-      }, []);
+    }, []);
 
-       //fetch Expances for Great Grand Total 
-      useEffect(() => {
-        const fetchExpance= async () => {
-          try {
-            const res = await axios.get("/api/expance/");
-            setGExpanceData(res.data);
-          } catch (error) {
-            console.log("Error Fetching Expance Category Data", error);
-          }
+    //fetch Expances for Great Grand Total 
+    useEffect(() => {
+        const fetchExpance = async () => {
+            try {
+                const res = await axios.get("/api/expance/");
+                setGExpanceData(res.data);
+            } catch (error) {
+                console.log("Error Fetching Expance Category Data", error);
+            }
         };
         fetchExpance();
-      }, []);
+    }, []);
 
-          // Fetching Employees Data
+    // Fetching Employees Data
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
@@ -128,112 +142,148 @@ const Home = () => {
         }]
     });
 
-        // Fetching Expance Data with Date Filters for Table 1
-        useEffect(() => {
-            const fetchExpanceForTable1 = async () => {
-                try {
-                    const res = await axios.get("/api/expance/tb1/t", {
-                        params: { startingDate: table1StartDate, endingDate: table1EndDate },
-                    });
-                    setTb1ExpanceData(res.data);
-                } catch (error) {
-                    console.error("Error Fetching Table 1 Data", error);
-                }
-            };
-            fetchExpanceForTable1();
-        }, [table1StartDate, table1EndDate]);
-    
-        // Fetching Expance Data with Date Filters for Table 2
-        useEffect(() => {
-            const fetchExpanceForTable2 = async () => {
-                try {
-                    const res = await axios.get("/api/expance/tb2/t", {
-                        params: { startingDate: table2StartDate, endingDate: table2EndDate },
-                    });
-                    setTb2ExpanceData(res.data);
-                } catch (error) {
-                    console.error("Error Fetching Table 2 Data", error);
-                }
-            };
-            fetchExpanceForTable2();
-        }, [table2StartDate, table2EndDate]);
-    
-        // Fetching Expance Data with Date Filters for Chart
-        useEffect(() => {
-            const fetchExpanceForChart = async () => {
-                try {
-                    const res = await axios.get("/api/expance", {
-                        params: { startingDate: chartStartDate, endingDate: chartEndDate },
-                    });
-                    setExpanceData(res.data);
-                } catch (error) {
-                    console.error("Error Fetching Chart Data", error);
-                }
-            };
-            fetchExpanceForChart();
-        }, [chartStartDate, chartEndDate]);
-    
-        // Clear filters for each date range
-        const clearTable1Filters = () => {
-            setTable1StartDate("");
-            setTable1EndDate("");
+    // Fetching Expance Data with Date Filters for Table 1
+    useEffect(() => {
+        const fetchExpanceForTable1 = async () => {
+            try {
+                const res = await axios.get("/api/expance/tb1/t", {
+                    params: { startingDate: table1StartDate, endingDate: table1EndDate },
+                });
+                setTb1ExpanceData(res.data);
+            } catch (error) {
+                console.error("Error Fetching Table 1 Data", error);
+            }
         };
-        const clearTable2Filters = () => {
-            setTable2StartDate("");
-            setTable2EndDate("");
+        fetchExpanceForTable1();
+    }, [table1StartDate, table1EndDate]);
+
+    // Fetching Expance Data with Date Filters for Table 2
+    useEffect(() => {
+        const fetchExpanceForTable2 = async () => {
+            try {
+                const res = await axios.get("/api/expance/tb2/t", {
+                    params: { startingDate: table2StartDate, endingDate: table2EndDate },
+                });
+                setTb2ExpanceData(res.data);
+            } catch (error) {
+                console.error("Error Fetching Table 2 Data", error);
+            }
         };
-        const clearChartFilters = () => {
-            setChartStartDate("");
-            setChartEndDate("");
+        fetchExpanceForTable2();
+    }, [table2StartDate, table2EndDate]);
+
+    
+    // Handle pagination logic on changes table 2
+    useEffect(() => {
+        setTotalPagesTable2(Math.ceil((Tb2ExpanceData).length / pageSizeTable2));
+    }, [Tb2ExpanceData, pageSizeTable2]);
+
+    const handlePageChangeTable2 = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPagesTable2) {
+            setPageTable2(newPage);
+        }
+    };
+
+    // Pagination slice table 2
+    const startIndexTb2 = (pageTable2 - 1) * pageSizeTable2;
+    const endIndexTb2 = pageTable2 * pageSizeTable2;
+    const currentDataTb2 = Tb2ExpanceData.slice(startIndexTb2, endIndexTb2);
+        // .map(([category, amount]) => ({
+        //     categoryname: [category],
+        //     categoryamount: amount
+        // }));
+
+    // Fetching Expance Data with Date Filters for Chart
+    useEffect(() => {
+        const fetchExpanceForChart = async () => {
+            try {
+                const res = await axios.get("/api/expance", {
+                    params: { startingDate: chartStartDate, endingDate: chartEndDate },
+                });
+                setExpanceData(res.data);
+            } catch (error) {
+                console.error("Error Fetching Chart Data", error);
+            }
         };
+        fetchExpanceForChart();
+    }, [chartStartDate, chartEndDate]);
+
+    // Clear filters for each date range
+    const clearTable1Filters = () => {
+        setTable1StartDate("");
+        setTable1EndDate("");
+    };
+    const clearTable2Filters = () => {
+        setTable2StartDate("");
+        setTable2EndDate("");
+    };
+    const clearChartFilters = () => {
+        setChartStartDate("");
+        setChartEndDate("");
+    };
 
     // Calculate total amount and category-wise totals
     useEffect(() => {
         const total = ExpanceData.reduce((acc, expance) => acc + expance.expanceAmount, 0);
         setTotalAmount(total);
-        console.log(total)
         const categoryTotals = ExpanceData.reduce((acc, expance) => {
             const category = expance.expanceCategory.ExpanceCategoryName;
             acc[category] = (acc[category] || 0) + expance.expanceAmount;
             return acc;
         }, {});
-    console.log(categoryTotals)
         setCategoryTotals(categoryTotals);
     }, [ExpanceData]);
 
-    useEffect(()=>{
-        const total = GExpanceData.reduce((acc,expance)=>acc + expance.expanceAmount ,0)
+    useEffect(() => {
+        const total = GExpanceData.reduce((acc, expance) => acc + expance.expanceAmount, 0)
         setGExpanceTotal(total)
-    },[GExpanceData])
+    }, [GExpanceData])
 
     // Calculate total amount and category-wise totals for table 1
     useEffect(() => {
         const total = Tb1ExpanceData.reduce((acc, expance) => acc + expance.expanceAmount, 0);
         setTb1TotalAmount(total);
-        console.log(total)
         const categoryTotals = Tb1ExpanceData.reduce((acc, expance) => {
             const category = expance.expanceCategory.ExpanceCategoryName;
             acc[category] = (acc[category] || 0) + expance.expanceAmount;
             return acc;
         }, {});
-    console.log(categoryTotals)
         setTb1CategoryTotals(categoryTotals);
     }, [Tb1ExpanceData]);
- 
+
+    // Handle pagination logic on changes
+    useEffect(() => {
+        setTotalPagesTable1(Math.ceil((Object.keys(Tb1categoryTotals)).length / pageSizeTable1));
+    }, [Tb1categoryTotals, pageSizeTable1]);
+
+    const handlePageChangeTable1 = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPagesTable1) {
+            setPageTable1(newPage);
+        }
+    };
+
+    // Pagination slice
+    const startIndexTb1 = (pageTable1 - 1) * pageSizeTable1;
+    const endIndexTb1 = pageTable1 * pageSizeTable1;
+    const currentDataTb1 = Object.entries(Tb1categoryTotals)
+        .slice(startIndexTb1, endIndexTb1)
+        .map(([category, amount]) => ({
+            categoryname: [category],
+            categoryamount: amount
+        }));
+
     // Calculate total amount and category-wise totals for table 2
     useEffect(() => {
         const total = Tb2ExpanceData.reduce((acc, expance) => acc + expance.expanceAmount, 0);
         setTb2TotalAmount(total);
-        console.log(total)
         const categoryTotals = Tb2ExpanceData.reduce((acc, expance) => {
             const category = expance.expanceCategory.ExpanceCategoryName;
             acc[category] = (acc[category] || 0) + expance.expanceAmount;
             return acc;
         }, {});
-    console.log(categoryTotals)
         setTb2CategoryTotals(categoryTotals);
     }, [Tb2ExpanceData]);
-    
+
     // Update chart data based on categoryTotals
     useEffect(() => {
         const backgroundColors = ExpanceData.map(exp => exp.expanceCategory?.ExpanceCategoryColor || "#CCCCCC"); // Default color if undefined
@@ -248,7 +298,7 @@ const Home = () => {
             }]
         });
     }, [categoryTotals]);
- 
+
     return (
         <>
             <div className="container-fluid mt-3">
@@ -295,38 +345,39 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                   
-                    <div className="col-lg-6 col-md-6">
+
+                <div className="row d-flex">
+
+                    <div className="col-lg-6 col-md-6 flex-fill">
                         <div className="card">
-                        <div className="row mx-4 mt-4">
+                            <div className="row mx-4 mt-4">
                                 <div className="col-lg-12 col-md-12">
-                                <div className="row">
-                                    <div className="col-lg-4 mt-3">
-                                        <label style={{fontWeight:"900"}}>Starting Date:</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            value={chartStartDate}
-                                            onChange={(e) => setChartStartDate(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-lg-4 mt-3">
-                                        <label style={{fontWeight:"900"}}>Ending Date:</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            value={chartEndDate}
-                                            onChange={(e) => setChartEndDate(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-lg-3 mt-3 d-flex  align-items-end">
-                                        <button  className="btn btn-secondary" onClick={clearChartFilters}>
-                                            Clear Filters
-                                        </button>
+                                    <div className="row">
+                                        <div className="col-lg-4 mt-3">
+                                            <label style={{ fontWeight: "900" }}>Starting Date:</label>
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                value={chartStartDate}
+                                                onChange={(e) => setChartStartDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-4 mt-3">
+                                            <label style={{ fontWeight: "900" }}>Ending Date:</label>
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                value={chartEndDate}
+                                                onChange={(e) => setChartEndDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-3 mt-3 d-flex  align-items-end">
+                                            <button className="btn btn-secondary" onClick={clearChartFilters}>
+                                                Clear Filters
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                             <div className="card-body">
                                 <div className="text-center chart-container">
@@ -336,52 +387,54 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-6 col-md-6">
-                        <div className="card ">
-                        <div className="row mx-4 mt-4">
+                    <div className="col-lg-6 col-md-6 flex-fill d-flex">
+                        <div className="card flex-fill">
+                            <div className="row mx-4 mt-4">
                                 <div className="col-lg-12 col-md-12">
-                                <div className="row">
-                                    <div className="col-lg-4 mt-3">
-                                        <label style={{fontWeight:"900"}}>Starting Date:</label>
-                                        <input 
-                                            type="date"
-                                            className="form-control"
-                                            value={table1StartDate}
-                                            onChange={(e) => setTable1StartDate(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-lg-4 mt-3">
-                                        <label style={{fontWeight:"900"}}>Ending Date:</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            value={table1EndDate}
-                                            onChange={(e) => setTable1EndDate(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-lg-3 mt-3 d-flex  align-items-end">
-                                        <button className="btn btn-secondary" onClick={clearTable1Filters}>
-                                            Clear Filters
-                                        </button>
+                                    <div className="row">
+                                        <div className="col-lg-4 mt-3">
+                                            <label style={{ fontWeight: "900" }}>Starting Date:</label>
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                value={table1StartDate}
+                                                onChange={(e) => setTable1StartDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-4 mt-3">
+                                            <label style={{ fontWeight: "900" }}>Ending Date:</label>
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                value={table1EndDate}
+                                                onChange={(e) => setTable1EndDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-3 mt-3 d-flex  align-items-end">
+                                            <button className="btn btn-secondary" onClick={clearTable1Filters}>
+                                                Clear Filters
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                            <div className="card-body mb-4">
-                                <h4 className="mt-5">Category Totals</h4>
+                            <div className="card-body mb-5">
+                                <h4 className="mt-4">Category Totals</h4>
                                 <div className="table-responsive">
                                     <table className="table header-border mt-4 zero-configuration">
                                         <thead>
                                             <tr>
+                                                <th>#</th>
                                                 <th>Expense Category</th>
                                                 <th>Total Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {Object.entries(Tb1categoryTotals).map(([category, amount], index) => (
+                                            {currentDataTb1.map((categoryy, index) => (
                                                 <tr key={index}>
-                                                    <td>{category || "N/a"}</td>
-                                                    <td>{amount || "N/a"}</td>
+                                                    <td>{(startIndexTb2 + index) +1 || "N/a"}</td>
+                                                    <td>{categoryy.categoryname || "N/a"}</td>
+                                                    <td>{categoryy.categoryamount || "N/a"}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -401,10 +454,30 @@ const Home = () => {
                                         </tfoot>
                                     </table>
                                 </div>
+                                {
+                                Object.keys(Tb1categoryTotals).length > pageSizeTable1 && 
+                                (<div className="d-flex  justify-content-end">
+                                    <button className='btn btn-sm mx-2' onClick={() => handlePageChangeTable1(1)} disabled={pageTable1 <= 1}>
+                                        First
+                                    </button>
+                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable1(pageTable1 - 1)} disabled={pageTable1 <= 1}>
+                                        Prev
+                                    </button>
+                                    <span className='mx-2'>
+                                        Page {pageTable1} of {totalPagesTable1}
+                                    </span>
+                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable1(pageTable1 + 1)} disabled={pageTable1 >= totalPagesTable1}>
+                                        Next
+                                    </button>
+                                    <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable1(totalPagesTable1)} disabled={pageTable1 >= totalPagesTable1}>
+                                        Last
+                                    </button>
+                                </div>)}
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div className="row mt-3 mb-5">
                     <div className="col-lg-12">
                         <div className="card">
@@ -412,32 +485,32 @@ const Home = () => {
                                 <div className="col-lg-3 col-md-3"></div>
                                 <div className="col-lg-3 col-md-3"></div>
                                 <div className="col-lg-6 col-md-12">
-                                <div className="row">
-                                    <div className="col-lg-4 mt-3">
-                                        <label style={{fontWeight:"900"}}>Starting Date:</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            value={table2StartDate}
-                                            onChange={(e) => setTable2StartDate(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-lg-4 mt-3">
-                                        <label style={{fontWeight:"900"}}>Ending Date:</label>
-                                        <input
-                                            type="date"
-                                            className="form-control"
-                                            value={table2EndDate}
-                                            onChange={(e) => setTable2EndDate(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-lg-3 mt-3 d-flex  align-items-end">
-                                        <button className="btn btn-secondary" onClick={clearTable2Filters}>
-                                            Clear Filters
-                                        </button>
+                                    <div className="row">
+                                        <div className="col-lg-4 mt-3">
+                                            <label style={{ fontWeight: "900" }}>Starting Date:</label>
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                value={table2StartDate}
+                                                onChange={(e) => setTable2StartDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-4 mt-3">
+                                            <label style={{ fontWeight: "900" }}>Ending Date:</label>
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                value={table2EndDate}
+                                                onChange={(e) => setTable2EndDate(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-3 mt-3 d-flex  align-items-end">
+                                            <button className="btn btn-secondary" onClick={clearTable2Filters}>
+                                                Clear Filters
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                             <div className="card-body">
                                 <h4 className="card-title">Expenses</h4>
@@ -445,15 +518,17 @@ const Home = () => {
                                     <table className="table header-border">
                                         <thead>
                                             <tr>
+                                                <th>#</th>
                                                 <th>Name</th>
                                                 <th>Amount</th>
                                                 <th>Expense Category</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {Tb2ExpanceData.length > 0 ? (
-                                                Tb2ExpanceData.map((expance, index) => (
+                                            {currentDataTb2.length > 0 ? (
+                                                currentDataTb2.map((expance, index) => (
                                                     <tr key={index}>
+                                                        <td>{(startIndexTb2 +index )+1 || "N/a"}</td>
                                                         <td>{expance.expanceName || "N/a"}</td>
                                                         <td>{expance.expanceAmount || "N/a"}</td>
                                                         <td>{expance.expanceCategory.ExpanceCategoryName || "N/a"}</td>
@@ -478,6 +553,23 @@ const Home = () => {
                                         </tfoot>
                                     </table>
                                 </div>
+                                {Tb2ExpanceData.length > pageSizeTable2 &&( <div className=" d-flex  justify-content-end">
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(1)} disabled={pageTable2 <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 - 1)} disabled={pageTable2 <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {pageTable2} of {totalPagesTable2}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 + 1)} disabled={pageTable2 >= totalPagesTable2}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(totalPagesTable2)} disabled={pageTable2 >= totalPagesTable2}>
+          Last
+        </button>
+      </div>)}
                             </div>
                         </div>
                     </div>

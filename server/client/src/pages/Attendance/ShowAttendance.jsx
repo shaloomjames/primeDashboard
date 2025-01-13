@@ -19,10 +19,10 @@
 //   const [totalPages, setTotalPages] = useState(0);
 
 
-//   // Format helpers
-//   const formatDate = (date) => new Date(date).toISOString().split("T")[0];
-//   const formatTime = (date) =>
-//     new Date(date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  // // Format helpers
+  // const formatDate = (date) => new Date(date).toISOString().split("T")[0];
+  // const formatTime = (date) =>
+  //   new Date(date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
 
 //       const navigate = useNavigate();
@@ -221,121 +221,121 @@
 //                 </div>
 //               )}
 //               <h4>Attendance Records</h4>
-//               {/* Pagination Controls */}
-//               {filteredRecords.length > pageSize && (<div className="mt-5 mb2">
-//                 <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-//                   First
-//                 </button>
-//                 <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-//                   Prev
-//                 </button>
-//                 <span className='mx-2'>
-//                   Page {page} of {totalPages}
-//                 </span>
-//                 <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-//                   Next
-//                 </button>
-//                 <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-//                   Last
-//                 </button>
-//               </div>)}
+              // {/* Pagination Controls */}
+              // {filteredRecords.length > pageSize && (<div className="mt-5 mb2">
+              //   <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+              //     First
+              //   </button>
+              //   <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+              //     Prev
+              //   </button>
+              //   <span className='mx-2'>
+              //     Page {page} of {totalPages}
+              //   </span>
+              //   <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+              //     Next
+              //   </button>
+              //   <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+              //     Last
+              //   </button>
+              // </div>)}
 
 //               <div className="table-responsive">
-//                 <table className="table">
-//                   <thead>
-//                     <tr>
-//                       <th>#</th>
-//                       <th>Employee Id</th>
-//                       <th>Employee Name</th>
-//                       <th>Employee Email</th>
-//                       <th>Date</th>
-//                       <th>Time In</th>
-//                       <th>Time Out</th>
-//                       <th>Status</th>
-//                       <th>Late By (minutes)</th>
-//                       <th>Total Hours</th>
-//                     </tr>
-//                   </thead>
-//                   <tbody>
-//                     {currentData.length > 0 ? (
-//                       currentData.map((record, index) => {
-//                         const timeIn = record?.timeIn ? new Date(record.timeIn) : null;
-//                         const timeOut = record?.timeOut
-//                           ? new Date(record.timeOut)
-//                           : null;
+                // <table className="table">
+                //   <thead>
+                //     <tr>
+                //       <th>#</th>
+                //       <th>Employee Id</th>
+                //       <th>Employee Name</th>
+                //       <th>Employee Email</th>
+                //       <th>Date</th>
+                //       <th>Time In</th>
+                //       <th>Time Out</th>
+                //       <th>Status</th>
+                //       <th>Late By (minutes)</th>
+                //       <th>Total Hours</th>
+                //     </tr>
+                //   </thead>
+                //   <tbody>
+                //     {currentData.length > 0 ? (
+                //       currentData.map((record, index) => {
+                //         const timeIn = record?.timeIn ? new Date(record.timeIn) : null;
+                //         const timeOut = record?.timeOut
+                //           ? new Date(record.timeOut)
+                //           : null;
 
-//                         return (
-//                           <tr key={index}>
-//                             <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
-//                             <td>{record?.employee.employeeId || "N/A"}</td>
-//                             <td>{record?.employee.employeeName || "N/A"}</td>
-//                             <td>{record?.employee.employeeEmail || "N/A"}</td>
-//                             <td>
-//                               {record?.attendanceDate
-//                                 ? formatDate(record.attendanceDate)
-//                                 : "-"}
-//                             </td>
-//                             <td>{timeIn ? formatTime(timeIn) : "-"}</td>
-//                             <td>{timeOut ? formatTime(timeOut) : "-"}</td>
-//                             <td
-//                               className={
-//                                 record?.status === "Late" ? "text-warning" : "text-success"
-//                               }
-//                             >
-//                               {record?.status || "N/A"}
-//                             </td>
-//                             <td>{record.lateBy || 0}</td>
-//                             <td>{record.totalHours || 0}</td>
-//                           </tr>
-//                         );
-//                       })
-//                     ) : (
-//                       <tr>
-//                         <td colSpan="9" className="text-center">
-//                           {selectedMonth === "" ? (
-//                             // If no month is selected
-//                             search === "" ? (
-//                               `No Attendance Found. Please select a Month and/or search for a user.`
-//                             ) : (
-//                               `No Attendance Found For the Search Term "${search}". Please select a Month.`
-//                             )
-//                           ) : (
-//                             // If a month is selected
-//                             search === "" ? (
-//                               `No Attendance Found For the Selected Month ${new Date(
-//                                 `${selectedMonth}-01`
-//                               ).toLocaleString("default", { month: "long", year: "numeric" })}`
-//                             ) : (
-//                               `No Attendance Found For the Search Term "${search}" in the Selected Month ${new Date(
-//                                 `${selectedMonth}-01`
-//                               ).toLocaleString("default", { month: "long", year: "numeric" })}`
-//                             )
-//                           )}
-//                         </td>
-//                       </tr>
+                //         return (
+                //           <tr key={index}>
+                //             <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
+                //             <td>{record?.employee.employeeId || "N/A"}</td>
+                //             <td>{record?.employee.employeeName || "N/A"}</td>
+                //             <td>{record?.employee.employeeEmail || "N/A"}</td>
+                //             <td>
+                //               {record?.attendanceDate
+                //                 ? formatDate(record.attendanceDate)
+                //                 : "-"}
+                //             </td>
+                //             <td>{timeIn ? formatTime(timeIn) : "-"}</td>
+                //             <td>{timeOut ? formatTime(timeOut) : "-"}</td>
+                //             <td
+                //               className={
+                //                 record?.status === "Late" ? "text-warning" : "text-success"
+                //               }
+                //             >
+                //               {record?.status || "N/A"}
+                //             </td>
+                //             <td>{record.lateBy || 0}</td>
+                //             <td>{record.totalHours || 0}</td>
+                //           </tr>
+                //         );
+                //       })
+                //     ) : (
+                //       <tr>
+                //         <td colSpan="9" className="text-center">
+                //           {selectedMonth === "" ? (
+                //             // If no month is selected
+                //             search === "" ? (
+                //               `No Attendance Found. Please select a Month and/or search for a user.`
+                //             ) : (
+                //               `No Attendance Found For the Search Term "${search}". Please select a Month.`
+                //             )
+                //           ) : (
+                //             // If a month is selected
+                //             search === "" ? (
+                //               `No Attendance Found For the Selected Month ${new Date(
+                //                 `${selectedMonth}-01`
+                //               ).toLocaleString("default", { month: "long", year: "numeric" })}`
+                //             ) : (
+                //               `No Attendance Found For the Search Term "${search}" in the Selected Month ${new Date(
+                //                 `${selectedMonth}-01`
+                //               ).toLocaleString("default", { month: "long", year: "numeric" })}`
+                //             )
+                //           )}
+                //         </td>
+                //       </tr>
 
-//                     )}
-//                   </tbody>
-//                 </table>
+                //     )}
+                //   </tbody>
+                // </table>
 //               </div>
-//               {/* Pagination Controls */}
-//               {filteredRecords.length > pageSize && (<div>
-//                 <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-//                   First
-//                 </button>
-//                 <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-//                   Prev
-//                 </button>
-//                 <span className='mx-2'>
-//                   Page {page} of {totalPages}
-//                 </span>
-//                 <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-//                   Next
-//                 </button>
-//                 <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-//                   Last
-//                 </button>
-//               </div>)}
+              // {/* Pagination Controls */}
+              // {filteredRecords.length > pageSize && (<div>
+              //   <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+              //     First
+              //   </button>
+              //   <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+              //     Prev
+              //   </button>
+              //   <span className='mx-2'>
+              //     Page {page} of {totalPages}
+              //   </span>
+              //   <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+              //     Next
+              //   </button>
+              //   <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+              //     Last
+              //   </button>
+              // </div>)}
 
 //             </div>
 //           </div>
@@ -367,7 +367,12 @@ const ShowAttendance = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   // Helper to format date
-  const formatDate = (date) => new Date(date).toISOString().split("T")[0];
+    // Format helpers
+    const formatDate = (date) => new Date(date).toISOString().split("T")[0];
+    const formatTime = (date) =>
+      new Date(date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  
+  
 
   const navigate = useNavigate();
 
@@ -522,71 +527,125 @@ const ShowAttendance = () => {
           <div className="card">
             <div className="card-body">
               <h4>Attendance Records</h4>
+                            {/* Pagination Controls */}
+                            {filteredRecords.length > pageSize && (<div className="mt-5 mb-2 d-flex  justify-content-end">
+                
+                <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+                  First
+                </button>
+                <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+                  Prev
+                </button>
+                <span className='mx-2'>
+                  Page {page} of {totalPages}
+                </span>
+                <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+                  Next
+                </button>
+                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+                  Last
+                </button>
+              </div>
+            )}
+
               <div className="table-responsive">
-                <table className="table">
+                                <table className="table">
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Employee ID</th>
-                      <th>Name</th>
-                      <th>Email</th>
+                      <th>Employee Id</th>
+                      <th>Employee Name</th>
+                      <th>Employee Email</th>
                       <th>Date</th>
                       <th>Time In</th>
                       <th>Time Out</th>
                       <th>Status</th>
-                      <th>Late By</th>
+                      <th>Late By (minutes)</th>
+                      <th>Total Hours</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {currentData.map((record, index) => (
-                      <tr key={index}>
-                        <td>{startIndex + index + 1}</td>
-                        <td>{record.employee.employeeId}</td>
-                        <td>{record.employee.employeeName}</td>
-                        <td>{record.employee.employeeEmail}</td>
-                        <td>{formatDate(record.attendanceDate)}</td>
-                        <td>{record.timeIn || "-"}</td>
-                        <td>{record.timeOut || "-"}</td>
-                        <td>{record.status}</td>
-                        <td>{record.lateBy || "-"}</td>
+                    {currentData.length > 0 ? (
+                      currentData.map((record, index) => {
+                        const timeIn = record?.timeIn ? new Date(record.timeIn) : null;
+                        const timeOut = record?.timeOut
+                          ? new Date(record.timeOut)
+                          : null;
+
+                        return (
+                          <tr key={index}>
+                            <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
+                            <td>{record?.employee.employeeId || "N/A"}</td>
+                            <td>{record?.employee.employeeName || "N/A"}</td>
+                            <td>{record?.employee.employeeEmail || "N/A"}</td>
+                            <td>
+                              {record?.attendanceDate
+                                ? formatDate(record.attendanceDate)
+                                : "-"}
+                            </td>
+                            <td>{timeIn ? formatTime(timeIn) : "-"}</td>
+                            <td>{timeOut ? formatTime(timeOut) : "-"}</td>
+                            <td
+                              className={
+                                record?.status === "Late" ? "text-warning" : "text-success"
+                              }
+                            >
+                              {record?.status || "N/A"}
+                            </td>
+                            <td>{record.lateBy || 0}</td>
+                            <td>{record.totalHours || 0}</td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="9" className="text-center">
+                          {selectedMonth === "" ? (
+                            // If no month is selected
+                            search === "" ? (
+                              `No Attendance Found. Please select a Month and/or search for a user.`
+                            ) : (
+                              `No Attendance Found For the Search Term "${search}". Please select a Month.`
+                            )
+                          ) : (
+                            // If a month is selected
+                            search === "" ? (
+                              `No Attendance Found For the Selected Month ${new Date(
+                                `${selectedMonth}-01`
+                              ).toLocaleString("default", { month: "long", year: "numeric" })}`
+                            ) : (
+                              `No Attendance Found For the Search Term "${search}" in the Selected Month ${new Date(
+                                `${selectedMonth}-01`
+                              ).toLocaleString("default", { month: "long", year: "numeric" })}`
+                            )
+                          )}
+                        </td>
                       </tr>
-                    ))}
+
+                    )}
                   </tbody>
                 </table>
               </div>
 
-              {/* Pagination Controls */}
-              {filteredRecords.length > pageSize && (
-                <div className="mt-4">
-                  <button
-                    onClick={() => handlePageChange(1)}
-                    disabled={page === 1}
-                  >
-                    First
-                  </button>
-                  <button
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 1}
-                  >
-                    Prev
-                  </button>
-                  <span>
-                    Page {page} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages}
-                  >
-                    Next
-                  </button>
-                  <button
-                    onClick={() => handlePageChange(totalPages)}
-                    disabled={page === totalPages}
-                  >
-                    Last
-                  </button>
-                </div>
-              )}
+                {/* Pagination Controls */}
+                {filteredRecords.length > pageSize && (<div className="d-flex  justify-content-end">
+                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+                  First
+                </button>
+                <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+                  Prev
+                </button>
+                <span className='mx-2'>
+                  Page {page} of {totalPages}
+                </span>
+                <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+                  Next
+                </button>
+                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+                  Last
+                </button>
+              </div>)}
+
             </div>
           </div>
         </div>

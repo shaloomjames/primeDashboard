@@ -192,20 +192,20 @@ const EmployeeShowAttendance = () => {
             <div className="mt-4">
               <h3>Attendance Records</h3>
               {/* Pagination Controls */}
-              {attendanceRecords.length > pageSize && (<div className="my-3">
-                <button className='btn mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+              {attendanceRecords.length > pageSize && (<div className="mt-5 mb-2 d-flex  justify-content-end">
+                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
                   First
                 </button>
-                <button className='btn ' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+                <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
                   Prev
                 </button>
                 <span className='mx-2'>
                   Page {page} of {totalPages}
                 </span>
-                <button className='btn ' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+                <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
                   Next
                 </button>
-                <button className='btn mx-2' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
                   Last
                 </button>
               </div>)}
@@ -241,20 +241,20 @@ const EmployeeShowAttendance = () => {
               </table>
             </div>
             {/* Pagination Controls */}
-            {attendanceRecords.length > pageSize && (<div className='mt-3'>
-              <button className='btn mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+            {attendanceRecords.length > pageSize && (<div className='d-flex  justify-content-end'>
+              <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
                 First
               </button>
-              <button className='btn ' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+              <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
                 Prev
               </button>
               <span className='mx-2'>
                 Page {page} of {totalPages}
               </span>
-              <button className='btn ' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+              <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
                 Next
               </button>
-              <button className='btn mx-2' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+              <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
                 Last
               </button>
             </div>)}
