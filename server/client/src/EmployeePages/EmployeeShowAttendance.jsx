@@ -26,7 +26,7 @@ const EmployeeShowAttendance = () => {
 
   const navigate = useNavigate();
 
-
+// secure page
   useEffect(() => {
     const userToken = Cookies.get("UserAuthToken");
 
@@ -119,74 +119,92 @@ const EmployeeShowAttendance = () => {
 
   return (
     <div className="container-fluid mt-3">
-      <div className="row mb-5">
+      {/* Month Picker & Generate Report Button */}
+      <div className="row my-1">
         <div className="col-lg-12">
-          <div className="card p-4 mb-5">
-            {/* Month Picker & Generate Report Button */}
-            <div className="row filters">
-              <div className="col-lg-3">
-                <label>Select Month</label>
-                <input
-                  type="month"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="form-control"
-                />
-              </div>
-              <div className="col-lg-2 d-flex align-items-end">
-                <button
-                  style={{
-                    whiteSpace: "normal",
-                    textAlign: "center",
-                    wordWrap: "break-word",
-                  }}
-                  onClick={fetchAttendanceReport}
-                  className="btn btn-primary mt-3 w-100"
-                  disabled={attendanceRecords.length === 0}
-                >
-                  Generate Report
-                </button>
-              </div>
-              {/* <div className="col-lg-2 col-md-4 text-end mt-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="row filters">
+                <div className="col-lg-3">
+                  <label>Select Month</label>
+                  <input
+                    type="month"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-lg-2 d-flex align-items-end">
+                  <button
+                    style={{
+                      whiteSpace: "normal",
+                      textAlign: "center",
+                      wordWrap: "break-word",
+                    }}
+                    onClick={fetchAttendanceReport}
+                    className="btn btn-primary mt-3 w-100"
+                    disabled={attendanceRecords.length === 0}
+                  >
+                    Generate Report
+                  </button>
+                </div>
+                {/* <div className="col-lg-2 col-md-4 text-end mt-4">
                 <button className="btn btn-secondary" onClick={()=> window.print()}>
                   Print Attendance
                 </button>
               </div> */}
 
-            </div>
-            {/* Attendance Report Details */}
-            {attendanceReport && (
-              <div className="mt-4">
-                   <h4>Report for {attendanceReport.reportMonth}</h4>
-                <p>
-                  <strong>Total Days in Month:</strong> {attendanceReport.totalDays}
-                </p>
-                <p>
-                  <strong>Total Sundays:</strong> {attendanceReport.totalSundays}
-                </p>
-                <p>
-                  <strong>Working Days (Excluding Sundays):</strong> {attendanceReport.workingDays}
-                </p>
-                <p>
-                  <strong>Days On Time:</strong> {attendanceReport.daysOnTime}
-                </p>
-                <p>
-                  <strong>Days Late:</strong> {attendanceReport.daysLate}
-                </p>
-                <p>
-                  <strong>Absent Days (Excluding Sundays):</strong> {attendanceReport.absentDays}
-                </p>
-                <p>
-                  <strong>Effective Absents (Conversion from lates):</strong> {attendanceReport.effectiveAbsentDays || 0}
-                </p>
-                <p>
-                  <strong>Effective Lates left (after conversion to absent):</strong> {attendanceReport.remainingLates || 0}
-                </p>
-                <p>
-                  <strong>Total Absents:</strong> {attendanceReport.totalAbsentDays || 0}
-                </p>
               </div>
-            )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Attendance Report Details */}
+      {attendanceReport && (
+        <div className="row my-1">
+          <div className="col-lg-12">
+            <div className="card">
+              <div className="card-body">
+                <div className="table-responsive">
+                  <h4>Attendance Summary for {attendanceReport?.reportMonth || 'N/A'}</h4>
+                  <table className="table header-border  ">
+                    <thead>
+                      <tr>
+                        <th>Total Days In Month</th>
+                        <th>Total SunDays in Month</th>
+                        <th>Working Days (Excluding Sundays)</th>
+                        <th>Days On Time</th>
+                        <th>Days Late</th>
+                        <th>Absent Days (Excluding Sundays)</th>
+                        <th>Effective Absents (Conversion from lates)</th>
+                        <th>Effective Lates left (after conversion to absent)</th>
+                        <th>Total Absents</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr >
+                        <td>{attendanceReport.totalDays || 0}</td>
+                        <td>{attendanceReport.totalSundays || 0}</td>
+                        <td>{attendanceReport.workingDays || 0}</td>
+                        <td>{attendanceReport.daysOnTime || 0}</td>
+                        <td>{attendanceReport.daysLate || 0}</td>
+                        <td>{attendanceReport.absentDays || 0}</td>
+                        <td>{attendanceReport.effectiveAbsentDays || 0}</td>
+                        <td>{attendanceReport.remainingLates || 0}</td>
+                        <td>{attendanceReport.totalAbsentDays || 0}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>)}
+
+      <div className="row mb-5">
+        <div className="col-lg-12">
+          <div className="card p-4 mb-5">
 
             {/* Attendance Records Display */}
             <div className="mt-4">
@@ -235,7 +253,9 @@ const EmployeeShowAttendance = () => {
                       </tr>
                     ))
                   ) : (
-                    <center className="my-5"><p>No attendance records found for the selected month {new Date(`${selectedMonth}-01`).toLocaleString("default", { month: "long", year: "numeric" })}.</p></center>
+                    <tr>
+                        <td><center> No attendance records found for the selected month {new Date(`${selectedMonth}-01`).toLocaleString("default", { month: "long", year: "numeric" })}.</center></td>
+                    </tr>
                   )}
                 </tbody>
               </table>

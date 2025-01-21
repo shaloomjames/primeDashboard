@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const AddSalary = () => {
   const [attendanceReport, setAttendanceReport] = useState(null);
-  const [employeeId, setemployeeId] = useState();
+  const [employeeId, setemployeeId] = useState('');
   const [employeeName, setemployeeName] = useState('');
   const [employeeEmail, setemployeeEmail] = useState('');
   const [employeeAllowances, setEmployeeAllowances] = useState([{ name: '', amount: 0 }]);
@@ -96,7 +96,7 @@ const AddSalary = () => {
         setemployeeEmail(response.data?.employee?.employeeEmail)
         setMonthtotalDays(response.data?.totalDays);
         setBasicSalary(response.data?.employee?.employeeSalary || 0);
-        setemployeeId(response.data?.employee?._id || 0);
+        setemployeeId(response.data?.employee?.employeeId || 0);
         // Properly updating employeeAllowances with correct data format
         const allowancesFromBackend = response.data?.employee?.employeeallowances || [];
         const formattedAllowances = allowancesFromBackend.map(allowance => ({
@@ -279,106 +279,106 @@ const AddSalary = () => {
           <i className="fa-solid fa-arrow-left-long" style={{ fontSize: '20px', fontWeight: '900' }}></i>
         </Link>
         <form onSubmit={handleSubmit}>
-        <div className="row mb-2">
+          <div className="row mb-2">
             {/* <div className="col-lg-1"></div> */}
             <div class="col-lg-12 ">
               <div class="card">
                 <div class="card-body">
                   {/* <center> */}
-                    <h4 className="card-title mb-5">Add Salary</h4>
+                  <h4 className="card-title mb-5">Add Salary</h4>
                   {/* </center> */}
                   <p><strong>Employee ID:</strong> {attendanceReport?.employee?.employeeId || 'N/A'}</p>
                   <p><strong>Employee Email:</strong> {attendanceReport?.employee?.employeeEmail || 'N/A'}</p>
-                  </div>
-                  </div>
-                  </div>
-                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
 
           <div className="row mb-3">
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                       <div className="table-responsive">
-                       <h4>Attendance Summary for {attendanceReport?.reportMonth || 'N/A'}</h4>
-                                  <table className="table header-border  ">
-                                    <thead>
-                                      <tr>
-                                        {/* <th>Employee ID</th>
+                  <div className="table-responsive">
+                    <h4>Attendance Summary for {attendanceReport?.reportMonth || 'N/A'}</h4>
+                    <table className="table header-border  ">
+                      <thead>
+                        <tr>
+                          {/* <th>Employee ID</th>
                                         <th>Employee Email</th> */}
-                                        <th>Total Days In Month</th>
-                                        <th>Total SunDays in Month</th>
-                                        <th>Working Days (Excluding Sundays)</th>
-                                        <th>Days On Time</th>
-                                        <th>Days Late</th>
-                                        <th>Absent Days (Excluding Sundays)</th>
-                                        <th>Effective Absents (Conversion from lates)</th>
-                                        <th>Effective Lates left (after conversion to absent)</th>
-                                        <th>Total Absents</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                          <tr >
-                                            {/* <td>{attendanceReport?.employee?.employeeId || 'N/A'}</td> Correct index calculation */}
-                                            {/* <td>{attendanceReport?.employee?.employeeEmail || 'N/A'}</td> Correct index calculation */}
-                                            <td> {monthtotalDays || 0} </td> {/* Correct index calculation */}
-                                            <td> {attendanceReport?.totalSundays || 0} </td> {/* Correct index calculation */}
-                                            <td> {totalWorkingDays || 0} </td> {/* Correct index calculation */}
-                                            <td> {daysOnTime || 0} </td> {/* Correct index calculation */}
-                                            <td> {daysLate || 0} </td> {/* Correct index calculation */}
-                                            <td> {absentDays || 0} </td> {/* Correct index calculation */}
-                                            <td> {effectiveAbsentDays || 0} </td> {/* Correct index calculation */}
-                                            <td> {daysLateLeft || 0} </td> {/* Correct index calculation */}
-                                            <td> {totalAbsentDays || 0} </td> {/* Correct index calculation */}
-                                          </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
+                          <th>Total Days In Month</th>
+                          <th>Total SunDays in Month</th>
+                          <th>Working Days (Excluding Sundays)</th>
+                          <th>Days On Time</th>
+                          <th>Days Late</th>
+                          <th>Absent Days (Excluding Sundays)</th>
+                          <th>Effective Absents (Conversion from lates)</th>
+                          <th>Effective Lates left (after conversion to absent)</th>
+                          <th>Total Absents</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr >
+                          {/* <td>{attendanceReport?.employee?.employeeId || 'N/A'}</td> Correct index calculation */}
+                          {/* <td>{attendanceReport?.employee?.employeeEmail || 'N/A'}</td> Correct index calculation */}
+                          <td> {monthtotalDays || 0} </td> {/* Correct index calculation */}
+                          <td> {attendanceReport?.totalSundays || 0} </td> {/* Correct index calculation */}
+                          <td> {totalWorkingDays || 0} </td> {/* Correct index calculation */}
+                          <td> {daysOnTime || 0} </td> {/* Correct index calculation */}
+                          <td> {daysLate || 0} </td> {/* Correct index calculation */}
+                          <td> {absentDays || 0} </td> {/* Correct index calculation */}
+                          <td> {effectiveAbsentDays || 0} </td> {/* Correct index calculation */}
+                          <td> {daysLateLeft || 0} </td> {/* Correct index calculation */}
+                          <td> {totalAbsentDays || 0} </td> {/* Correct index calculation */}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          
+
 
           <div className="row mb-2">
             <div class="col-lg-6 mb-1"  >
-              <div class="card" style={{minHeight:"40vh"}}>
+              <div class="card" style={{ minHeight: "40vh" }}>
                 <div class="card-body">
-                <div className="form-group">
+                  <div className="form-group">
                     <label>Employee Allowances:</label>
-                    {employeeAllowances.length > 0? (
-   employeeAllowances.map((allowance, index) => (
-    <div key={index} className="d-flex align-items-center mb-2">
-      <input
-        type="text"
-        placeholder="Allowance Name"
-        className="form-control mr-2"
-        value={allowance.name}
-        onChange={(e) => handleAllowanceChange(index, 'name', e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Allowance Amount"
-        className="form-control mr-2"
-        min={0}
-        value={(Number(allowance.amount) || 0).toFixed()}
-        onChange={(e) => handleAllowanceChange(index, 'amount', e.target.value)}
-      />
-      {employeeAllowances.length > 1 && (
-        <button
-          type="button"
-          className="btn btn-danger ml-2"
-          onClick={() => removeAllowanceField(index)}
-        >
-          Remove
-        </button>
-      )}
-    </div>
-  ))  ) :(
-                        <h4>No Allowances</h4>
+                    {employeeAllowances.length > 0 ? (
+                      employeeAllowances.map((allowance, index) => (
+                        <div key={index} className="d-flex align-items-center mb-2">
+                          <input
+                            type="text"
+                            placeholder="Allowance Name"
+                            className="form-control mr-2"
+                            value={allowance.name}
+                            onChange={(e) => handleAllowanceChange(index, 'name', e.target.value)}
+                          />
+                          <input
+                            type="number"
+                            placeholder="Allowance Amount"
+                            className="form-control mr-2"
+                            min={0}
+                            value={(Number(allowance.amount) || 0).toFixed()}
+                            onChange={(e) => handleAllowanceChange(index, 'amount', e.target.value)}
+                          />
+                          {employeeAllowances.length > 1 && (
+                            <button
+                              type="button"
+                              className="btn btn-danger ml-2"
+                              onClick={() => removeAllowanceField(index)}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                      ))) : (
+                      <h4>No Allowances</h4>
                     )
-                    
-                 }
+
+                    }
                     <button type="button" className="btn btn-primary" onClick={addAllowanceField}>
                       Add Another Allowance
                     </button>
@@ -388,48 +388,48 @@ const AddSalary = () => {
             </div>
 
             <div class="col-lg-6 mb-1" >
-              <div class="card" style={{minHeight:"40vh"}}>
+              <div class="card" style={{ minHeight: "40vh" }}>
                 <div class="card-body">
-                <div className="form-group">
+                  <div className="form-group">
                     <label>Employee Deduction:</label>
                     {
-                    employeeDeductions.length > 0 ? (
-                      employeeDeductions.map((deduction, index) => (
-                        <div key={index} className="d-flex align-items-center mb-2">
-                          <input
-                            type="text"
-                            placeholder="Deduction Name"
-                            className="form-control mr-2"
-                            value={deduction.name}
-                            onChange={(e) => handleDeductionChange(index, 'name', e.target.value)}
-                          />
-                          <input
-                            type="number"
-                            placeholder="Deduction Amount"
-                            className="form-control mr-2"
-                            min={0}
-                            value={(Number(deduction.amount) || 0).toFixed()}
-                            onChange={(e) => handleDeductionChange(index, 'amount', e.target.value)}
-                            step="any" // Allows any decimal value
-                            required // You can customize whether you need this for validation
-                          />
-  
-                          {employeeDeductions.length > 1 && (
-                            <button
-                              type="button"
-                              className="btn btn-danger ml-2"
-                              onClick={() => removeDeductionField(index)}
-                            >
-                              Remove
-                            </button>
-                          )}
-                        </div>
-                      ))
-                    ):(
-                      <h4>No Deductions</h4>
-                    )
-                    
-                  }
+                      employeeDeductions.length > 0 ? (
+                        employeeDeductions.map((deduction, index) => (
+                          <div key={index} className="d-flex align-items-center mb-2">
+                            <input
+                              type="text"
+                              placeholder="Deduction Name"
+                              className="form-control mr-2"
+                              value={deduction.name}
+                              onChange={(e) => handleDeductionChange(index, 'name', e.target.value)}
+                            />
+                            <input
+                              type="number"
+                              placeholder="Deduction Amount"
+                              className="form-control mr-2"
+                              min={0}
+                              value={(Number(deduction.amount) || 0).toFixed(2)}
+                              onChange={(e) => handleDeductionChange(index, 'amount', e.target.value)}
+                              step="any" // Allows any decimal value
+                              required // You can customize whether you need this for validation
+                            />
+
+                            {employeeDeductions.length > 1 && (
+                              <button
+                                type="button"
+                                className="btn btn-danger ml-2"
+                                onClick={() => removeDeductionField(index)}
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <h4>No Deductions</h4>
+                      )
+
+                    }
                     <button type="button" className="btn btn-primary" onClick={addDeductionField}>
                       Add Another Deduction
                     </button>
@@ -443,7 +443,7 @@ const AddSalary = () => {
             <div class="col-lg-12 mb-5">
               <div class="card">
                 <div class="card-body">
-              {/* <div className="row mt-5">
+                  {/* <div className="row mt-5">
                 <div className="col-lg-6">
                 <div className="form-group">
                     <label>Employee Allowances:</label>
@@ -619,7 +619,7 @@ const AddSalary = () => {
                     </div>
                     <div class="form-group row">
                       <div class="col-sm-12">
-                        <center> <button type="submit" class="btn btn-dark px-5">Add Salary</button></center>
+                        <center> <button type="submit" class="btn btn-dark px-5">Confirm Pay Salary</button></center>
                       </div>
                     </div>
                     {/* </form> */}

@@ -75,7 +75,7 @@ const ShowRoles = () => {
   useEffect(() => {
     // Update filteredData based on both search and statusFilter
     const filteredRoles = RoleData.filter((role) => {
-      const matchesName = role.roleName.toLowerCase().includes(search.toLowerCase());
+      const matchesName = role.roleName.toLowerCase().includes(search.toLowerCase().trim());
       const matchesStatus = statusFilter ? role.roleStatus === statusFilter : true;
       return matchesName && matchesStatus; // Both conditions must be true
     });

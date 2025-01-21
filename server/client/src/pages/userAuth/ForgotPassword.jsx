@@ -42,7 +42,7 @@ const ForgotPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = {
-            employeeEmail,
+            employeeEmail:employeeEmail.toLocaleLowerCase(),
         };
 
         try {
@@ -77,7 +77,7 @@ const ForgotPassword = () => {
                             <div className="form-input-content">
                                 <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 19%)" }}>
                                     <div className="card-body pt-5">
-                                        <a className="text-center" href="index.html">
+                                        <a className="text-center">
                                             <h4><img src="/images/Primevertex-Logo-01-dark.png" width={"270px"} alt="" /></h4>
                                         </a>
                                         <form className="mt-5 mb-5 login-input" onSubmit={handleSubmit}>

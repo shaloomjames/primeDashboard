@@ -13,7 +13,7 @@ const ShowExpanceCategory = () => {
   const [statusFilter, setStatusFilter] = useState(""); // State to store selected status
 
       // Pagination states
-      const [page, setPage] = useState(10);
+      const [page, setPage] = useState(1);
       const [pageSize, setPageSize] = useState(10);
       const [totalPages, setTotalPages] = useState(0);
   
@@ -73,7 +73,7 @@ const ShowExpanceCategory = () => {
   useEffect(() => {
     // Filter data whenever search query or data changes
     const filteredCategories = ExpanceCategoryData.filter((category) =>{
-      const matchesName = (category.ExpanceCategoryName || "").toLowerCase().includes(search.toLowerCase());
+      const matchesName = (category.ExpanceCategoryName || "").toLowerCase().includes(search.toLowerCase().trim());
       const matchesStatus = statusFilter ? category.ExpanceCategoryStatus  === statusFilter : true;
       return matchesName && matchesStatus; // Both conditions must be true
     }

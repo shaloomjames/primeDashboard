@@ -77,48 +77,84 @@ const ShowSalary = () => {
   //   setSelectedMonth(today.toISOString().slice(0, 7)); // Format: YYYY-MM
   // }, []);
 
-  // Update filtered records based on search input
-  useEffect(() => {
-    if (search === "") {
-      // If search is empty, reset to show all records
-      setFilteredData(salaryData);
-      setId(null);
-      return;
-    }
+  // // Update filtered records based on search input
+  // useEffect(() => {
+  //   if (search === "") {
+  //     // If search is empty, reset to show all records
+  //     setFilteredData(salaryData);
+  //     setId(null);
+  //     return;
+  //   }
 
-    const filteredBySearch = salaryData.filter((record) => {
-      const searchLower = search.toLowerCase();
-      return (
+  //   const filteredBySearch = salaryData.filter((record) => {
+  //     const searchLower = search.toLowerCase().trim();
+  //     return (
+  //       record?.employeeId.employeeName.toLowerCase().includes(searchLower) ||
+  //       record?.employeeId.employeeEmail.toLowerCase().includes(searchLower) ||
+  //       record?.employeeId.employeeId.toLowerCase().includes(searchLower)
+  //     );
+  //   });
+
+  //   setFilteredData(filteredBySearch);
+
+  //   // Update `Id` state if all filtered records belong to the same user
+  //   if (
+  //     filteredBySearch.length > 0 &&
+  //     filteredBySearch.every(
+  //       (record) =>
+  //         record.employeeId.employeeId === filteredBySearch[0].employeeId.employeeId
+  //     )
+  //   ) {
+  //     setId(filteredBySearch[0].employeeId._id);
+  //   } else {
+  //     setId(null); // Reset ID if no unique user is found
+  //   }
+  // }, [search, salaryData]);
+
+  // // Filter salary records based on the selected month
+  // useEffect(() => {
+  //   const filteredRecords = salaryData.filter((record) =>
+  //     record.selectedMonth.startsWith(selectedMonth)
+  //   );
+  //   setFilteredData(filteredRecords);
+  // }, [salaryData, selectedMonth]);
+
+  useEffect(() => {
+    let filtered = salaryData;
+  
+    // Filter by month first (if selected)
+    if (selectedMonth) {
+      filtered = filtered.filter((record) =>
+        record.selectedMonth.startsWith(selectedMonth)
+      );
+    }
+  
+    // Then filter by search query (if there is a search input)
+    if (search) {
+      const searchLower = search.toLowerCase().trim();
+      filtered = filtered.filter((record) =>
         record?.employeeId.employeeName.toLowerCase().includes(searchLower) ||
         record?.employeeId.employeeEmail.toLowerCase().includes(searchLower) ||
         record?.employeeId.employeeId.toLowerCase().includes(searchLower)
       );
-    });
-
-    setFilteredData(filteredBySearch);
-
-    // Update `Id` state if all filtered records belong to the same user
+    }
+  
+    setFilteredData(filtered);
+  
+    // Reset the ID if no unique user is found in the filtered results
     if (
-      filteredBySearch.length > 0 &&
-      filteredBySearch.every(
+      filtered.length > 0 &&
+      filtered.every(
         (record) =>
-          record.employeeId.employeeId === filteredBySearch[0].employeeId.employeeId
+          record.employeeId.employeeId === filtered[0].employeeId.employeeId
       )
     ) {
-      setId(filteredBySearch[0].employeeId._id);
+      setId(filtered[0].employeeId._id);
     } else {
       setId(null); // Reset ID if no unique user is found
     }
-  }, [search, salaryData]);
-
-  // Filter salary records based on the selected month
-  useEffect(() => {
-    const filteredRecords = salaryData.filter((record) =>
-      record.selectedMonth.startsWith(selectedMonth)
-    );
-    setFilteredData(filteredRecords);
-  }, [salaryData, selectedMonth]);
-
+  }, [salaryData, selectedMonth, search]);
+  
 
   // Pagination slice
   const startIndex = (page - 1) * pageSize;

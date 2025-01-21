@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import Home from './pages/Home'
-import Login from './pages/Login'
+import Login from './pages/userAuth/Login'
 import ShowRoles from './pages/Roles/ShowRoles'
 import AddRole from './pages/Roles/AddRole'
 import UpdateRole from './pages/Roles/UpdateRole'
@@ -24,8 +24,8 @@ import SalaryUser from './pages/Salary/SelectSalaryUser'
 import AdminOutlet from './Outlets/AdminOutlet'
 import NotFound from './pages/NotFound'
 import ShowDeletedEmployee from './pages/Employees/ShowDeletedEmployee'
-import ResetPassword from './pages/ResetPassword'
-import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/userAuth/ResetPassword'
+import ForgotPassword from './pages/userAuth/ForgotPassword'
 
 
 import EmployeeOutlet from './Outlets/EmployeeOutlet'
@@ -42,12 +42,9 @@ const App = () => {
 
           <Routes>
 
-            <Route path='/login' element={<Login />} />
-            <Route path='/forgotpassword' element={<ForgotPassword />} />
-            <Route path='/resetpassword/:token' element={<ResetPassword />} />
-
-            <Route path='/' element={<AdminOutlet/>}>
-            <Route path='/' element={<Home />} />
+         
+             <Route path='/' element={<AdminOutlet/>}>
+             <Route path='/' element={<Home />} />
               {/* Role routes */}
               <Route path='/showrole' element={<ShowRoles />} />
               <Route path='/addrole' element={<AddRole />} />
@@ -79,6 +76,11 @@ const App = () => {
               <Route path='/employee/showsalary' element={<EmployeeShowSalary/>}/>
               <Route path='/employee/showprofile' element={<EmployeeShowProfile/>}/>
             </Route>
+
+            <Route path='/login' element={<Login />} />
+            <Route path='/forgotpassword' element={<ForgotPassword />} />
+            <Route path='/resetpassword/:token' element={<ResetPassword />} />
+
 
             <Route path='*' element={<NotFound />} />
 

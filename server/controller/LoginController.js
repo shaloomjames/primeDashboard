@@ -15,7 +15,6 @@ const loginController = async (req, res) => {
     if (!employeeEmail || !employeePassword)
       return res.status(400).json({ err: "Invalid Input's" });
     // Check if user exists
-    // const checkUserExistance = await employeeModel.findOne({ employeeEmail });
     const checkUserExistance = await employeeModel
       .findOne({ employeeEmail })
       .populate("employeeRoles");
@@ -34,13 +33,6 @@ const loginController = async (req, res) => {
     if (!passwordComparison)
       return res.status(400).json({ err: "Credentials Wrong!" });
 
-    // if password is valid generate a token
-    // const token = await jwt.sign(
-    //     { userid: checkUserExistance._id, useremail: checkUserExistance.employeeEmail, userrole: checkUserExistance.employeeRole },
-    //     process.env.Jwt_secret_key,
-    //     {
-    //         expiresIn: "30d"
-    //     });
 
     // if password is valid generate a token
     // Extract roleName
@@ -69,7 +61,6 @@ const loginController = async (req, res) => {
       .json({ err: "Internal Server Error", error: error.message });
   }
 };
-
 
 
 module.exports = {loginController};

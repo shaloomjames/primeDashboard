@@ -112,8 +112,8 @@ const ShowExpance = () => {
       return (
         isWithinDateRange &&
         matchesCategory &&
-        ((expance.expanceName || "").toLowerCase().includes(search.toLowerCase()) ||
-          (expance.addedBy.employeeName || "").toLowerCase().includes(search.toLowerCase()))
+        ((expance.expanceName || "").toLowerCase().includes(search.toLowerCase().trim()) ||
+          (expance.addedBy.employeeName || "").toLowerCase().includes(search.toLowerCase().trim()))
       );
     });
 
@@ -133,20 +133,6 @@ const ShowExpance = () => {
     setEndingDate("");
   };
 
-  const openModal = (expance) => {
-    setSelectedExpance(expance || { expanceName: "No data available" });
-  };
-
-  const closeModal = () => {
-    setSelectedExpance(null);
-  };
-
-  // Close the modal if the user clicks outside of it
-  const handleClickOutside = (e) => {
-    if (e.target.classList.contains("custom-modal")) {
-      closeModal();
-    }
-  };
 
     
     // Pagination slice
@@ -154,7 +140,7 @@ const ShowExpance = () => {
     const endIndex = page * pageSize;
     const currentData = filteredData.slice(startIndex, endIndex);
   
-
+console.log("current data found",currentData.map((date)=> date.expanceDate))
 
   return (
     <div className="container-fluid">
@@ -280,13 +266,12 @@ const ShowExpance = () => {
                               height={90}
                               className="expance-img"
                               alt={expance.expanceName || "Default Expance"}
-                              onClick={() => openModal(expance)}
                             />
                           </td>
 
                           <td>{expance.expanceName}</td>
                           <td>{expance.expanceAmount}</td>
-                          <td>{new Date(expance.expanceDate).toLocaleString()}</td>
+                          <td>{new Date(expance.expanceDate).toLocaleDateString("en-GB")}</td>
                           <td>{expance.expanceCategory?.ExpanceCategoryName}</td>
                           <td>{expance.addedBy?.employeeName || "N/A"}</td>
                           <td>
@@ -311,6 +296,12 @@ const ShowExpance = () => {
                       </tr>
                     )}
                   </tbody>
+                  <tfoot className="mt-5">
+                    <tr>
+                      <td>Grand Total</td>
+                      <td><strong>Rs : {filteredData.reduce((acc,expance)=>  acc + (expance.expanceAmount || 0) , 0)}</strong></td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
                                                               {/* Pagination Controls */}
@@ -337,27 +328,7 @@ const ShowExpance = () => {
         </div>
       </div>
 
-      {selectedExpance && (
-        <div className="custom-modal" onClick={handleClickOutside}>
-          <div className="modal-content">
-            <div className="modal-header">
-              <button className="close-btn" onClick={closeModal}>
-                &times;
-              </button>
-            </div>
-            <div className="modal-body">
-              <h5>Expance Details</h5>
-              <p>Name: {selectedExpance.expanceName}</p>
-              <img
-                src={selectedExpance.expanceImage ? `/uploads/ExpanceImg/${selectedExpance.expanceImage}` : "/uploads/ExpanceImg/defaultExpance.jpg"}
-                width={200}
-                height={200}
-                alt="Expance"
-              />
-            </div>
-          </div>
-        </div>
-      )}
+  
     </div>
   );
 };

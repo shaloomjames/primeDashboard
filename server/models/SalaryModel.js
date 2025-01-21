@@ -12,17 +12,14 @@ const salarySchema = new mongoose.Schema({
   daysOnTime: { type: Number, required: true, default: 0 },
   daysLate: { type: Number, required: true, default: 0 },
   absentDays: { type: Number, required: true, default: 0 },
-
   effectiveAbsentDays: { type: Number, required: true, default: 0 },
   totalAbsentDays: { type: Number, required: true, default: 0 },
   daysLateLeft: { type: Number, required: true, default: 0 },
-  
   basicSalary: { type: Number, required: true, default: 0, min: 0 },
-  
   salaryPerDay: { type: Number, required: true, min: 0 },
   allowances: [{
     name: { type: String, },
-    amount: { type: Number,  default: 0, min: 0 },
+    amount: { type: Number, default: 0, min: 0 },
   }],
   totalAllowanceAmount: { type: Number, required: true, default: 0 },
   salarySubtotal: { type: Number, required: true },

@@ -77,9 +77,9 @@ const ShowEmployee = () => {
     const filteredEmployees = employeeData.filter((employee) => {
       // Check if the employee matches the search term
       const matchesSearch =
-        employee.employeeName.toLowerCase().includes(search.toLowerCase()) ||
-        employee.employeeEmail.toLowerCase().includes(search.toLowerCase()) ||
-        employee.employeeId.toLowerCase().includes(search.toLowerCase());
+        employee.employeeName.toLowerCase().includes(search.toLowerCase().trim()) ||
+        employee.employeeEmail.toLowerCase().includes(search.toLowerCase().trim()) ||
+        employee.employeeId.toLowerCase().includes(search.toLowerCase().trim());
 
       // Check if the employee matches the role filter (handles role being an array)
       const matchesRole = RoleFilter
@@ -251,7 +251,9 @@ const ShowEmployee = () => {
                         <th>Employee Name</th>
                         <th>Employee Email</th>
                         <th>Employee Role</th>
-                        <th>Employee Salary</th>
+                        <th>Employee Role</th>
+                        <th>Employee TimeIN</th>
+                        <th>Employee TImeOut</th>
                         <th>Employee Allowances</th> {/* New column for allowances */}
                         <th>Actions</th>
                       </tr>
@@ -269,6 +271,8 @@ const ShowEmployee = () => {
                                 ?.map((role) => role.roleName)
                                 .join(", ") || "N/A"}
                             </td>
+                            <td>{employee.employeeTimeIn || "N/A"}</td>
+                            <td>{employee.employeeTimeOut || "N/A"}</td>
                             <td>{employee.employeeSalary || "N/A"}</td>
                             <td>
                               {/* Show allowances if available */}

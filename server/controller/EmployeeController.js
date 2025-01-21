@@ -57,7 +57,7 @@ const getSingleEmployee = async (req, res) => {
 // @Access    Private
 const createEmployee = async (req, res) => {
     try {
-        const { employeeName, employeeEmail, employeePassword, employeeSalary, employeeRoles,employeeallowances } = req.body;
+        const { employeeName, employeeEmail, employeePassword, employeeSalary, employeeRoles,employeeTimeIn,employeeTimeOut,employeeallowances } = req.body;
 
         // const nameRegex = /^[A-Za-z\s]+$/;
         const nameRegex = /^[A-Za-z\s]{3,}$/;
@@ -120,18 +120,9 @@ const createEmployee = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(employeePassword, salt);
 
-        const newEmployee = await employeeModel.create({
-            employeeName,
-            employeeEmail,
-            employeePassword: hashedPassword,
-            employeeSalary,
-            employeeRoles,
-            employeeallowances
-        });
-
+        
         // Extract role names for the email
         const roleNames = roles.map(role => role.roleName).join(", ");
-
 
         try {
             const emailHTML = `
@@ -155,7 +146,7 @@ const createEmployee = async (req, res) => {
                         <h2 style="color: #003366; font-size: 20px; margin-top: 30px; margin-bottom: 15px;">Your Journey Starts Here</h2>
                         <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e0e0e0;"><strong>Department:</strong></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #e0e0e0;"><strong>Designation:</strong></td>
                                 <td style="padding: 10px; border-bottom: 1px solid #e0e0e0;">${roleNames}</td>
                             </tr>
                             <tr>
@@ -201,6 +192,18 @@ const createEmployee = async (req, res) => {
         } catch (err) {
             console.error("Failed to send welcome email:", err);
         }
+
+        const newEmployee = await employeeModel.create({
+            employeeName,
+            employeeEmail,
+            employeePassword: hashedPassword,
+            employeeSalary,
+            employeeRoles,
+            employeeTimeIn,
+            employeeTimeOut,
+            employeeallowances
+        });
+
 
         return res.status(201).json({
             msg: "Employee created successfully",

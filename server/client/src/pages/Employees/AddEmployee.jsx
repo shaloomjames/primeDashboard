@@ -12,6 +12,8 @@ const AddEmployee = () => {
     const [employeeSalary, setEmployeeSalary] = useState('');
     const [employeePassword, setEmployeePassword] = useState('');
     const [employeeRoles, setEmployeeRoles] = useState(['']); // Array for roles
+    const [employeeTimeIn, setEmployeeTimeIn] = useState(new Date('21:00'));
+    const [employeeTimeOut, setEmployeeTimeOut] = useState(new Date('05:00'));
     const [employeeAllowances, setEmployeeAllowances] = useState([{ name: '', amount: '' }]); // Array for allowances
 
     const navigate = useNavigate();
@@ -110,8 +112,8 @@ const AddEmployee = () => {
 
         // Check if partial allowances (only one field filled) exist
         const invalidAllowance = filteredAllowances.find(
-            (allowance) => (allowance.name.trim() !== '' && allowance.amount.trim() === '') || 
-                           (allowance.amount.trim() !== '' && allowance.name.trim() === '')
+            (allowance) => (allowance.name.trim() !== '' && allowance.amount.trim() === '') ||
+                (allowance.amount.trim() !== '' && allowance.name.trim() === '')
         );
 
         if (invalidAllowance) {
@@ -126,9 +128,12 @@ const AddEmployee = () => {
             employeePassword,
             employeeSalary,
             employeeRoles, // Send array of roles
+            employeeTimeIn,
+            employeeTimeOut,
             employeeallowances: filteredAllowances, // Send only non-empty allowances 
         };
-
+        console.log("TIme In client", employeeTimeIn)
+        console.log("TIme Out client", employeeTimeOut)
         try {
             const response = await axios.post("/api/employee", formData);
             showSuccessAlert(response.data.msg);
@@ -166,7 +171,6 @@ const AddEmployee = () => {
                                             className="form-control"
                                             placeholder="Employee Name"
                                             onChange={(e) => setEmployeeName(e.target.value)}
-                                            required
                                         />
                                     </div>
                                     <div className="form-group col-md-6">
@@ -176,7 +180,6 @@ const AddEmployee = () => {
                                             className="form-control"
                                             placeholder="Employee Email"
                                             onChange={(e) => setEmployeeEmail(e.target.value)}
-                                            required
                                         />
                                     </div>
                                 </div>
@@ -188,7 +191,6 @@ const AddEmployee = () => {
                                             className="form-control"
                                             placeholder="Password"
                                             onChange={(e) => setEmployeePassword(e.target.value)}
-                                            required
                                         />
                                     </div>
                                     <div className="form-group col-md-6">
@@ -198,52 +200,77 @@ const AddEmployee = () => {
                                             className="form-control"
                                             placeholder="Salary"
                                             onChange={(e) => setEmployeeSalary(e.target.value)}
-                                            required
                                         />
                                     </div>
                                 </div>
 
                                 {/* Employee Roles */}
-                                <div className="form-group">
-                                    <label>Employee Roles:</label>
-                                    {employeeRoles.map((role, index) => (
-                                        <div key={index} className="d-flex align-items-center mb-2">
-                                            <select
-                                                className="form-control"
-                                                value={role}
-                                                onChange={(e) =>
-                                                    handleRoleChange(index, e.target.value)
-                                                }
-                                                required
-                                            >
-                                                <option value="">Choose Employee Role</option>
-                                                {employeeRoleData.map((roleOption) => (
-                                                    <option
-                                                        key={roleOption._id}
-                                                        value={roleOption._id}
-                                                    >
-                                                        {roleOption.roleName}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            {employeeRoles.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-danger ml-2"
-                                                    onClick={() => removeRoleField(index)}
+
+                                <div className="form-row">
+                                    <div className="form-group col-md-6">
+                                        <label>Employee Roles:</label>
+                                        {employeeRoles.map((role, index) => (
+                                            <div key={index} className="d-flex align-items-center mb-2">
+                                                <select
+                                                    className="form-control"
+                                                    value={role}
+                                                    onChange={(e) =>
+                                                        handleRoleChange(index, e.target.value)
+                                                    }
+
                                                 >
-                                                    Remove
-                                                </button>
-                                            )}
+                                                    <option value="">Choose Employee Role</option>
+                                                    {employeeRoleData.map((roleOption) => (
+                                                        <option
+                                                            key={roleOption._id}
+                                                            value={roleOption._id}
+                                                        >
+                                                            {roleOption.roleName}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                {employeeRoles.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-danger ml-2"
+                                                        onClick={() => removeRoleField(index)}
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary mt-2"
+                                            onClick={addRoleField}
+                                        >
+                                            Add Another Role
+                                        </button>
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <div className="row">
+
+                                            <div className="form-group col-md-6">
+                                                <label>Time In</label>
+                                                <input
+                                                    type="time"
+                                                    className="form-control"
+                                                    placeholder="Time In"
+                                                    onChange={(e) => setEmployeeTimeIn(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group col-md-6">
+                                                <label>Time Out</label>
+                                                <input
+                                                    type="time"
+                                                    className="form-control"
+                                                    placeholder="Time Out"
+                                                    onChange={(e) => setEmployeeTimeOut(e.target.value)}
+                                                />
+                                            </div>
                                         </div>
-                                    ))}
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary mt-2"
-                                        onClick={addRoleField}
-                                    >
-                                        Add Another Role
-                                    </button>
+                                    </div>
                                 </div>
 
                                 {/* Employee Allowances */}

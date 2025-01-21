@@ -83,14 +83,6 @@ const Navbar = () => {
               </span>
             </div>
           </div>
-          {/* <li className="icons">
-              <Link to={`cattotal`}>
-              <i
-                  className={`fa-solid  fa-pen`}
-                  style={{ fontSize: '25px', margin: '3px 3px 6px 3px', cursor: 'pointer' }}
-                ></i>
-              </Link>
-              </li> */}
           <div className="header-right">
             <ul className="clearfix">
               <li className="icons">

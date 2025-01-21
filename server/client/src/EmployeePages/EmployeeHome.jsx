@@ -31,24 +31,8 @@ const EmployeeHome = () => {
           });
       };
 
-  // Helper function to format date
-  const formatDate = (date) => date.toISOString().split("T")[0];
-
-  // Helper function to format time
-  const formatTime = (date) => date.toTimeString().split(" ")[0].slice(0, 5);
-
-  // Helper function to calculate minutes late
-  const getMinutesLate = (currentTime, targetTime) => {
-    const [currentHours, currentMinutes] = currentTime.split(":").map(Number);
-    const [targetHours, targetMinutes] = targetTime.split(":").map(Number);
-
-    const currentTotalMinutes = currentHours * 60 + currentMinutes;
-    const targetTotalMinutes = targetHours * 60 + targetMinutes;
-
-    return Math.max(0, currentTotalMinutes - targetTotalMinutes); // Ensure non-negative result
-  };
-
-  
+      
+  // secure page
   useEffect(() => {
     const userToken = Cookies.get("UserAuthToken");
 
@@ -74,6 +58,24 @@ const EmployeeHome = () => {
       navigate("/login");
     }
   }, [navigate,Id]);
+
+
+  // Helper function to format date
+  const formatDate = (date) => date.toISOString().split("T")[0];
+
+  // Helper function to format time
+  const formatTime = (date) => date.toTimeString().split(" ")[0].slice(0, 5);
+
+  // Helper function to calculate minutes late 8  30
+  const getMinutesLate = (currentTime, targetTime) => {
+    const [currentHours, currentMinutes] = currentTime.split(":").map(Number);
+    const [targetHours, targetMinutes] = targetTime.split(":").map(Number);
+
+    const currentTotalMinutes = currentHours * 60 + currentMinutes;
+    const targetTotalMinutes = targetHours * 60 + targetMinutes;
+
+    return Math.max(0, currentTotalMinutes - targetTotalMinutes); // Ensure non-negative result
+  };
 
 
   // Initialize the current date

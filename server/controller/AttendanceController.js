@@ -2,11 +2,6 @@ const moment = require("moment");
 const AttendanceModel = require("../models/AttendanceModel");
 const  EmployeeModel = require("../models/EmployeeModel");
 
-// if(daysLate === 0 && daysOnTime === 0 )
-//   {
-//     res.status(400).json({err:"No Attendance Found"})
-//     console.log(2)
-//   }
 
 // Generate a Monthly Attendance Report
 // @Request   GET

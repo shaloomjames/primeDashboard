@@ -303,8 +303,8 @@ const Home = () => {
         <>
             <div className="container-fluid mt-3">
 
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6">
+                <div class="row d-flex">
+                    <div class="col-lg-3 col-sm-6 flex-fill">
                         <div class="card gradient-1">
                             <div class="card-body">
                                 <h3 class="card-title text-white">Total Employees</h3>
@@ -314,7 +314,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6">
+                    <div class="col-lg-3 col-sm-6 flex-fill">
                         <div class="card gradient-2">
                             <div class="card-body">
                                 <h3 class="card-title text-white">Grand Total Expance</h3>
@@ -324,20 +324,20 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6">
+                    <div class="col-lg-3 col-sm-6 flex-fill">
                         <div class="card gradient-3">
                             <div class="card-body">
-                                <h3 class="card-title text-white">Total Roles</h3>
+                                <h3 class="card-title text-white">Roles</h3>
                                 <div class="d-inline-block">
                                     <h3 class="card-title text-white">{RoleData ? RoleData.length : "no Employees Role Found"}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6">
+                    <div class="col-lg-3 col-sm-6 flex-fill">
                         <div class="card gradient-4">
                             <div class="card-body">
-                                <h3 class="card-title text-white">Total Expance Categories</h3>
+                                <h3 class="card-title text-white">Expance Categories</h3>
                                 <div class="d-inline-block">
                                     <h3 class="card-title text-white">{ExpanceCategoryData ? ExpanceCategoryData.length : "no Expance Category Found"}</h3>
                                 </div>
@@ -418,7 +418,7 @@ const Home = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="card-body mb-5">
+                            <div className="card-body mb-3">
                                 <h4 className="mt-4">Category Totals</h4>
                                 <div className="table-responsive">
                                     <table className="table header-border mt-4 zero-configuration">
@@ -514,6 +514,23 @@ const Home = () => {
                             </div>
                             <div className="card-body">
                                 <h4 className="card-title">Expenses</h4>
+                                {Tb2ExpanceData.length > pageSizeTable2 &&( <div className="mt-2 mb-3 d-flex  justify-content-end">
+        <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(1)} disabled={pageTable2 <= 1}>
+          First
+        </button>
+        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 - 1)} disabled={pageTable2 <= 1}>
+          Prev
+        </button>
+        <span className='mx-2'>
+          Page {pageTable2} of {totalPagesTable2}
+        </span>
+        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 + 1)} disabled={pageTable2 >= totalPagesTable2}>
+          Next
+        </button>
+        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(totalPagesTable2)} disabled={pageTable2 >= totalPagesTable2}>
+          Last
+        </button>
+      </div>)}
                                 <div className="table-responsive">
                                     <table className="table header-border">
                                         <thead>
@@ -522,6 +539,7 @@ const Home = () => {
                                                 <th>Name</th>
                                                 <th>Amount</th>
                                                 <th>Expense Category</th>
+                                                <th>Expense Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -532,6 +550,8 @@ const Home = () => {
                                                         <td>{expance.expanceName || "N/a"}</td>
                                                         <td>{expance.expanceAmount || "N/a"}</td>
                                                         <td>{expance.expanceCategory.ExpanceCategoryName || "N/a"}</td>
+                                                        {/* <td>{new Date(expance.expanceDate).toLocaleString() || "N/a"}</td> */}
+                                                        <td>{new Date(expance.expanceDate).toISOString().split("T")[0]}</td>
                                                     </tr>
                                                 ))
                                             ) : (

@@ -45,23 +45,20 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = {
-            employeeEmail,
+            employeeEmail:employeeEmail.toLocaleLowerCase(),
             employeePassword,
         };
 
         try {
             const response = await axios.post("/api/employee/login", formData);
             showSuccessAlert(response.data.msg);
-                
             const userToken = response.data.token;
             const decodedToken = jwtDecode(userToken);
             const userRole = decodedToken.userrole;
             Cookies.set("UserAuthToken", userToken);
-                console.log(decodedToken)
                 if(Array.isArray(userRole)  && userRole.includes("Admin") && // Array case
                 userRole !== "Admin"                                       // String case
                 ){
-
                     setTimeout(() => {
                         navigate("/");
                     }, 2800);
@@ -92,7 +89,7 @@ const Login = () => {
                             <div className="form-input-content">
                                 <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 19%)" }}>
                                     <div className="card-body pt-5">
-                                        <a className="text-center" href="index.html">
+                                        <a className="text-center">
                                             {/* <h4>Prime Vertex</h4> */}
                                             <h4><img src="/images/Primevertex--Logo-light.png" alt="" /></h4>
                                         </a>

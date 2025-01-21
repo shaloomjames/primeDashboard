@@ -98,8 +98,15 @@ const ShowSalary = () => {
   return (
     <div className="container-fluid">
       {/* Filter Section */}
-      <div className="row d-flex justify-content-between align-items-center mx-3 my-5">
-        <div className="col-lg-3 col-md-4">
+      {/* <div className="row d-flex justify-content-between align-items-center mx-3 my-5">
+        
+      </div> */}
+
+      <div className="row my-1">
+            <div className="col-lg-12">
+              <div className="card">
+                <div className="card-body">
+                <div className="col-lg-3 col-md-4">
           <label>Select Month</label>
           <input
             type="month"
@@ -107,11 +114,14 @@ const ShowSalary = () => {
             onChange={(e) => setSelectedMonth(e.target.value)}
             className="form-control"
           />
-        </div>
-      </div>
+        </div>       
+                </div>
+              </div>
+            </div>
+          </div>
 
       {/* Salary Table */}
-      <div className="row mt-5">
+      <div className="row mt-1">
         <div className="col-lg-12">
           <div className="card p-4">
             <div className="card-body">

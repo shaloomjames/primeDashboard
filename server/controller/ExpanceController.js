@@ -19,6 +19,7 @@ const ExpanceCategoryModel = require("../models/ExpanceCategoryModel");
 // }
 
 
+// Home page Table 1
 const getTb1Expance = async (req, res) => {
     try {
         const { startingDate, endingDate } = req.query;
@@ -43,7 +44,7 @@ const getTb1Expance = async (req, res) => {
     }
 };
 
-
+// Home page Table 2
 const getTb2Expance = async (req, res) => {
     try {
         const { startingDate, endingDate } = req.query;
@@ -67,20 +68,6 @@ const getTb2Expance = async (req, res) => {
         return res.status(500).json({ err: "Internal Server Error" });
     }
 };
-
-     // useEffect(() => {
-    //         const fetchExpance = async () => {
-    //             try {
-    //                 const res = await axios.get("http://localhost:5000/api/expance", {
-    //                     params: { startingDate, endingDate },
-    //                 });
-    //                 setExpanceData(res.data); // Store the fetched data
-    //             } catch (error) {
-    //                 console.log("Error Fetching Expance Data", error); // Handle error
-    //             }
-    //         };
-    //         fetchExpance();
-    //     }, [startingDate, endingDate]); // Re-run whenever dates change
 
 // @Request   GET
 // @Route     http://localhost:5000/api/hall/:id

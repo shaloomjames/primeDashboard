@@ -109,11 +109,11 @@ const updateRole = async (req, res) => {
         return res.status(500).json({ err: "Internal Server Error", error: error.message });
     }
 };
+
 // Role Assinged to User
 // @Request   DELETE
 // @Route     http://localhost:5000/api/role/:id
 // @Access    Private
-
 const deleteRole = async (req, res) => {
     try {
         const { id } = req.params; // Capture role ID from URL

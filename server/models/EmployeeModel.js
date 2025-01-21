@@ -45,6 +45,14 @@ const employeeSchema = mongoose.Schema({
     }],
     resetPasswordToken: String, // Token for resetting password
     resetPasswordExpires: Date, // Expiry for reset token
+    employeeTimeIn: {
+      type: Date, // Store check-in time as Date
+      default: null // Default to null if no check-in yet
+  },
+  employeeTimeOut: {
+      type: Date, // Store check-out time as Date
+      default: null // Default to null if no check-out yet
+  },
 },  
     {
         timestamps: true
