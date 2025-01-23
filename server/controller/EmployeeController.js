@@ -57,13 +57,22 @@ const getSingleEmployee = async (req, res) => {
 // @Access    Private
 const createEmployee = async (req, res) => {
     try {
-        const { employeeName, employeeEmail, employeePassword, employeeSalary, employeeRoles,employeeTimeIn,employeeTimeOut,employeeallowances } = req.body;
+        const { employeeName, employeeEmail, employeePassword, employeeSalary, employeeRoles, employeeTimeIn, employeeTimeOut, employeeallowances } = req.body;
 
         // const nameRegex = /^[A-Za-z\s]+$/;
         const nameRegex = /^[A-Za-z\s]{3,}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         const numberRegex = /^\d+$/;
+
+        const createDateWithTime = (time) => {
+            const today = new Date();
+            const [hours, minutes] = time.split(":").map(Number);
+            today.setHours(hours, minutes, 0, 0); // Set the time part, keeping the current date
+            return today;
+        };
+
+
 
         if (!employeeName || !nameRegex.test(employeeName))
             return res.status(400).json({ err: "Invalid Employee Name. Name must contain at least 3 characters and consist of only letters and spaces." });
@@ -77,27 +86,20 @@ const createEmployee = async (req, res) => {
         if (!employeeRoles || !Array.isArray(employeeRoles) || !employeeRoles.length)
             return res.status(400).json({ err: "At least one role is required." });
 
-        // // Validate if each role exists in the Role collection
-        // for (const role of employeeRoles) {
-        //     if (!mongoose.Types.ObjectId.isValid(role)) {
-        //         return res.status(400).json({ err: `Invalid Role ID: ${role}` });
-        //     }
-        //     const roleExists = await RoleModel.findById(role);
-        //     if (!roleExists) {
-        //         return res.status(400).json({ err: `Role with ID ${role} does not exist.` });
-        //     }
-        // }
+        if (employeeTimeIn && employeeTimeOut) {
+            const checkInDate = createDateWithTime(employeeTimeIn);
+            let checkOutDate = createDateWithTime(employeeTimeOut);
 
-        // const existingEmployee = await employeeModel.findOne({ employeeEmail });
-        // if (existingEmployee) {
-        //     return res.status(400).json({ err: "Employee with this email already exists." });
-        // }
+            // If checkOutDate is earlier than checkInDate, it means the shift spans over midnight
+            if (checkOutDate <= checkInDate) {
+                checkOutDate.setDate(checkOutDate.getDate() + 1); // Add 1 day to Check-Out time
+            }
 
-        // // find the email in deleted users collection
-        // const existingEmployeeInDelete = await deletedEmployeeModel.findOne({ employeeEmail });
-        // if (existingEmployeeInDelete) {
-        //     return res.status(400).json({ err: "Employee with this email already exists In our DB." });
-        // }
+            // Now compare Check-In and Check-Out dates
+            if (checkInDate >= checkOutDate) {
+                return res.status(400).json({ err: "Employee 'Check-In' time must be before 'Check-Out' time." });
+            }
+        }
 
         // Check if email already exists in the deletedEmployeeModel
         const existingEmployeeInDelete = await deletedEmployeeModel.findOne({ employeeEmail });
@@ -120,7 +122,7 @@ const createEmployee = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(employeePassword, salt);
 
-        
+
         // Extract role names for the email
         const roleNames = roles.map(role => role.roleName).join(", ");
 
@@ -221,12 +223,19 @@ const createEmployee = async (req, res) => {
 const updateEmployee = async (req, res) => {
     try {
         const _id = req.params.id;
-        const { employeeName, employeeEmail, employeeSalary, employeeRoles ,employeeallowances } = req.body;
+        const { employeeName, employeeEmail, employeeSalary, employeeRoles, employeeTimeIn, employeeTimeOut, employeeallowances } = req.body;
 
         // Regex for validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const nameRegex = /^[A-Za-z\s]+$/;
         const numberRegex = /^\d+$/;
+
+        const createDateWithTime = (time) => {
+            const today = new Date();
+            const [hours, minutes] = time.split(":").map(Number);
+            today.setHours(hours, minutes, 0, 0); // Set the time part, keeping the current date
+            return today;
+        };
 
         // Validate the provided fields
         if (employeeName && !nameRegex.test(employeeName))
@@ -252,6 +261,23 @@ const updateEmployee = async (req, res) => {
             }
         }
 
+
+        if (employeeTimeIn && employeeTimeOut) {
+            const checkInDate = createDateWithTime(employeeTimeIn);
+            let checkOutDate = createDateWithTime(employeeTimeOut);
+
+            // If checkOutDate is earlier than checkInDate, it means the shift spans over midnight
+            if (checkOutDate <= checkInDate) {
+                checkOutDate.setDate(checkOutDate.getDate() + 1); // Add 1 day to Check-Out time
+            }
+
+            // Now compare Check-In and Check-Out dates
+            if (checkInDate >= checkOutDate) {
+                return res.status(400).json({ err: "Employee 'Check-In' time must be before 'Check-Out' time." });
+            }
+        }
+
+
         // Find the employee
         const existingEmployee = await employeeModel.findById(_id);
         if (!existingEmployee) return res.status(404).json({ err: "Employee not found" });
@@ -261,7 +287,8 @@ const updateEmployee = async (req, res) => {
         if (employeeName) updatedData.employeeName = employeeName;
         if (employeeEmail) updatedData.employeeEmail = employeeEmail;
         if (employeeSalary) updatedData.employeeSalary = employeeSalary;
-        if (employeeRoles) updatedData.employeeRoles = employeeRoles;
+        if (employeeRoles) updatedData.employeeTimeIn = employeeTimeIn;
+        if (employeeRoles) updatedData.employeeTimeOut = employeeTimeOut;
         if (employeeallowances !== undefined) updatedData.employeeallowances = employeeallowances; // Only update if allowances are provided
 
         // Update employee in the database
@@ -390,7 +417,7 @@ const restoreEmployee = async (req, res) => {
 const forgotPasswordController = async (req, res) => {
     const { employeeEmail } = req.body;
     try {
-        const user = await employeeModel.findOne({employeeEmail});
+        const user = await employeeModel.findOne({ employeeEmail });
         if (!user) return res.status(400).json({ err: "Email not found" })
 
         // Generate a unique reset token
@@ -456,25 +483,25 @@ const forgotPasswordController = async (req, res) => {
 // @Route     http://localhost:5000/api/employee/resetpassword
 // @Access    Private
 const resetPasswordController = async (req, res) => {
-    
- const {resetToken , newPassword } = req.body;
-try {
-    const user = await employeeModel.findOne({
-        resetPasswordToken: resetToken,
-        resetPasswordExpires: { $gt: Date.now() }, // Ensure token is valid
-    });
 
-    if (!user) {
-        return res.status(400).json({ error: "Invalid or expired token." });
-    }
+    const { resetToken, newPassword } = req.body;
+    try {
+        const user = await employeeModel.findOne({
+            resetPasswordToken: resetToken,
+            resetPasswordExpires: { $gt: Date.now() }, // Ensure token is valid
+        });
 
-    // Hash the new password
-    user.employeePassword = await bcrypt.hash(newPassword, 10);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-    await user.save();
+        if (!user) {
+            return res.status(400).json({ error: "Invalid or expired token." });
+        }
 
-    res.status(201).json({ msg: "Password reset successful." });
+        // Hash the new password
+        user.employeePassword = await bcrypt.hash(newPassword, 10);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.status(201).json({ msg: "Password reset successful." });
     } catch (error) {
         console.error("Error resetting the password: ", error.message);
         return res.status(500).json({ err: "Internal Server Error", error: error.message });

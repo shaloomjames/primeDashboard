@@ -6,32 +6,32 @@ import Swal from "sweetalert2"; // Import SweetAlert2
 import "./employee.css";
 import { useNavigate } from "react-router-dom";
 
-const IN_TIME = "21:00"; // Designated Check-In Time
 
 const EmployeeHome = () => {
   const [currentDate, setCurrentDate] = useState("");
   const [attendanceStatus, setAttendanceStatus] = useState(null);
   const [Id, setId] = useState("");
+  const [InTime, setInTime] = useState("");
+  const [OutTime, setOutTime] = useState("");
 
-  
 
   const navigate = useNavigate();
 
-      const showErrorAlert = (message) => {
-          Swal.fire({ icon: 'error', title: 'Oops...', text: message });
-      };
-  
-      const showSuccessAlert = (message) => {
-          Swal.fire({
-              icon: 'success',
-              title: 'Success',
-              text: message,
-              timer: 2000,
-              showConfirmButton: false,
-          });
-      };
+  const showErrorAlert = (message) => {
+    Swal.fire({ icon: 'error', title: 'Oops...', text: message });
+  };
 
-      
+  const showSuccessAlert = (message) => {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: message,
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  };
+
+
   // secure page
   useEffect(() => {
     const userToken = Cookies.get("UserAuthToken");
@@ -57,8 +57,7 @@ const EmployeeHome = () => {
       // Redirect if no token is found
       navigate("/login");
     }
-  }, [navigate,Id]);
-
+  }, [navigate, Id]);
 
   // Helper function to format date
   const formatDate = (date) => date.toISOString().split("T")[0];
@@ -84,18 +83,32 @@ const EmployeeHome = () => {
     setCurrentDate(formatDate(today));
   }, []);
 
+  useEffect(() => {
+    const fetchCurrentAttendance = async () => {
+      try {
+        const res = await axios.get(`/api/attendance/${Id}/${currentDate}`); // Fixed route syntax
+        setAttendanceStatus(res?.data || null);
+      } catch (error) {
+        console.error("Failed to fetch current attendance:", error);
+      }
+    };
+  
+    if (Id && currentDate) fetchCurrentAttendance();
+  }, [Id, currentDate]);
+  
+
   // Handle Check-In
   const markCheckIn = async () => {
     try {
       const now = new Date();
       const currentTime = formatTime(now);
-      const lateBy = currentTime > IN_TIME ? getMinutesLate(currentTime, IN_TIME) : 0;
+      const lateBy = currentTime > InTime ? getMinutesLate(currentTime, InTime) : 0;
       const userToken = Cookies.get("UserAuthToken");
       if (!userToken) throw new Error("User not authenticated.");
 
       const decodedToken = jwtDecode(userToken);
       const userId = decodedToken.userid;
-      
+      // console.log(now.toISOString())
       const attendance = {
         employee: userId, // Replace with dynamic employee ID
         attendanceDate: currentDate,
@@ -119,6 +132,7 @@ const EmployeeHome = () => {
       const now = new Date();
       const response = await axios.put(`/api/attendance/${attendanceStatus._id}`, { timeOut: now.toISOString() }
       );
+      console.log(now.toISOString())
       setAttendanceStatus(response.data.attendance);
       showSuccessAlert(response?.data?.msg || "Failed to add Attendance");
     } catch (error) {
@@ -150,20 +164,18 @@ const EmployeeHome = () => {
               </button>
             </div>
           </div>
-
-
           {attendanceStatus && (
-            <div className={`mt-3`} style={{ width: "100vw", display: "flex",flexDirection:"column", justifyContent: "space-between"}}>
-              <p>  
-                <p style={{display:"inline",fontWeight:"900"}}>Status:</p> {attendanceStatus.status}
+            <div className={`mt-3`} style={{ width: "100vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <p>
+                <p style={{ display: "inline", fontWeight: "900" }}>Status:</p> {attendanceStatus.status}
               </p>
               <p>
-                <p style={{display:"inline",fontWeight:"900"}}>Check-In:</p>{" "}
+                <p style={{ display: "inline", fontWeight: "900" }}>Check-In:</p>{" "}
                 {new Date(attendanceStatus.timeIn).toLocaleTimeString()}
               </p>
               {attendanceStatus.timeOut && (
                 <p>
-                  <p style={{display:"inline",fontWeight:"900"}}>Check-Out:</p>{" "}
+                  <p style={{ display: "inline", fontWeight: "900" }}>Check-Out:</p>{" "}
                   {new Date(attendanceStatus.timeOut).toLocaleTimeString()}
                 </p>
               )}

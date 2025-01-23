@@ -58,7 +58,6 @@ const ShowExpance = () => {
     fetchExpance();
   }, []);
 
-
       // Handle pagination logic on changes
       useEffect(() => {
         setTotalPages(Math.ceil(filteredData.length / pageSize));
@@ -68,9 +67,7 @@ const ShowExpance = () => {
         if (newPage >= 1 && newPage <= totalPages) {
           setPage(newPage);
         }
-      };
-      
-  
+      };   
 
   const deleteExpance = async (expanceid) => {
     Swal.fire({
@@ -242,12 +239,12 @@ console.log("current data found",currentData.map((date)=> date.expanceDate))
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Image</th>
-                      <th>Name</th>
-                      <th>Amount</th>
-                      <th>Date</th>
+                      <th>Expance Image</th>
+                      <th>Expance Name</th>
+                      <th>Expance Amount</th>
+                      <th>Expance Date</th>
                       <th>Expance Category</th>
-                      <th>Added By</th>
+                      <th>Expance Added By</th>
                       <th>Actions</th>
                     </tr>
                   </thead>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';     // Corrected to js-cookie
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,10 +32,10 @@ const Navbar = () => {
     body.setAttribute('data-theme-version', savedTheme); // Apply theme to body
   }, []);
 
-  const handleLogout = () => {
-    Cookies.remove("UserAuthToken");
-    navigate("/login");
-};
+//   const handleLogout = () => {
+//     Cookies.remove("UserAuthToken");
+//     navigate("/login");
+// };
 
 
   return (
@@ -94,12 +94,13 @@ const Navbar = () => {
               </li>
 
               <li className="icons dropdown">
-              <button
-                          className="btn btn-danger w-100"
-                          onClick={handleLogout}  // Logout button click
+              <NavLink
+                          className="btn btn-danger w-100 px-3 py-1 " style={{color:"white"}}
+              to={'/logout'}
+                          // onClick={handleLogout}  // Logout button click
                         >
                           Log Out
-                        </button>
+                        </NavLink>
               </li>
             </ul>
           </div>

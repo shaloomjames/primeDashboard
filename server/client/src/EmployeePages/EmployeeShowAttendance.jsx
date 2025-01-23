@@ -247,7 +247,7 @@ const EmployeeShowAttendance = () => {
                         <td>{formatDate(record.attendanceDate)}</td>
                         <td>{record.timeIn ? new Date(record.timeIn).toLocaleTimeString() : "-"}</td>
                         <td>{record.timeOut ? new Date(record.timeOut).toLocaleTimeString() : "-"}</td>
-                        <td>{record.status || "N/A"}</td>
+                        <td><i className={`fa fa-circle-o text-${record?.status === "Late" ? "warning" : "success"}  mr-2`}></i>{record.status || "N/A"}</td>
                         <td>{record.lateBy || 0}</td>
                         <td>{record.totalHours.toFixed(2) || 0}</td>
                       </tr>

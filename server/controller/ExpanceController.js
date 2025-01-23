@@ -25,24 +25,28 @@ const getTb1Expance = async (req, res) => {
         const { startingDate, endingDate } = req.query;
 
         let filter = {};
-        
+
         if (startingDate && endingDate) {
-            filter.expanceDate = { 
-                $gte: new Date(startingDate), 
-                $lte: new Date(endingDate) 
+            filter.expanceDate = {
+                $gte: new Date(startingDate),
+                $lte: new Date(endingDate),
             };
+        } else if (startingDate) {
+            filter.expanceDate = { $gte: new Date(startingDate) };
+        } else if (endingDate) {
+            filter.expanceDate = { $lte: new Date(endingDate) };
         }
-        
+
         const expenses = await ExpanceModel.find(filter).populate("expanceCategory");
-        
         if (!expenses.length) return res.status(404).json({ err: "No data found" });
 
         return res.status(200).json(expenses);
     } catch (error) {
-        console.log("Error Reading Expenses:", error);
+        console.error("Error Reading Expenses:", error);
         return res.status(500).json({ err: "Internal Server Error" });
     }
 };
+
 
 // Home page Table 2
 const getTb2Expance = async (req, res) => {
@@ -56,6 +60,10 @@ const getTb2Expance = async (req, res) => {
                 $gte: new Date(startingDate), 
                 $lte: new Date(endingDate) 
             };
+        }else if (startingDate) {
+            filter.expanceDate = { $gte: new Date(startingDate) };
+        } else if (endingDate) {
+            filter.expanceDate = { $lte: new Date(endingDate) };
         }
         
         const expenses = await ExpanceModel.find(filter).populate("expanceCategory");
@@ -83,6 +91,10 @@ const getExpance = async (req, res) => {
                 $gte: new Date(startingDate), 
                 $lte: new Date(endingDate) 
             };
+        }else if (startingDate) {
+            filter.expanceDate = { $gte: new Date(startingDate) };
+        } else if (endingDate) {
+            filter.expanceDate = { $lte: new Date(endingDate) };
         }
         
         const expenses = await ExpanceModel.find(filter).populate("addedBy").populate("expanceCategory");

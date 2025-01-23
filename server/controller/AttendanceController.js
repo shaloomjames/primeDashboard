@@ -1,7 +1,7 @@
 const moment = require("moment");
 const AttendanceModel = require("../models/AttendanceModel");
 const  EmployeeModel = require("../models/EmployeeModel");
-
+const mongoose = require("mongoose")
 
 // Generate a Monthly Attendance Report
 // @Request   GET
@@ -131,10 +131,11 @@ const getAttendanceByEmployeeId = async (req, res) => {
 // @Access    Private
 const getSingleAttendance = async (req, res) => {
     try {
-        const _id = req.params.id;
-        if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid ID Format" });
+        const employee = req.params.id;
+        const attendanceDate = req.params.date;
+        if (!mongoose.Types.ObjectId.isValid(employee)) return res.status(400).json({ err: "Invalid ID Format" });
 
-        const Attendance = await AttendanceModel.findById(_id).populate("employee");
+        const Attendance = await AttendanceModel.findOne({employee,attendanceDate}).populate("employee");
         if (!Attendance) return res.status(404).json({ err: "No Data Found" });
 
         return res.status(200).json(Attendance)
@@ -150,7 +151,7 @@ const getSingleAttendance = async (req, res) => {
 // @Access    Private
 const createAttendance = async (req, res) => {
   try {
-    const { employee, attendanceDate, timeIn, timeOut, status, lateBy, totalHours } = req.body;
+    const { employee, attendanceDate, timeIn, status, lateBy, totalHours } = req.body;
 
     if (!employee) return res.status(400).json({ err: "Employee ID is required." });
 
@@ -163,16 +164,16 @@ const createAttendance = async (req, res) => {
     if (!timeIn) return res.status(400).json({ err: "Check-in time is required." });
 
     const timeInDate = new Date(timeIn);
-    const timeOutDate = timeOut ? new Date(timeOut) : null;
+    // const timeOutDate = timeOut ? new Date(timeOut) : null;
 
-    if (timeOutDate && timeOutDate <= timeInDate)
-      return res.status(400).json({ err: "Check-out time must be after check-in time." });
+    // if (timeOutDate && timeOutDate <= timeInDate)
+    //   return res.status(400).json({ err: "Check-out time must be after check-in time." });
 
     const attendance = await AttendanceModel.create({
       employee,
       attendanceDate: new Date(attendanceDate || Date.now()),
       timeIn: timeInDate,
-      timeOut: timeOutDate,
+      // timeOut: timeOutDate,
       status: status || "On Time",
       lateBy: lateBy || 0,
       totalHours: totalHours || 0,

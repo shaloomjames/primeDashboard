@@ -14,11 +14,11 @@ const ShowEmployee = () => {
   const [salaryRange, setSalaryRange] = useState({ min: "", max: "" }); // State for salary range filter
 
 
-    // Pagination states
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
-    const [totalPages, setTotalPages] = useState(0);
-  
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
 
   const navigate = useNavigate();
 
@@ -61,16 +61,16 @@ const ShowEmployee = () => {
     fetchEmployees();
   }, []);
 
-    // Handle pagination logic on changes
-    useEffect(() => {
-      setTotalPages(Math.ceil(filteredData.length / pageSize));
-    }, [filteredData, pageSize]);
-  
-    const handlePageChange = (newPage) => {
-      if (newPage >= 1 && newPage <= totalPages) {
-        setPage(newPage);
-      }
-    };
+  // Handle pagination logic on changes
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredData.length / pageSize));
+  }, [filteredData, pageSize]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   useEffect(() => {
     // Filter employees whenever search, RoleFilter, or salaryRange changes
@@ -84,8 +84,8 @@ const ShowEmployee = () => {
       // Check if the employee matches the role filter (handles role being an array)
       const matchesRole = RoleFilter
         ? employee.employeeRoles?.some((role) =>
-            role.roleName.toLowerCase().includes(RoleFilter.toLowerCase())
-          )
+          role.roleName.toLowerCase().includes(RoleFilter.toLowerCase())
+        )
         : true;
 
       // Check if the employee matches the salary range
@@ -136,23 +136,23 @@ const ShowEmployee = () => {
     });
   };
 
-  
-    // Pagination slice
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = page * pageSize;
-    const currentData = filteredData.slice(startIndex, endIndex);
-  
+
+  // Pagination slice
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = page * pageSize;
+  const currentData = filteredData.slice(startIndex, endIndex);
+
 
   return (
     <>
       <div className="container-fluid mb-5">
-        <div className="row" style={{display:"flex",justifyContent:"flex-end" ,marginRight:"3%"}}>
-        <Link type="button" className="btn mb-1 btn-primary" to="/addemployee" >
-          Add Employee
-          <span className="btn-icon-right">
-            <i className="fa-solid fa-user-plus"></i>
-          </span>
-        </Link>
+        <div className="row" style={{ display: "flex", justifyContent: "flex-end", marginRight: "3%" }}>
+          <Link type="button" className="btn mb-1 btn-primary" to="/addemployee" >
+            Add Employee
+            <span className="btn-icon-right">
+              <i className="fa-solid fa-user-plus"></i>
+            </span>
+          </Link>
         </div>
 
         {/* Search and Filters */}
@@ -191,7 +191,7 @@ const ShowEmployee = () => {
 
           {/* Salary Range Filter */}
           <div className="col-lg-5 col-md-10 col-sm-11 d-flex align-items-center my-2">
-            <input  min={1} className="form-control"
+            <input min={1} className="form-control"
               type="number"
 
               placeholder="Min Salary"
@@ -203,18 +203,18 @@ const ShowEmployee = () => {
             <span className="mx-2">to</span>
             <input min={1} className="form-control"
               type="number"
-              
+
               placeholder="Max Salary"
               value={salaryRange.max}
               onChange={(e) =>
                 setSalaryRange((prev) => ({ ...prev, max: e.target.value }))
               }
             />
-             <button className="btn btn-secondary mx-3"
-      onClick={() => setSalaryRange({ min: "", max: "" })} // Reset salary range
-    >
-      Clear Filter
-    </button>
+            <button className="btn btn-secondary mx-3"
+              onClick={() => setSalaryRange({ min: "", max: "" })} // Reset salary range
+            >
+              Clear Filter
+            </button>
           </div>
         </div>
 
@@ -224,36 +224,36 @@ const ShowEmployee = () => {
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title">Employee</h4>
-                                                {/* Pagination Controls */}
-                                                {filteredData.length > pageSize && (    <div className="mt-5 mb-2 d-flex  justify-content-end">
-        <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-          First
-        </button>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Prev
-        </button>
-        <span className='mx-2'>
-          Page {page} of {totalPages}
-        </span>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-          Next
-        </button>
-        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-          Last
-        </button>
-      </div>)}
+                {/* Pagination Controls */}
+                {filteredData.length > pageSize && (<div className="mt-5 mb-2 d-flex  justify-content-end">
+                  <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+                    First
+                  </button>
+                  <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+                    Prev
+                  </button>
+                  <span className='mx-2'>
+                    Page {page} of {totalPages}
+                  </span>
+                  <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+                    Next
+                  </button>
+                  <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+                    Last
+                  </button>
+                </div>)}
                 <div className="table-responsive">
                   <table className="table header-border">
                     <thead>
                       <tr>
-                      <th>#</th>
+                        <th>#</th>
                         <th>Employee Id</th>
                         <th>Employee Name</th>
                         <th>Employee Email</th>
                         <th>Employee Role</th>
-                        <th>Employee Role</th>
-                        <th>Employee TimeIN</th>
-                        <th>Employee TImeOut</th>
+                        <th>Employee TimeIn</th>
+                        <th>Employee TimeOut</th>
+                        <th>Employee Salary</th>
                         <th>Employee Allowances</th> {/* New column for allowances */}
                         <th>Actions</th>
                       </tr>
@@ -262,25 +262,37 @@ const ShowEmployee = () => {
                       {currentData.length > 0 ? (
                         currentData.map((employee, index) => (
                           <tr key={index}>
-                             <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
+                            <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
                             <td>{employee.employeeId || "N/A"}</td>
                             <td>{employee.employeeName || "N/A"}</td>
                             <td>{employee.employeeEmail || "N/A"}</td>
                             <td>
-                              {employee.employeeRoles
-                                ?.map((role) => role.roleName)
-                                .join(", ") || "N/A"}
+                              {employee.employeeRoles?.length > 0 ? (
+                                employee.employeeRoles.map((role, index) => (
+                                  <span key={role.roleName}>
+                                    {role.roleName}
+                                    <br />
+                                  </span>
+                                ))
+                              ) : (
+                                "N/A"
+                              )}
                             </td>
                             <td>{employee.employeeTimeIn || "N/A"}</td>
                             <td>{employee.employeeTimeOut || "N/A"}</td>
                             <td>{employee.employeeSalary || "N/A"}</td>
                             <td>
                               {/* Show allowances if available */}
-                              {employee.employeeallowances && employee.employeeallowances.length > 0
-                                ? employee.employeeallowances
-                                    .map((allowance, idx) => `${allowance.name}: ${allowance.amount}`)
-                                    .join(", ")
-                                : "No Allowances"}
+                              {employee.employeeallowances && employee.employeeallowances.length > 0 ? (
+                                employee.employeeallowances.map((allowance, idx) => (
+                                  <span key={idx}>
+                                    <b>{allowance.name}</b> : {allowance.amount}
+                                    <br />
+                                  </span>
+                                ))
+                              ) : (
+                                "No Allowances"
+                              )}
                             </td>
                             <td>
                               <span>
@@ -317,24 +329,24 @@ const ShowEmployee = () => {
                     </tbody>
                   </table>
                 </div>
-                                {/* Pagination Controls */}
-                                {filteredData.length > pageSize && ( <div className=" d-flex  justify-content-end">
-        <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-          First
-        </button>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Prev
-        </button>
-        <span className='mx-2'>
-          Page {page} of {totalPages}
-        </span>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-          Next
-        </button>
-        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-          Last
-        </button>
-      </div>)}
+                {/* Pagination Controls */}
+                {filteredData.length > pageSize && (<div className=" d-flex mt-3  justify-content-end">
+                  <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
+                    First
+                  </button>
+                  <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+                    Prev
+                  </button>
+                  <span className='mx-2'>
+                    Page {page} of {totalPages}
+                  </span>
+                  <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
+                    Next
+                  </button>
+                  <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
+                    Last
+                  </button>
+                </div>)}
               </div>
             </div>
           </div>

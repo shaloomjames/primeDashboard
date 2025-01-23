@@ -11,6 +11,8 @@ const UpdateEmployee = () => {
     const [employeeEmail, setEmployeeEmail] = useState('');
     const [employeeSalary, setEmployeeSalary] = useState('');
     const [employeeRoles, setEmployeeRoles] = useState(['']);
+    const [employeeTimeIn, setEmployeeTimeIn] = useState('21:00');
+    const [employeeTimeOut, setEmployeeTimeOut] = useState('05:00');
     const [employeeAllowances, setEmployeeAllowances] = useState([{ name: '', amount: '' }]);
 
     const navigate = useNavigate();
@@ -37,18 +39,18 @@ const UpdateEmployee = () => {
     // Check if user is an Admin
     useEffect(() => {
         const userToken = Cookies.get("UserAuthToken");
-      
+
         if (userToken) {
             try {
                 const decodedToken = jwtDecode(userToken); // Decode the JWT token
                 const userRole = decodedToken.userrole;   // Get the user role(s)
-        
+
                 // Redirect to login if the user is not an Admin
                 if (
-                  !(Array.isArray(userRole) && userRole.includes("Admin")) && // Array case
-                  userRole !== "Admin"                                       // String case
+                    !(Array.isArray(userRole) && userRole.includes("Admin")) && // Array case
+                    userRole !== "Admin"                                       // String case
                 ) {
-                  navigate("/login");
+                    navigate("/login");
                 }
             } catch (error) {
                 // Handle token decoding failure
@@ -70,6 +72,8 @@ const UpdateEmployee = () => {
                 setEmployeeEmail(res.data.employeeEmail);
                 setEmployeeSalary(res.data.employeeSalary);
                 setEmployeeRoles(res.data.employeeRoles.map(role => role._id)); // Pre-fill roles
+                setEmployeeTimeIn(res.data.employeeTimeIn);
+                setEmployeeTimeOut(res.data.employeeTimeOut);
                 setEmployeeAllowances(res.data.employeeallowances || [{ name: '', amount: '' }]); // Pre-fill allowances
             } catch (error) {
                 console.error("Error Fetching Employee Data", error);
@@ -138,7 +142,7 @@ const UpdateEmployee = () => {
         // Check if partial allowances (only one field filled) exist
         const invalidAllowance = filteredAllowances.find(
             (allowance) => (allowance.name.trim() !== '' && String(allowance.amount).trim() === '') ||  // Convert amount to string
-                           (String(allowance.amount).trim() !== '' && allowance.name.trim() === '')    // Convert amount to string
+                (String(allowance.amount).trim() !== '' && allowance.name.trim() === '')    // Convert amount to string
         );
 
         if (invalidAllowance) {
@@ -151,6 +155,8 @@ const UpdateEmployee = () => {
             employeeEmail,
             employeeSalary,
             employeeRoles, // Array of roles
+            employeeTimeIn, // Array of roles
+            employeeTimeOut, // Array of roles
             employeeallowances: filteredAllowances, // Only send non-empty allowances
         };
 
@@ -216,7 +222,7 @@ const UpdateEmployee = () => {
 
                                 {/* Employee Roles */}
                                 <div className="form-row">
-                                    <div className="form-group col-md-12">
+                                    <div className="form-group col-md-6">
                                         <label>Employee Roles:</label>
                                         {employeeRoles.map((role, index) => (
                                             <div key={index} className="d-flex align-items-center mb-2">
@@ -251,6 +257,30 @@ const UpdateEmployee = () => {
                                         >
                                             Add Role
                                         </button>
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <div className="row">
+                                            <div className="form-group col-md-6">
+                                                <label>Time In</label>
+                                                <input
+                                                    type="time"
+                                                    className="form-control"
+                                                    placeholder="Time In"
+                                                    value={employeeTimeIn}
+                                                    onChange={(e) => setEmployeeTimeIn(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-group col-md-6">
+                                                <label>Time Out</label>
+                                                <input
+                                                    type="time"
+                                                    className="form-control"
+                                                    placeholder="Time Out"
+                                                    value={employeeTimeOut}
+                                                    onChange={(e) => setEmployeeTimeOut(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 

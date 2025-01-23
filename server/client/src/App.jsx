@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import Home from './pages/Home'
 import Login from './pages/userAuth/Login'
+import Logout from './pages/userAuth/Logout'
 import ShowRoles from './pages/Roles/ShowRoles'
 import AddRole from './pages/Roles/AddRole'
 import UpdateRole from './pages/Roles/UpdateRole'
@@ -78,6 +79,7 @@ const App = () => {
             </Route>
 
             <Route path='/login' element={<Login />} />
+            <Route path='/logout' element={<Logout />} />
             <Route path='/forgotpassword' element={<ForgotPassword />} />
             <Route path='/resetpassword/:token' element={<ResetPassword />} />
 

@@ -46,6 +46,18 @@ const Home = () => {
     const [pageSizeTable2, setPageSizeTable2] = useState(10);
     const [totalPagesTable2, setTotalPagesTable2] = useState(0);
 
+    //initializing Expance chart 
+    const [ChartExpenseData, setChartExpenseData] = useState({
+        labels: [],
+        datasets: [{
+            label: "Expense Distribution",
+            data: [],
+            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+            borderColor: "black",
+            borderWidth: 1,
+        }]
+    });
+
     const navigate = useNavigate();
 
     //Peotecting page 
@@ -74,8 +86,6 @@ const Home = () => {
             navigate("/login");
         }
     }, [navigate]);
-
-
 
 
     // fetch Role
@@ -130,39 +140,37 @@ const Home = () => {
         fetchEmployees();
     }, [])
 
-    //initializing Expance chart 
-    const [expenseData, setExpenseData] = useState({
-        labels: [],
-        datasets: [{
-            label: "Expense Distribution",
-            data: [],
-            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
-            borderColor: "black",
-            borderWidth: 1,
-        }]
-    });
 
     // Fetching Expance Data with Date Filters for Table 1
     useEffect(() => {
         const fetchExpanceForTable1 = async () => {
             try {
-                const res = await axios.get("/api/expance/tb1/t", {
-                    params: { startingDate: table1StartDate, endingDate: table1EndDate },
-                });
+                const params = {};
+                if (table1StartDate) params.startingDate = table1StartDate;
+                if (table1EndDate) params.endingDate = table1EndDate;
+    
+                const res = await axios.get("/api/expance/tb1/t", { params });
                 setTb1ExpanceData(res.data);
             } catch (error) {
                 console.error("Error Fetching Table 1 Data", error);
             }
         };
+    
         fetchExpanceForTable1();
     }, [table1StartDate, table1EndDate]);
+    
 
     // Fetching Expance Data with Date Filters for Table 2
     useEffect(() => {
         const fetchExpanceForTable2 = async () => {
             try {
+                const params = {};
+                if (table2StartDate) params.startingDate = table2StartDate;
+                if (table2EndDate) params.endingDate = table2EndDate;
+    
                 const res = await axios.get("/api/expance/tb2/t", {
-                    params: { startingDate: table2StartDate, endingDate: table2EndDate },
+                    // params: { startingDate: table2StartDate, endingDate: table2EndDate },
+                    params,
                 });
                 setTb2ExpanceData(res.data);
             } catch (error) {
@@ -172,7 +180,7 @@ const Home = () => {
         fetchExpanceForTable2();
     }, [table2StartDate, table2EndDate]);
 
-    
+
     // Handle pagination logic on changes table 2
     useEffect(() => {
         setTotalPagesTable2(Math.ceil((Tb2ExpanceData).length / pageSizeTable2));
@@ -188,10 +196,10 @@ const Home = () => {
     const startIndexTb2 = (pageTable2 - 1) * pageSizeTable2;
     const endIndexTb2 = pageTable2 * pageSizeTable2;
     const currentDataTb2 = Tb2ExpanceData.slice(startIndexTb2, endIndexTb2);
-        // .map(([category, amount]) => ({
-        //     categoryname: [category],
-        //     categoryamount: amount
-        // }));
+    // .map(([category, amount]) => ({
+    //     categoryname: [category],
+    //     categoryamount: amount
+    // }));
 
     // Fetching Expance Data with Date Filters for Chart
     useEffect(() => {
@@ -287,7 +295,7 @@ const Home = () => {
     // Update chart data based on categoryTotals
     useEffect(() => {
         const backgroundColors = ExpanceData.map(exp => exp.expanceCategory?.ExpanceCategoryColor || "#CCCCCC"); // Default color if undefined
-        setExpenseData({
+        setChartExpenseData({
             labels: Object.keys(categoryTotals),
             datasets: [{
                 label: "Expense Distribution",
@@ -381,7 +389,7 @@ const Home = () => {
                             </div>
                             <div className="card-body">
                                 <div className="text-center chart-container">
-                                    <PieChart chartData={expenseData} title="Expense Chart" />
+                                    <PieChart chartData={ChartExpenseData} title="Expense Chart" />
                                 </div>
                                 <h3 className="mt-2">Grand Total: <span>{totalAmount}</span></h3>
                             </div>
@@ -432,7 +440,7 @@ const Home = () => {
                                         <tbody>
                                             {currentDataTb1.map((categoryy, index) => (
                                                 <tr key={index}>
-                                                    <td>{(startIndexTb2 + index) +1 || "N/a"}</td>
+                                                    <td>{(startIndexTb2 + index) + 1 || "N/a"}</td>
                                                     <td>{categoryy.categoryname || "N/a"}</td>
                                                     <td>{categoryy.categoryamount || "N/a"}</td>
                                                 </tr>
@@ -455,24 +463,24 @@ const Home = () => {
                                     </table>
                                 </div>
                                 {
-                                Object.keys(Tb1categoryTotals).length > pageSizeTable1 && 
-                                (<div className="d-flex  justify-content-end">
-                                    <button className='btn btn-sm mx-2' onClick={() => handlePageChangeTable1(1)} disabled={pageTable1 <= 1}>
-                                        First
-                                    </button>
-                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable1(pageTable1 - 1)} disabled={pageTable1 <= 1}>
-                                        Prev
-                                    </button>
-                                    <span className='mx-2'>
-                                        Page {pageTable1} of {totalPagesTable1}
-                                    </span>
-                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable1(pageTable1 + 1)} disabled={pageTable1 >= totalPagesTable1}>
-                                        Next
-                                    </button>
-                                    <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable1(totalPagesTable1)} disabled={pageTable1 >= totalPagesTable1}>
-                                        Last
-                                    </button>
-                                </div>)}
+                                    Object.keys(Tb1categoryTotals).length > pageSizeTable1 &&
+                                    (<div className="d-flex  justify-content-end">
+                                        <button className='btn btn-sm mx-2' onClick={() => handlePageChangeTable1(1)} disabled={pageTable1 <= 1}>
+                                            First
+                                        </button>
+                                        <button className='btn btn-sm' onClick={() => handlePageChangeTable1(pageTable1 - 1)} disabled={pageTable1 <= 1}>
+                                            Prev
+                                        </button>
+                                        <span className='mx-2'>
+                                            Page {pageTable1} of {totalPagesTable1}
+                                        </span>
+                                        <button className='btn btn-sm' onClick={() => handlePageChangeTable1(pageTable1 + 1)} disabled={pageTable1 >= totalPagesTable1}>
+                                            Next
+                                        </button>
+                                        <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable1(totalPagesTable1)} disabled={pageTable1 >= totalPagesTable1}>
+                                            Last
+                                        </button>
+                                    </div>)}
                             </div>
                         </div>
                     </div>
@@ -514,23 +522,23 @@ const Home = () => {
                             </div>
                             <div className="card-body">
                                 <h4 className="card-title">Expenses</h4>
-                                {Tb2ExpanceData.length > pageSizeTable2 &&( <div className="mt-2 mb-3 d-flex  justify-content-end">
-        <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(1)} disabled={pageTable2 <= 1}>
-          First
-        </button>
-        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 - 1)} disabled={pageTable2 <= 1}>
-          Prev
-        </button>
-        <span className='mx-2'>
-          Page {pageTable2} of {totalPagesTable2}
-        </span>
-        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 + 1)} disabled={pageTable2 >= totalPagesTable2}>
-          Next
-        </button>
-        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(totalPagesTable2)} disabled={pageTable2 >= totalPagesTable2}>
-          Last
-        </button>
-      </div>)}
+                                {Tb2ExpanceData.length > pageSizeTable2 && (<div className="mt-2 mb-3 d-flex  justify-content-end">
+                                    <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(1)} disabled={pageTable2 <= 1}>
+                                        First
+                                    </button>
+                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 - 1)} disabled={pageTable2 <= 1}>
+                                        Prev
+                                    </button>
+                                    <span className='mx-2'>
+                                        Page {pageTable2} of {totalPagesTable2}
+                                    </span>
+                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 + 1)} disabled={pageTable2 >= totalPagesTable2}>
+                                        Next
+                                    </button>
+                                    <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(totalPagesTable2)} disabled={pageTable2 >= totalPagesTable2}>
+                                        Last
+                                    </button>
+                                </div>)}
                                 <div className="table-responsive">
                                     <table className="table header-border">
                                         <thead>
@@ -546,7 +554,7 @@ const Home = () => {
                                             {currentDataTb2.length > 0 ? (
                                                 currentDataTb2.map((expance, index) => (
                                                     <tr key={index}>
-                                                        <td>{(startIndexTb2 +index )+1 || "N/a"}</td>
+                                                        <td>{(startIndexTb2 + index) + 1 || "N/a"}</td>
                                                         <td>{expance.expanceName || "N/a"}</td>
                                                         <td>{expance.expanceAmount || "N/a"}</td>
                                                         <td>{expance.expanceCategory.ExpanceCategoryName || "N/a"}</td>
@@ -573,23 +581,23 @@ const Home = () => {
                                         </tfoot>
                                     </table>
                                 </div>
-                                {Tb2ExpanceData.length > pageSizeTable2 &&( <div className=" d-flex  justify-content-end">
-        <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(1)} disabled={pageTable2 <= 1}>
-          First
-        </button>
-        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 - 1)} disabled={pageTable2 <= 1}>
-          Prev
-        </button>
-        <span className='mx-2'>
-          Page {pageTable2} of {totalPagesTable2}
-        </span>
-        <button  className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 + 1)} disabled={pageTable2 >= totalPagesTable2}>
-          Next
-        </button>
-        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(totalPagesTable2)} disabled={pageTable2 >= totalPagesTable2}>
-          Last
-        </button>
-      </div>)}
+                                {Tb2ExpanceData.length > pageSizeTable2 && (<div className=" d-flex  justify-content-end">
+                                    <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(1)} disabled={pageTable2 <= 1}>
+                                        First
+                                    </button>
+                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 - 1)} disabled={pageTable2 <= 1}>
+                                        Prev
+                                    </button>
+                                    <span className='mx-2'>
+                                        Page {pageTable2} of {totalPagesTable2}
+                                    </span>
+                                    <button className='btn btn-sm' onClick={() => handlePageChangeTable2(pageTable2 + 1)} disabled={pageTable2 >= totalPagesTable2}>
+                                        Next
+                                    </button>
+                                    <button className='btn mx-2 btn-sm' onClick={() => handlePageChangeTable2(totalPagesTable2)} disabled={pageTable2 >= totalPagesTable2}>
+                                        Last
+                                    </button>
+                                </div>)}
                             </div>
                         </div>
                     </div>

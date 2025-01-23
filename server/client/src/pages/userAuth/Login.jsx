@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';  // Correct import for jwt-decode
-import Cookies from 'js-cookie';     // Corrected to js-cookie
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../store/auth';
 
 const Login = () => {
     const [employeeEmail, setEmployeeEmail] = useState('');
@@ -12,6 +12,7 @@ const Login = () => {
 
 
     const navigate = useNavigate();
+    const {storeTokenInCookies} = useAuth();
 
     useEffect(() => {
         const savedTheme = 'light'; // Default to light
@@ -55,7 +56,8 @@ const Login = () => {
             const userToken = response.data.token;
             const decodedToken = jwtDecode(userToken);
             const userRole = decodedToken.userrole;
-            Cookies.set("UserAuthToken", userToken);
+            // storing the token in cookies and context api by a function
+            storeTokenInCookies(userToken);
                 if(Array.isArray(userRole)  && userRole.includes("Admin") && // Array case
                 userRole !== "Admin"                                       // String case
                 ){

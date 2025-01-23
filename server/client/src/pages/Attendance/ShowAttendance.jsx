@@ -103,13 +103,17 @@ const ShowAttendance = () => {
       filtered.length > 0 &&
       filtered.every(
         (record) =>
-          record.employee.employeeId === filtered[0].employee.employeeId
+          record.employee.employeeId === filtered[0].employee.employeeId &&
+        formatDate(record.attendanceDate).startsWith(
+          formatDate(filtered[0].attendanceDate).slice(0, 7) // Compare by "YYYY-MM"
+        )
       )
     ) {
       setId(filtered[0].employee._id);
     } else {
       setId(null);
     }
+
   }, [search, selectedMonth, attendanceData]);
 
   // Fetch attendance report
@@ -270,11 +274,7 @@ const ShowAttendance = () => {
                             </td>
                             <td>{timeIn ? formatTime(timeIn) : "-"}</td>
                             <td>{timeOut ? formatTime(timeOut) : "-"}</td>
-                            <td
-                              className={
-                                record?.status === "Late" ? "text-warning" : "text-success"
-                              }
-                            >
+                            <td> <i className={`fa fa-circle-o text-${record?.status === "Late" ? "warning" : "success"}  mr-2`}></i>
                               {record?.status || "N/A"}
                             </td>
                             <td>{record.lateBy || 0}</td>

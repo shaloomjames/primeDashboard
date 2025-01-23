@@ -12,8 +12,8 @@ const AddEmployee = () => {
     const [employeeSalary, setEmployeeSalary] = useState('');
     const [employeePassword, setEmployeePassword] = useState('');
     const [employeeRoles, setEmployeeRoles] = useState(['']); // Array for roles
-    const [employeeTimeIn, setEmployeeTimeIn] = useState(new Date('21:00'));
-    const [employeeTimeOut, setEmployeeTimeOut] = useState(new Date('05:00'));
+    const [employeeTimeIn, setEmployeeTimeIn] = useState('21:00');
+    const [employeeTimeOut, setEmployeeTimeOut] = useState('05:00');
     const [employeeAllowances, setEmployeeAllowances] = useState([{ name: '', amount: '' }]); // Array for allowances
 
     const navigate = useNavigate();
@@ -205,7 +205,6 @@ const AddEmployee = () => {
                                 </div>
 
                                 {/* Employee Roles */}
-
                                 <div className="form-row">
                                     <div className="form-group col-md-6">
                                         <label>Employee Roles:</label>
@@ -250,7 +249,6 @@ const AddEmployee = () => {
                                     </div>
                                     <div className="form-group col-md-6">
                                         <div className="row">
-
                                             <div className="form-group col-md-6">
                                                 <label>Time In</label>
                                                 <input
@@ -272,7 +270,6 @@ const AddEmployee = () => {
                                         </div>
                                     </div>
                                 </div>
-
                                 {/* Employee Allowances */}
                                 <div className="form-group">
                                     <label>Employee Allowances:</label>
@@ -316,7 +313,6 @@ const AddEmployee = () => {
                                         Add Another Allowance
                                     </button>
                                 </div>
-
                                 <button type="submit" className="btn btn-dark">
                                     Add Employee
                                 </button>

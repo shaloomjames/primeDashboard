@@ -21,7 +21,7 @@ const loginController = async (req, res) => {
 
     // if email dosen'd exist throw error
     if (!checkUserExistance)
-      return res.status(400).json({ err: "Email or password is incorrect.!" });
+      return res.status(400).json({ err: "Credentials Wrong!" });
 
     // password comparison
     const passwordComparison = await bcrypt.compare(
