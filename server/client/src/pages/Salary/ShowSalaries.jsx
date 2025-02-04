@@ -52,6 +52,7 @@ const ShowSalary = () => {
       try {
         const res = await axios.get("/api/salary");
         setsalaryData(res.data);
+        console.log("this is res.data",res.data)
       } catch (error) {
         console.log("Error Fetching Salary Data", error);
       }
@@ -133,23 +134,21 @@ const ShowSalary = () => {
     if (search) {
       const searchLower = search.toLowerCase().trim();
       filtered = filtered.filter((record) =>
-        record?.employeeId.employeeName.toLowerCase().includes(searchLower) ||
-        record?.employeeId.employeeEmail.toLowerCase().includes(searchLower) ||
-        record?.employeeId.employeeId.toLowerCase().includes(searchLower)
+        record?.employeeId?.employeeName?.toLowerCase().includes(searchLower) ||
+        record?.employeeId?.employeeEmail?.toLowerCase().includes(searchLower) ||
+        record?.employeeId?.employeeId?.toLowerCase().includes(searchLower)
       );
     }
   
     setFilteredData(filtered);
   
     // Reset the ID if no unique user is found in the filtered results
-    if (
-      filtered.length > 0 &&
-      filtered.every(
+    if (filtered.length > 0 && filtered.every(
         (record) =>
-          record.employeeId.employeeId === filtered[0].employeeId.employeeId
+          record?.employeeId?.employeeId === filtered[0]?.employeeId?.employeeId
       )
     ) {
-      setId(filtered[0].employeeId._id);
+      setId(filtered[0]?.employeeId?._id);
     } else {
       setId(null); // Reset ID if no unique user is found
     }
@@ -238,7 +237,6 @@ const ShowSalary = () => {
                       <th>Total Deduction</th>
                       <th>Net Salary</th>
                       <th>Remarks</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -246,9 +244,9 @@ const ShowSalary = () => {
                       currentData.map((salary, index) => (
                         <tr key={index}>
                           <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
-                          <td>{salary.employeeId.employeeId}</td>
-                          <td>{salary.employeeId.employeeName}</td>
-                          <td>{salary.employeeId.employeeEmail}</td>
+                          <td>{salary?.employeeId?.employeeId  || 'N/A'}</td>
+                          <td>{salary?.employeeId?.employeeName || 'N/A'}</td>
+                          <td>{salary?.employeeId?.employeeEmail || 'N/A'}</td>
                           <td>
                             {new Date(salary.selectedMonth).toLocaleDateString('en-GB', {
                               year: 'numeric',
@@ -281,14 +279,7 @@ const ShowSalary = () => {
                           </td>
                           <td>{Number(salary.totalDeduction).toFixed(2)}</td>
                           <td>{Number(salary.netSalary).toFixed(2)}</td>
-                          <td>{salary.remarks}</td>
-                          <td>
-                            <span>
-                              <Link data-toggle="tooltip" data-placement="top" title="Edit">
-                                <i className="fa fa-pencil color-muted mx-2"></i>
-                              </Link>
-                            </span>
-                          </td>
+                          <td>{salary.remarks || 'N/A'}</td>
                         </tr>
                       ))
                     ) : (
@@ -340,6 +331,9 @@ const ShowSalary = () => {
           </div>
         </div>
       </div>
+      <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
     </div>
   );
 };

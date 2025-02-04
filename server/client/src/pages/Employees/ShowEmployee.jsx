@@ -12,6 +12,8 @@ const ShowEmployee = () => {
   const [filteredData, setFilteredData] = useState([]); // Filtered employees
   const [RoleFilter, setRoleFilter] = useState(""); // State to store selected role filter
   const [salaryRange, setSalaryRange] = useState({ min: "", max: "" }); // State for salary range filter
+    // State to track sorting direction: 'asc' for ascending, 'desc' for descending, and 'none' for no sort
+    const [sortDirection, setSortDirection] = useState('none');
 
 
   // Pagination states
@@ -77,21 +79,21 @@ const ShowEmployee = () => {
     const filteredEmployees = employeeData.filter((employee) => {
       // Check if the employee matches the search term
       const matchesSearch =
-        employee.employeeName.toLowerCase().includes(search.toLowerCase().trim()) ||
-        employee.employeeEmail.toLowerCase().includes(search.toLowerCase().trim()) ||
-        employee.employeeId.toLowerCase().includes(search.toLowerCase().trim());
+        employee?.employeeName.toLowerCase().includes(search.toLowerCase().trim()) ||
+        employee?.employeeEmail.toLowerCase().includes(search.toLowerCase().trim()) ||
+        employee?.employeeId.toLowerCase().includes(search.toLowerCase().trim());
 
       // Check if the employee matches the role filter (handles role being an array)
       const matchesRole = RoleFilter
         ? employee.employeeRoles?.some((role) =>
-          role.roleName.toLowerCase().includes(RoleFilter.toLowerCase())
+          role?.roleName.toLowerCase().includes(RoleFilter.toLowerCase())
         )
         : true;
 
       // Check if the employee matches the salary range
       const matchesSalary =
-        (!salaryRange.min || employee.employeeSalary >= parseFloat(salaryRange.min)) &&
-        (!salaryRange.max || employee.employeeSalary <= parseFloat(salaryRange.max));
+        (!salaryRange.min || employee?.employeeSalary >= parseFloat(salaryRange.min)) &&
+        (!salaryRange.max || employee?.employeeSalary <= parseFloat(salaryRange.max));
 
       return matchesSearch && matchesRole && matchesSalary;
     });
@@ -142,6 +144,26 @@ const ShowEmployee = () => {
   const endIndex = page * pageSize;
   const currentData = filteredData.slice(startIndex, endIndex);
 
+   // Sort function based on employeeId
+   const handleSort = () => {
+    if (sortDirection === 'none' || sortDirection === 'desc') {
+      setSortDirection('asc');
+    } else {
+      setSortDirection('desc');
+    }
+  };
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    const numA = parseInt(a.employeeId.substring(5), 10);
+    const numB = parseInt(b.employeeId.substring(5), 10);
+
+    if (sortDirection === 'asc') {
+      return numA - numB; // ascending
+    } else if (sortDirection === 'desc') {
+      return numB - numA; // descending
+    }
+    return 0; // no sort
+  });
 
   return (
     <>
@@ -247,7 +269,9 @@ const ShowEmployee = () => {
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Employee Id</th>
+                        <th  onClick={handleSort} style={{ cursor: 'pointer' }}>
+              Employee Id {sortDirection === 'asc' ? '↑' : sortDirection === 'desc' ? '↓' : ''}
+</th>
                         <th>Employee Name</th>
                         <th>Employee Email</th>
                         <th>Employee Role</th>
@@ -259,18 +283,18 @@ const ShowEmployee = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentData.length > 0 ? (
-                        currentData.map((employee, index) => (
+                      {sortedData.length > 0 ? (
+                        sortedData.map((employee, index) => (
                           <tr key={index}>
                             <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
-                            <td>{employee.employeeId || "N/A"}</td>
-                            <td>{employee.employeeName || "N/A"}</td>
-                            <td>{employee.employeeEmail || "N/A"}</td>
+                            <td>{employee?.employeeId || "N/A"}</td>
+                            <td>{employee?.employeeName || "N/A"}</td>
+                            <td>{employee?.employeeEmail || "N/A"}</td>
                             <td>
                               {employee.employeeRoles?.length > 0 ? (
                                 employee.employeeRoles.map((role, index) => (
                                   <span key={role.roleName}>
-                                    {role.roleName}
+                                    {role?.roleName|| "N/A"}
                                     <br />
                                   </span>
                                 ))
@@ -278,15 +302,15 @@ const ShowEmployee = () => {
                                 "N/A"
                               )}
                             </td>
-                            <td>{employee.employeeTimeIn || "N/A"}</td>
-                            <td>{employee.employeeTimeOut || "N/A"}</td>
-                            <td>{employee.employeeSalary || "N/A"}</td>
+                            <td>{employee?.employeeTimeIn || "N/A"}</td>
+                            <td>{employee?.employeeTimeOut || "N/A"}</td>
+                            <td>{employee?.employeeSalary || "N/A"}</td>
                             <td>
                               {/* Show allowances if available */}
-                              {employee.employeeallowances && employee.employeeallowances.length > 0 ? (
-                                employee.employeeallowances.map((allowance, idx) => (
+                              {employee?.employeeallowances && employee?.employeeallowances.length > 0 ? (
+                                employee?.employeeallowances.map((allowance, idx) => (
                                   <span key={idx}>
-                                    <b>{allowance.name}</b> : {allowance.amount}
+                                    <b>{allowance?.name|| "N/A"}</b> : {allowance?.amount|| "N/A"}
                                     <br />
                                   </span>
                                 ))
@@ -351,6 +375,9 @@ const ShowEmployee = () => {
             </div>
           </div>
         </div>
+        <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
       </div>
     </>
   );

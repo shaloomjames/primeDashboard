@@ -243,13 +243,13 @@ const EmployeeShowAttendance = () => {
                   {attendanceRecords.length > 0 ? (
                     attendanceRecords.map((record, index) => (
                       <tr key={index}>
-                        <td>{record.employee.employeeName || "N/A"}</td>
-                        <td>{formatDate(record.attendanceDate)}</td>
-                        <td>{record.timeIn ? new Date(record.timeIn).toLocaleTimeString() : "-"}</td>
-                        <td>{record.timeOut ? new Date(record.timeOut).toLocaleTimeString() : "-"}</td>
-                        <td><i className={`fa fa-circle-o text-${record?.status === "Late" ? "warning" : "success"}  mr-2`}></i>{record.status || "N/A"}</td>
-                        <td>{record.lateBy || 0}</td>
-                        <td>{record.totalHours.toFixed(2) || 0}</td>
+                        <td>{record?.employee?.employeeName || "N/A"}</td>
+                        <td>{formatDate(record?.attendanceDate || "N/A")}</td>
+                        <td>{record.timeIn ? new Date(record?.timeIn || "N/A").toLocaleTimeString() : "-"}</td>
+                        <td>{record.timeOut ? new Date(record?.timeOut || "N/A").toLocaleTimeString() : "-"}</td>
+                        <td><i className={`fa fa-circle-o text-${record?.status === "Late" ? "warning" : "success"}  mr-2`}></i>{record?.status || "N/A"}</td>
+                        <td>{record?.lateBy || 0}</td>
+                        <td>{record?.totalHours.toFixed(2) || 0}</td>
                       </tr>
                     ))
                   ) : (
@@ -281,6 +281,9 @@ const EmployeeShowAttendance = () => {
           </div>
         </div>
       </div>
+      <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
     </div>
   );
 };

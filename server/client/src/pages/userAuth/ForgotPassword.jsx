@@ -61,13 +61,27 @@ const ForgotPassword = () => {
 
     return (
         <>
-            <div className="login-form-bg vh-100 " style={{ backgroundImage: `url('https://img.freepik.com/premium-photo/nightfall-workplace-dark-office-interior-photo_960396-69711.jpg?w=996')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+            {/* <div className="login-form-bg vh-100 " style={{ backgroundImage: `url('https://img.freepik.com/premium-photo/nightfall-workplace-dark-office-interior-photo_960396-69711.jpg?w=996')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}> */}
+            <div 
+    className="login-form-bg vh-100" 
+    style={{ 
+        backgroundImage: `url('/images/loginBg-4.JPG')`, 
+        backgroundRepeat: "no-repeat", // Corrected this to "no-repeat"
+        backgroundSize: "cover", // Ensures the background image covers the whole screen
+        backgroundPosition: "center", // Centers the image within the container
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        height: "100vh", 
+        width: "100vw" 
+    }}
+>
+
                 <style>
                     {`
                        input::placeholder {
-    color: #d6d6d6 !important; /* Change this to the color you want */
-},
-
+    color: #000 !important; /* Change this to the color you want */
+}
 
                     `}
                 </style>
@@ -75,17 +89,17 @@ const ForgotPassword = () => {
                     <div className="row justify-content-center h-100">
                         <div className="col-xl-6">
                             <div className="form-input-content">
-                                <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 19%)" }}>
+                                <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 35%)" }}>
                                     <div className="card-body pt-5">
                                         <a className="text-center">
                                             <h4><img src="/images/Primevertex-Logo-01-dark.png" width={"270px"} alt="" /></h4>
                                         </a>
                                         <form className="mt-5 mb-5 login-input" onSubmit={handleSubmit}>
-                                            <h4  style={{color:"white",fontWeight:"500"}}>Enter your email address and we will send you Password Reset Link</h4>
+                                            <h4  style={{color:"black",fontWeight:"500"}}>Enter your email address and we will send you Password Reset Link</h4>
                                             <br />
                                             <div className="form-group">
                                                 <input
-                                                    style={{ color: "white" }}
+                                                    style={{ color: "black" }}
                                                     type="email"
                                                     className="form-control"
                                                     placeholder="Email"
@@ -97,7 +111,7 @@ const ForgotPassword = () => {
                                                 Send Email
                                             </button>
                                             <span className='btn'>
-                                         <Link  to="/login" style={{color:"white",fontWeight:"800"}} >Login page?</Link>
+                                         <Link  to="/login" style={{color:"black",fontWeight:"800"}} >Login page?</Link>
                                         </span>
                                         </form>
                                     </div>

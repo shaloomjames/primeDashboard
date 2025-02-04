@@ -29,9 +29,7 @@ const Storage = multer.diskStorage({
 
 
 // Create upload instances for each with the image filter
-const upload = multer({ 
-    storage: Storage,
-    fileFilter: imageFilter // Apply image filter
+const upload = multer({storage: Storage,fileFilter: imageFilter // Apply image filter
 });
 
 

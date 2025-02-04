@@ -241,10 +241,10 @@ console.log("current data found",currentData.map((date)=> date.expanceDate))
                       <th>#</th>
                       <th>Expance Image</th>
                       <th>Expance Name</th>
-                      <th>Expance Amount</th>
-                      <th>Expance Date</th>
                       <th>Expance Category</th>
+                      <th>Expance Date</th>
                       <th>Expance Added By</th>
+                      <th>Expance Amount</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -267,10 +267,10 @@ console.log("current data found",currentData.map((date)=> date.expanceDate))
                           </td>
 
                           <td>{expance.expanceName}</td>
-                          <td>{expance.expanceAmount}</td>
-                          <td>{new Date(expance.expanceDate).toLocaleDateString("en-GB")}</td>
                           <td>{expance.expanceCategory?.ExpanceCategoryName}</td>
+                          <td>{new Date(expance.expanceDate).toLocaleDateString("en-GB")}</td>
                           <td>{expance.addedBy?.employeeName || "N/A"}</td>
+                          <td>{expance.expanceAmount}</td>
                           <td>
                             <Link
                               to={`/updateexpance/${expance._id}`}
@@ -295,7 +295,12 @@ console.log("current data found",currentData.map((date)=> date.expanceDate))
                   </tbody>
                   <tfoot className="mt-5">
                     <tr>
-                      <td>Grand Total</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td><b>Grand Total</b></td>
                       <td><strong>Rs : {filteredData.reduce((acc,expance)=>  acc + (expance.expanceAmount || 0) , 0)}</strong></td>
                     </tr>
                   </tfoot>
@@ -325,7 +330,9 @@ console.log("current data found",currentData.map((date)=> date.expanceDate))
         </div>
       </div>
 
-  
+      <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>  
     </div>
   );
 };

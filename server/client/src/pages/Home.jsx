@@ -441,8 +441,8 @@ const Home = () => {
                                             {currentDataTb1.map((categoryy, index) => (
                                                 <tr key={index}>
                                                     <td>{(startIndexTb2 + index) + 1 || "N/a"}</td>
-                                                    <td>{categoryy.categoryname || "N/a"}</td>
-                                                    <td>{categoryy.categoryamount || "N/a"}</td>
+                                                    <td>{categoryy?.categoryname || "N/a"}</td>
+                                                    <td>{categoryy?.categoryamount || "N/a"}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -545,9 +545,9 @@ const Home = () => {
                                             <tr>
                                                 <th>#</th>
                                                 <th>Name</th>
-                                                <th>Amount</th>
                                                 <th>Expense Category</th>
                                                 <th>Expense Date</th>
+                                                <th>Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -555,11 +555,11 @@ const Home = () => {
                                                 currentDataTb2.map((expance, index) => (
                                                     <tr key={index}>
                                                         <td>{(startIndexTb2 + index) + 1 || "N/a"}</td>
-                                                        <td>{expance.expanceName || "N/a"}</td>
-                                                        <td>{expance.expanceAmount || "N/a"}</td>
-                                                        <td>{expance.expanceCategory.ExpanceCategoryName || "N/a"}</td>
+                                                        <td>{expance?.expanceName || "N/a"}</td>
+                                                        <td>{expance?.expanceCategory.ExpanceCategoryName || "N/a"}</td>
                                                         {/* <td>{new Date(expance.expanceDate).toLocaleString() || "N/a"}</td> */}
-                                                        <td>{new Date(expance.expanceDate).toISOString().split("T")[0]}</td>
+                                                        <td>{new Date(expance?.expanceDate).toISOString().split("T")[0]}</td>
+                                                        <td>{expance?.expanceAmount || "N/a"}</td>
                                                     </tr>
                                                 ))
                                             ) : (
@@ -570,6 +570,9 @@ const Home = () => {
                                         </tbody>
                                         <tfoot>
                                             <tr>
+                                                <td colSpan="1"><strong style={{ fontSize: "1.1rem" }}></strong></td>
+                                                <td colSpan="1"><strong style={{ fontSize: "1.1rem" }}></strong></td>
+                                                <td colSpan="1"><strong style={{ fontSize: "1.1rem" }}></strong></td>
                                                 <td colSpan="1"><strong style={{ fontSize: "1.1rem" }}>Total:</strong></td>
                                                 <td colSpan="2">
                                                     <strong style={{ fontSize: "1.1rem" }}>

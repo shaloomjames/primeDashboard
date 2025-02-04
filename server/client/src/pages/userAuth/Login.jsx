@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';  // Correct import for jwt-decode
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../store/auth';
-
+// require("../../../public/images/")
 const Login = () => {
     const [employeeEmail, setEmployeeEmail] = useState('');
     const [employeePassword, setEmployeePassword] = useState('');
@@ -76,11 +76,27 @@ const Login = () => {
 
     return (
         <>
-            <div className="login-form-bg vh-100 " style={{ backgroundImage: `url('https://img.freepik.com/premium-photo/nightfall-workplace-dark-office-interior-photo_960396-69711.jpg?w=996')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+{/*     
+            <div className="login-form-bg vh-100 " style={{ backgroundImage: `url('/images/loginBg-4.JPG')`, backgroundRepeat: "auto",  display: "flex", justifyContent: "center", alignItems: "center", height: "100vh",width: "100vw" }}> */}
+                <div 
+    className="login-form-bg vh-100" 
+    style={{ 
+        backgroundImage: `url('/images/loginBg-4.JPG')`, 
+        backgroundRepeat: "no-repeat", // Corrected this to "no-repeat"
+        backgroundSize: "cover", // Ensures the background image covers the whole screen
+        backgroundPosition: "center", // Centers the image within the container
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        height: "100vh", 
+        width: "100vw" 
+    }}
+>
+
                 <style>
                     {`
                        input::placeholder {
-    color: #d6d6d6 !important; /* Change this to the color you want */
+    color: #000 !important; /* Change this to the color you want */
 }
 
                     `}
@@ -89,7 +105,7 @@ const Login = () => {
                     <div className="row justify-content-center h-100">
                         <div className="col-xl-6">
                             <div className="form-input-content">
-                                <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 19%)" }}>
+                                <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 35%)" }}>
                                     <div className="card-body pt-5">
                                         <a className="text-center">
                                             {/* <h4>Prime Vertex</h4> */}
@@ -98,7 +114,7 @@ const Login = () => {
                                         <form className="mt-5 mb-5 login-input" onSubmit={handleSubmit}>
                                             <div className="form-group">
                                                 <input
-                                                    style={{ color: "white" }}
+                                                    style={{ color: "black" }}
                                                     type="email"
                                                     className="form-control"
                                                     placeholder="Email"
@@ -107,7 +123,7 @@ const Login = () => {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <input style={{ color: "white" }}
+                                                <input style={{ color: "black" }}
                                                     type={`${passwordVisible ? "text" : "password"}`}
                                                     className="form-control"
                                                     placeholder="Password"
@@ -125,14 +141,14 @@ const Login = () => {
                                                         color: "white",
                                                     }}
                                                 >
-                                                    <i className={`fa-solid ${passwordVisible ? "fa-eye" :"fa-eye-slash" }`}></i>
+                                                    <i className={`fa-solid ${passwordVisible ? "fa-eye" :"fa-eye-slash" }`} style={{color:"black"}}></i>
                                                 </span>
                                             </div>
                                             <button className="btn login-form__btn  submit w-100" type="submit" style={{ backgroundColor: "#0d6efd" }}>
                                                 Log In
                                             </button>
                                        <span className='btn'>
-                                         <Link to="/forgotpassword" style={{color:"white",fontWeight:"700"}} >forgot password</Link>
+                                         <Link to="/forgotpassword" style={{color:"black",fontWeight:"900"}} >forgot password</Link>
                                         </span>
                                         </form>
                                     </div>

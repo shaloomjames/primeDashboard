@@ -170,6 +170,10 @@ const AddExpance = () => {
                         </div>
                     </div>
                 </div>
+                <center style={{ visibility: "hidden", height: "265px" }}>
+                    <div className="row">
+                    </div >
+                </center>
             </div>
         </>
     );

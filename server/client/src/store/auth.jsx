@@ -11,8 +11,8 @@ export const AuthProvider = ({ children }) => {
         setToken(UserToken)
         return Cookies.set("UserAuthToken", UserToken);
     }
+    const isLoggedIn = !!token;
 
-    const isLogedIn = !!token
 
     // logout user functionality
         const LogoutUser = ()=>{
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         }
 
     return (
-        <AuthContext.Provider value={{isLogedIn,storeTokenInCookies,LogoutUser}}>
+        <AuthContext.Provider value={{isLoggedIn,storeTokenInCookies,LogoutUser,token}}>
         {children}
     </AuthContext.Provider>
     )

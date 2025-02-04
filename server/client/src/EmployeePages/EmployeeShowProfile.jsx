@@ -96,7 +96,7 @@ const EmployeeShowProfile = () => {
                         <p className="mb-0">Employee Id</p>
                       </div>
                       <div className="col-sm-9">
-                        <p className="text-muted mb-0">{employeeData.employeeId}</p>
+                        <p className="text-muted mb-0">{employeeData?.employeeId || "N/A"}</p>
                       </div>
                     </div>
                     <hr />
@@ -105,7 +105,7 @@ const EmployeeShowProfile = () => {
                         <p className="mb-0">Employee Name</p>
                       </div>
                       <div className="col-sm-9">
-                        <p className="text-muted mb-0">{employeeData.employeeName}</p>
+                        <p className="text-muted mb-0">{employeeData?.employeeName || "N/A"}</p>
                       </div>
                     </div>
                     <hr />
@@ -114,7 +114,7 @@ const EmployeeShowProfile = () => {
                         <p className="mb-0">Employee Email</p>
                       </div>
                       <div className="col-sm-9">
-                        <p className="text-muted mb-0">{employeeData.employeeEmail}</p>
+                        <p className="text-muted mb-0">{employeeData?.employeeEmail || "N/A"}</p>
                       </div>
                     </div>
                     <hr />
@@ -123,7 +123,7 @@ const EmployeeShowProfile = () => {
                         <p className="mb-0">Employee Salary</p>
                       </div>
                       <div className="col-sm-9">
-                        <p className="text-muted mb-0">{employeeData.employeeSalary}</p>
+                        <p className="text-muted mb-0">{employeeData?.employeeSalary || "N/A"}</p>
                       </div>
                     </div>
                     <hr />
@@ -133,7 +133,7 @@ const EmployeeShowProfile = () => {
                       </div>
                       <div className="col-sm-9">
                         <p className="text-muted mb-0">
-                          {employeeData.employeeRoles.map((role) => role.roleName).join(" , ") || "No Roles Available"}
+                          {employeeData?.employeeRoles.map((role) => role?.roleName || "N/A").join(" , ") || "No Roles Available"}
                         </p>
                       </div>
                     </div>
@@ -144,7 +144,7 @@ const EmployeeShowProfile = () => {
                       </div>
                       <div className="col-sm-9">
                         <p className="text-muted mb-0">
-                          {employeeData.employeeallowances.map((allowance) => `${allowance.name}: ${allowance.amount}`).join(" | ")|| "No Allowances Available"}
+                          {employeeData?.employeeallowances.map((allowance) => `${allowance?.name || "N/A"}: ${allowance?.amount || "N/A"}`).join(" | ")|| "No Allowances Available"}
                         </p>
                       </div>
                     </div>
@@ -157,6 +157,9 @@ const EmployeeShowProfile = () => {
             </div>
           </div>
         </div>
+        <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
       </div>
     </>
   );

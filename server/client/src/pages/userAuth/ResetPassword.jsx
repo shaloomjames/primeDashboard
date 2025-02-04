@@ -59,28 +59,44 @@ const ResetPassword = () => {
 
     return (
         <>
-            <div className="login-form-bg vh-100" style={{ backgroundImage: `url('https://img.freepik.com/premium-photo/nightfall-workplace-dark-office-interior-photo_960396-69711.jpg?w=996')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+            {/* <div className="login-form-bg vh-100" style={{ backgroundImage: `url('https://img.freepik.com/premium-photo/nightfall-workplace-dark-office-interior-photo_960396-69711.jpg?w=996')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}> */}
+            <div 
+    className="login-form-bg vh-100" 
+    style={{ 
+        backgroundImage: `url('/images/loginBg-4.JPG')`, 
+        backgroundRepeat: "no-repeat", // Corrected this to "no-repeat"
+        backgroundSize: "cover", // Ensures the background image covers the whole screen
+        backgroundPosition: "center", // Centers the image within the container
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        height: "100vh", 
+        width: "100vw" 
+    }}
+>
+
                 <style>
                     {`
                        input::placeholder {
-                           color: white !important;
-                       }
+    color: #000 !important; /* Change this to the color you want */
+}
+
                     `}
                 </style>
                 <div className="container h-100">
                     <div className="row justify-content-center h-100">
                         <div className="col-xl-6">
                             <div className="form-input-content">
-                                <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 19%)" }}>
+                                <div className="card login-form mb-0" style={{ backgroundColor: "rgb(255 255 255 / 35%)" }}>
                                     <div className="card-body pt-5">
                                         <a className="text-center">
                                             <h4><img src="/images/Primevertex--Logo-light.png" alt="" /></h4>
                                         </a>
                                         <form className="mt-5 mb-5 login-input" onSubmit={handleSubmit}>
-                                            <h3 style={{ color: "white", fontWeight: "500" }}>Reset Password</h3>
+                                            <h3 style={{ color: "black", fontWeight: "500" }}>Reset Password</h3>
                                             <div className="form-group" style={{ position: "relative" }}>
                                                 <input
-                                                    style={{ color: "white" }}
+                                                    style={{ color: "black" }}
                                                     type={passwordVisible ? "text" : "password"} // Toggle password visibility
                                                     className="form-control"
                                                     placeholder="Password"
@@ -88,7 +104,7 @@ const ResetPassword = () => {
                                                     onChange={(e) => setEmployeePassword(e.target.value)}
                                                 />
                                                 <input
-                                                    style={{ color: "white" }}
+                                                    style={{ color: "black" }}
                                                     type={passwordVisible ? "text" : "password"} // Toggle password visibility
                                                     className="form-control"
                                                     placeholder="confirm password"
@@ -103,7 +119,7 @@ const ResetPassword = () => {
                                                         top: "75%",
                                                         transform: "translateY(-50%)",
                                                         cursor: "pointer",
-                                                        color: "white",
+                                                        color: "black",
                                                     }}
                                                 >
                                                     <i className={`fa-solid ${passwordVisible ? "fa-eye" :"fa-eye-slash" }`}></i>
@@ -113,7 +129,7 @@ const ResetPassword = () => {
                                                 Reset Password
                                             </button>
                                             <span className="btn">
-                                                <Link to="/login" style={{ color: "white", fontWeight: "800" }}>Go Back to login Page?</Link>
+                                                <Link to="/login" style={{ color: "black", fontWeight: "800" }}>Go Back to login Page?</Link>
                                             </span>
                                         </form>
                                     </div>

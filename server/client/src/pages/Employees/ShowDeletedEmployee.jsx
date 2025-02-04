@@ -78,21 +78,21 @@ const ShowDeletedEmployee = () => {
     const filteredEmployees = deletedEmployeeData.filter((employee) => {
       // Check if the employee matches the search term
       const matchesSearch =
-        employee.employeeName.toLowerCase().includes(search.toLowerCase().trim()) ||
-        employee.employeeEmail.toLowerCase().includes(search.toLowerCase().trim()) ||
-        employee.employeeId.toLowerCase().includes(search.toLowerCase().trim());
+        employee?.employeeName.toLowerCase().includes(search.toLowerCase().trim()) ||
+        employee?.employeeEmail.toLowerCase().includes(search.toLowerCase().trim()) ||
+        employee?.employeeId.toLowerCase().includes(search.toLowerCase().trim());
 
       // Check if the employee matches the role filter (handles role being an array)
       const matchesRole = RoleFilter
         ? employee.employeeRoles?.some((role) =>
-            role.roleName.toLowerCase().includes(RoleFilter.toLowerCase())
+            role?.roleName.toLowerCase().includes(RoleFilter.toLowerCase())
           )
         : true;
 
       // Check if the employee matches the salary range
       const matchesSalary =
-        (!salaryRange.min || employee.employeeSalary >= parseFloat(salaryRange.min)) &&
-        (!salaryRange.max || employee.employeeSalary <= parseFloat(salaryRange.max));
+        (!salaryRange?.min || employee?.employeeSalary >= parseFloat(salaryRange?.min)) &&
+        (!salaryRange?.max || employee?.employeeSalary <= parseFloat(salaryRange?.max));
 
       return matchesSearch && matchesRole && matchesSalary;
     });
@@ -104,7 +104,7 @@ const ShowDeletedEmployee = () => {
   const allRoles = [
     ...new Set(
       deletedEmployeeData
-        .map((employee) => employee.employeeRoles?.map((role) => role.roleName)) // Extract role names from employeeRole array
+        .map((employee) => employee?.employeeRoles?.map((role) => role.roleName)) // Extract role names from employeeRole array
         .flat()
     ),
   ];
@@ -282,20 +282,20 @@ const ShowDeletedEmployee = () => {
                       {filteredData.length > 0 ? (
                         filteredData.map((employee, index) => (
                           <tr key={index}>
-                            <td>{employee.employeeId || "N/A"}</td>
-                            <td>{employee.employeeName || "N/A"}</td>
-                            <td>{employee.employeeEmail || "N/A"}</td>
+                            <td>{employee?.employeeId || "N/A"}</td>
+                            <td>{employee?.employeeName || "N/A"}</td>
+                            <td>{employee?.employeeEmail || "N/A"}</td>
                             <td>
                               {employee.employeeRoles
-                                ?.map((role) => role.roleName)
+                                ?.map((role) => role?.roleName|| "N/A")
                                 .join(", ") || "N/A"}
                             </td>
-                            <td>{employee.employeeSalary || "N/A"}</td>
+                            <td>{employee?.employeeSalary || "N/A"}</td>
                             <td>
                               {/* Show allowances if available */}
-                              {employee.employeeallowances && employee.employeeallowances.length > 0
+                              {employee?.employeeallowances && employee?.employeeallowances.length > 0
                                 ? employee.employeeallowances
-                                    .map((allowance, idx) => `${allowance.name}: $${allowance.amount}`)
+                                    .map((allowance, idx) => `${allowance?.name|| "N/A"}: $${allowance?.amount|| "N/A"}`)
                                     .join(", ")
                                 : "No Allowances"}
                             </td>
@@ -359,6 +359,9 @@ const ShowDeletedEmployee = () => {
             </div>
           </div>
         </div>
+        <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
       </div>
     </>
   );

@@ -72,8 +72,6 @@ const createEmployee = async (req, res) => {
             return today;
         };
 
-
-
         if (!employeeName || !nameRegex.test(employeeName))
             return res.status(400).json({ err: "Invalid Employee Name. Name must contain at least 3 characters and consist of only letters and spaces." });
         if (!employeeEmail || !emailRegex.test(employeeEmail))

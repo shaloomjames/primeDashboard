@@ -4406,8 +4406,9 @@ input[type="button"].btn-block {
 }
 
 .navbar {
-  position: relative;
+  position: fixed;
   display: flex;
+  height: 100%;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
@@ -22380,4 +22381,37 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
   .brand-title {
     display: none;
   }
+}
+
+ .menu-item {
+  background-color: transparent; /* Maintain transparency */
+  padding: 8px; /* Add some spacing */
+  display: flex;
+  align-items: center;
+
+}
+
+.menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Add a light hover background effect */
+  border-radius: 4px; /* Optional: smooth rounded corners */
+}
+
+.menu-text {
+  font-weight:900;
+  color: #27394f;
+  margin-left: 8px; /* Add space between icon and text */
+  transition: color 0.3s ease; /* Smooth transition effect */
+}
+
+.menu-text:hover {
+  color: blue; /* Change text color on hover */
+}
+
+.logout-text {
+  color: #27394f;
+  font-weight:900;
+}
+
+.logout-text:hover {
+  color: darkred; /* Change logout text color on hover */
 }

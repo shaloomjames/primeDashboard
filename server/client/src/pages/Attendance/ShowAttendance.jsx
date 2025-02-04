@@ -82,7 +82,7 @@ const ShowAttendance = () => {
 
     if (selectedMonth) {
       filtered = filtered.filter((record) =>
-        formatDate(record.attendanceDate).startsWith(selectedMonth)
+        formatDate(record?.attendanceDate).startsWith(selectedMonth)
       );
     }
 
@@ -90,9 +90,9 @@ const ShowAttendance = () => {
       const searchLower = search.toLowerCase().trim();
       filtered = filtered.filter(
         (record) =>
-          record?.employee.employeeName.toLowerCase().includes(searchLower) ||
-          record?.employee.employeeEmail.toLowerCase().includes(searchLower) ||
-          record?.employee.employeeId.toLowerCase().includes(searchLower)
+          record?.employee?.employeeName.toLowerCase().includes(searchLower) ||
+          record?.employee?.employeeEmail.toLowerCase().includes(searchLower) ||
+          record?.employee?.employeeId.toLowerCase().includes(searchLower)
       );
     }
 
@@ -103,13 +103,13 @@ const ShowAttendance = () => {
       filtered.length > 0 &&
       filtered.every(
         (record) =>
-          record.employee.employeeId === filtered[0].employee.employeeId &&
-        formatDate(record.attendanceDate).startsWith(
-          formatDate(filtered[0].attendanceDate).slice(0, 7) // Compare by "YYYY-MM"
+          record?.employee?.employeeId === filtered[0]?.employee?.employeeId &&
+        formatDate(record?.attendanceDate).startsWith(
+          formatDate(filtered[0]?.attendanceDate).slice(0, 7) // Compare by "YYYY-MM"
         )
       )
     ) {
-      setId(filtered[0].employee._id);
+      setId(filtered[0]?.employee?._id);
     } else {
       setId(null);
     }
@@ -335,6 +335,10 @@ const ShowAttendance = () => {
           </div>
         </div>
       </div>
+      <center style={{ visibility: "hidden", height: "255px" }}>
+                    <div className="row">
+                    </div >
+                </center>
     </div>
   );
 };

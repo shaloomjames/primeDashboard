@@ -76,11 +76,6 @@ const AddEmployee = () => {
         setEmployeeRoles(roles);
     };
 
-    const handleAllowanceChange = (index, key, value) => {
-        const updatedAllowances = [...employeeAllowances];
-        updatedAllowances[index][key] = value;
-        setEmployeeAllowances(updatedAllowances);
-    };
 
     const addRoleField = () => {
         setEmployeeRoles([...employeeRoles, '']);
@@ -91,6 +86,14 @@ const AddEmployee = () => {
         roles.splice(index, 1);
         setEmployeeRoles(roles);
     };
+
+    const handleAllowanceChange = (index, key, value) => {
+        const updatedAllowances = [...
+            employeeAllowances];
+        updatedAllowances[index][key] = value;
+        setEmployeeAllowances(updatedAllowances);
+    };
+
 
     const addAllowanceField = () => {
         setEmployeeAllowances([...employeeAllowances, { name: '', amount: '' }]);
@@ -321,6 +324,9 @@ const AddEmployee = () => {
                     </div>
                 </div>
             </div>
+            <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
         </div>
     );
 };

@@ -176,44 +176,44 @@ const ShowSalary = () => {
                     {filteredData.length > 0 ? (
                       filteredData.map((salary, index) => (
                         <tr key={index}>
-                          <td>{salary.employeeId.employeeId}</td>
-                          <td>{salary.employeeId.employeeName}</td>
-                          <td>{salary.employeeId.employeeEmail}</td>
+                          <td>{salary?.employeeId?.employeeId || "N/A"}</td>
+                          <td>{salary?.employeeId?.employeeName || "N/A"}</td>
+                          <td>{salary?.employeeId?.employeeEmail || "N/A"}</td>
                           <td>
-                            {new Date(salary.selectedMonth).toLocaleDateString('en-GB', {
+                            {new Date(salary?.selectedMonth).toLocaleDateString('en-GB', {
                               year: 'numeric',
                               month: '2-digit',
-                            })}
+                            }) || "N/A"}
                           </td>
-                          <td>{salary.monthTotalDays}</td>
-                          <td>{salary.totalWorkingDays}</td>
-                          <td>{salary.daysLate}</td>
-                          <td>{salary.daysOnTime}</td>
-                          <td>{salary.absentDays}</td>
-                          <td>{salary.effectiveAbsentDays}</td>
-                          <td>{salary.totalAbsentDays}</td>
-                          <td>{salary.daysLateLeft}</td>
-                          <td>{salary.basicSalary}</td>
-                          <td>{Number(salary.salaryPerDay).toFixed(2)}</td>
+                          <td>{salary?.monthTotalDays|| "N/A"}</td>
+                          <td>{salary?.totalWorkingDays|| "N/A"}</td>
+                          <td>{salary?.daysLate|| "N/A"}</td>
+                          <td>{salary?.daysOnTime|| "N/A"}</td>
+                          <td>{salary?.absentDays|| "N/A"}</td>
+                          <td>{salary?.effectiveAbsentDays|| "N/A"}</td>
+                          <td>{salary?.totalAbsentDays|| "N/A"}</td>
+                          <td>{salary?.daysLateLeft|| "N/A"}</td>
+                          <td>{salary?.basicSalary|| "N/A"}</td>
+                          <td>{Number(salary.salaryPerDay|| "N/A").toFixed(2)}</td>
                           <td>
                             {salary.allowances?.length > 0
                               ? salary.allowances
-                                  .map((allowance) => `${allowance.name}: ${allowance.amount}`)
+                                  .map((allowance) => `${allowance?.name || "N/A"}: ${allowance?.amount|| "N/A"}`)
                                   .join(", ")
                               : "No Allowances"}
                           </td>
-                          <td>{salary.totalAllowanceAmount}</td>
-                          <td>{salary.salarySubtotal}</td>
+                          <td>{salary?.totalAllowanceAmount || "N/A"}</td>
+                          <td>{salary?.salarySubtotal|| "N/A"}</td>
                           <td>
-                            {salary.deductions?.length > 0
+                            {salary?.deductions?.length > 0
                               ? salary.deductions
-                                  .map((deduction) => `${deduction.name}: ${Number(deduction.amount).toFixed(2)}`)
+                                  .map((deduction) => `${deduction?.name|| "N/A"}: ${Number(deduction?.amount|| "N/A").toFixed(2)}`)
                                   .join(", ")
                               : "No Deductions"}
                           </td>
-                          <td>{Number(salary.totalDeduction).toFixed(2)}</td>
-                          <td>{Number(salary.netSalary).toFixed(2)}</td>
-                          <td>{salary.remarks}</td>
+                          <td>{Number(salary?.totalDeduction|| "N/A").toFixed(2)}</td>
+                          <td>{Number(salary?.netSalary|| "N/A").toFixed(2)}</td>
+                          <td>{salary?.remarks|| "N/A"}</td>
                           <td>
                             <span>
                               <Link data-toggle="tooltip" data-placement="top" title="Edit">
@@ -264,6 +264,9 @@ const ShowSalary = () => {
           </div>
         </div>
       </div>
+      <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
     </div>
   );
 };

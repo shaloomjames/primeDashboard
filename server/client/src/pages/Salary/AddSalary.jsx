@@ -96,7 +96,7 @@ const AddSalary = () => {
         setemployeeEmail(response.data?.employee?.employeeEmail)
         setMonthtotalDays(response.data?.totalDays);
         setBasicSalary(response.data?.employee?.employeeSalary || 0);
-        setemployeeId(response.data?.employee?.employeeId || 0);
+        setemployeeId(response.data?.employee?._id || 0);
         // Properly updating employeeAllowances with correct data format
         const allowancesFromBackend = response.data?.employee?.employeeallowances || [];
         const formattedAllowances = allowancesFromBackend.map(allowance => ({
@@ -629,6 +629,9 @@ const AddSalary = () => {
             </div>
           </div>
         </form>
+        <center className=" card py-5" style={{visibility:"hidden"}}>
+        <div className="row">
+        </div ></center>
       </div>
     </>
   );
