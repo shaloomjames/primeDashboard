@@ -12,8 +12,8 @@ const ShowEmployee = () => {
   const [filteredData, setFilteredData] = useState([]); // Filtered employees
   const [RoleFilter, setRoleFilter] = useState(""); // State to store selected role filter
   const [salaryRange, setSalaryRange] = useState({ min: "", max: "" }); // State for salary range filter
-    // State to track sorting direction: 'asc' for ascending, 'desc' for descending, and 'none' for no sort
-    const [sortDirection, setSortDirection] = useState('none');
+  // State to track sorting direction: 'asc' for ascending, 'desc' for descending, and 'none' for no sort
+  const [sortDirection, setSortDirection] = useState('none');
 
 
   // Pagination states
@@ -144,8 +144,8 @@ const ShowEmployee = () => {
   const endIndex = page * pageSize;
   const currentData = filteredData.slice(startIndex, endIndex);
 
-   // Sort function based on employeeId
-   const handleSort = () => {
+  // Sort function based on employeeId
+  const handleSort = () => {
     if (sortDirection === 'none' || sortDirection === 'desc') {
       setSortDirection('asc');
     } else {
@@ -232,7 +232,7 @@ const ShowEmployee = () => {
                 setSalaryRange((prev) => ({ ...prev, max: e.target.value }))
               }
             />
-            <button className="btn btn-secondary mx-3"
+            <button className="btn btn-primary mx-3"
               onClick={() => setSalaryRange({ min: "", max: "" })} // Reset salary range
             >
               Clear Filter
@@ -269,9 +269,9 @@ const ShowEmployee = () => {
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th  onClick={handleSort} style={{ cursor: 'pointer' }}>
-              Employee Id {sortDirection === 'asc' ? '↑' : sortDirection === 'desc' ? '↓' : ''}
-</th>
+                        <th onClick={handleSort} style={{ cursor: 'pointer' }}>
+                          Employee Id {sortDirection === 'asc' ? '↑' : sortDirection === 'desc' ? '↓' : ''}
+                        </th>
                         <th>Employee Name</th>
                         <th>Employee Email</th>
                         <th>Employee Role</th>
@@ -294,7 +294,7 @@ const ShowEmployee = () => {
                               {employee.employeeRoles?.length > 0 ? (
                                 employee.employeeRoles.map((role, index) => (
                                   <span key={role.roleName}>
-                                    {role?.roleName|| "N/A"}
+                                    {role?.roleName || "N/A"}
                                     <br />
                                   </span>
                                 ))
@@ -310,7 +310,7 @@ const ShowEmployee = () => {
                               {employee?.employeeallowances && employee?.employeeallowances.length > 0 ? (
                                 employee?.employeeallowances.map((allowance, idx) => (
                                   <span key={idx}>
-                                    <b>{allowance?.name|| "N/A"}</b> : {allowance?.amount|| "N/A"}
+                                    <b>{allowance?.name || "N/A"}</b> : {allowance?.amount || "N/A"}
                                     <br />
                                   </span>
                                 ))
@@ -375,9 +375,9 @@ const ShowEmployee = () => {
             </div>
           </div>
         </div>
-        <center className=" card py-5" style={{visibility:"hidden"}}>
-        <div className="row">
-        </div ></center>
+        <center className=" card py-5" style={{ visibility: "hidden" }}>
+          <div className="row">
+          </div ></center>
       </div>
     </>
   );

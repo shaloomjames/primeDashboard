@@ -202,7 +202,7 @@ console.log("current data found",currentData.map((date)=> date.expanceDate))
               />
             </div>
             <div className="col-lg-3 col-md-1 col-sm-2 d-flex align-items-end mt-2">
-              <button className="btn btn-secondary" onClick={clearFilters}>
+              <button className="btn btn-primary" onClick={clearFilters}>
                 Clear Filters
               </button>
             </div>

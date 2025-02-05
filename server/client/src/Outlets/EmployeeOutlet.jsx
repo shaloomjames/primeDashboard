@@ -9,7 +9,7 @@ const AdminOutlet = () => {
     <>
         <Navbar/>
         <EmployeeSidebar/>
-        <div class="content-body">
+        <div class="content-body" style={{opacity:"80%"}}>
         <Outlet/>
         </div> 
         <Footer/>

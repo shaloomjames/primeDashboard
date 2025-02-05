@@ -96,7 +96,7 @@ const AddRole = () => {
                                                 <input type="text" class="form-control" placeholder="Role Name" onChange={(e) => setRoleName(e.target.value)} />
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-dark">Add Role</button>
+                                        <button type="submit" class="btn btn-primary">Add Role</button>
                                     </form>
                                 </div>
                             </div>

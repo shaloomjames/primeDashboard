@@ -98,7 +98,7 @@ const AddExpanceCategory = () => {
                                                 <input type="color" class="form-control" placeholder="Expance Category Color" onChange={(e) => setExpanceCategoryColor(e.target.value)} />
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-dark">Add Expance Category</button>
+                                        <button type="submit" class="btn btn-primary">Add Expance Category</button>
                                     </form>
                                 </div>
                             </div>

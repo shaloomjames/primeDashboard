@@ -380,7 +380,7 @@ const Home = () => {
                                             />
                                         </div>
                                         <div className="col-lg-3 mt-3 d-flex  align-items-end">
-                                            <button className="btn btn-secondary" onClick={clearChartFilters}>
+                                            <button className="btn btn-primary" onClick={clearChartFilters}>
                                                 Clear Filters
                                             </button>
                                         </div>
@@ -419,7 +419,7 @@ const Home = () => {
                                             />
                                         </div>
                                         <div className="col-lg-3 mt-3 d-flex  align-items-end">
-                                            <button className="btn btn-secondary" onClick={clearTable1Filters}>
+                                            <button className="btn btn-primary" onClick={clearTable1Filters}>
                                                 Clear Filters
                                             </button>
                                         </div>
@@ -513,7 +513,7 @@ const Home = () => {
                                             />
                                         </div>
                                         <div className="col-lg-3 mt-3 d-flex  align-items-end">
-                                            <button className="btn btn-secondary" onClick={clearTable2Filters}>
+                                            <button className="btn btn-primary" onClick={clearTable2Filters}>
                                                 Clear Filters
                                             </button>
                                         </div>

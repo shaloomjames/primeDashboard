@@ -232,7 +232,7 @@ const ShowDeletedEmployee = () => {
               }
             />
             <button
-              className="btn btn-secondary mx-3"
+              className="btn btn-primary mx-3"
               onClick={() => setSalaryRange({ min: "", max: "" })} // Reset salary range
             >
               Clear Filter

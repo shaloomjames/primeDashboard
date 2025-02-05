@@ -11,14 +11,22 @@ const Sidebar = () => {
     setOpenMenu(openMenu === menu ? null : menu);
   };
 
-  
+  // State to track hover effect
+  const [isHovered, setIsHovered] = useState(false);
+
+   // Inline style for the span
+   const spanStyle = {
+    color: isHovered ? '#fff' : '#ffffff',  // Change color on hover
+    transition: 'color 0.3s ease',  // Smooth transition
+  };
+
 
   return (
     <>
       {/* <!--**********************************
             Sidebar start
         ***********************************--> */}
-  <div
+  <div style={{opacity:"70%"}}
   className="nk-sidebar"
   // style={{ height: "100%" , backgroundColor:"#1b2b42"}}
   ref={(el) => {
@@ -31,8 +39,12 @@ const Sidebar = () => {
           <ul className="metismenu" id="menu">
             <li className='mt-3' >
               {/* #1d2c42 */}
-              <Link to="/" aria-expanded="false">
-                <i class="fa-solid fa-gauge-high"></i><span class="nav-text" >Dashboard</span>
+              <Link to="/" 
+                 onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                 onMouseLeave={() => setIsHovered(false)} // Remove hover state
+
+              aria-expanded="false">
+                <i  class="fa-solid fa-gauge-high" style={spanStyle}></i><span                  style={spanStyle}  class="nav-text">Dashboard</span>
               </Link>
             </li>
             {/* Expo Events Menu */}
@@ -47,16 +59,28 @@ const Sidebar = () => {
                 aria-expanded={openMenu === 'roles'}
                 onClick={() => toggleMenu('roles')}
               >
-                <i class="fa-solid fa-user-shield"></i>
-                <span className="nav-text">Roles</span>
+                <i class="fa-solid fa-user-shield" ></i>
+                <span className="nav-text" 
+                  onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                  onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                  style={spanStyle}
+                >Roles</span>
               </a>
               {openMenu === 'roles' && (
                 <ul>
                   <li>
-                    <Link to="/showrole">Show Roles</Link>
+                    <Link to="/showrole"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Show Roles</Link>
                   </li>
                   <li>
-                    <Link to="/addrole">Add Roles</Link>
+                    <Link to="/addrole"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Add Roles</Link>
                   </li>
                 </ul>
               )}
@@ -70,18 +94,34 @@ const Sidebar = () => {
                 onClick={() => toggleMenu('employee')}
               >
                 <i class="fa-solid fa-user-group"></i>
-                <span className="nav-text">Employee</span>
+                <span className="nav-text" 
+                  onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                  onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                  style={spanStyle}
+                >Employee</span>
               </a>
               {openMenu === 'employee' && (
                 <ul>
                   <li>
-                    <Link to="/showemployee">Show Employee</Link>
+                    <Link to="/showemployee"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Show Employee</Link>
                   </li>
                   <li>
-                    <Link to="/showdeletedemployee">Show Deleted Employee</Link>
+                    <Link to="/showdeletedemployee"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Show Deleted Employee</Link>
                   </li>
                   <li>
-                    <Link to="/addemployee">Add Employee</Link>
+                    <Link to="/addemployee"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Add Employee</Link>
                   </li>
                 </ul>
               )}
@@ -95,15 +135,27 @@ const Sidebar = () => {
                 onClick={() => toggleMenu('ExpanceCategory')}
               >
                 <i class="fa-solid fa-layer-group"></i>
-                <span className="nav-text">Expance Category</span>
+                <span className="nav-text" 
+                  onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                  onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                  style={spanStyle}
+                >Expance Category</span>
               </a>
               {openMenu === 'ExpanceCategory' && (
                 <ul>
                   <li>
-                    <Link to="/showexpanceCategory">Show Expance Category</Link>
+                    <Link to="/showexpanceCategory"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Show Expance Category</Link>
                   </li>
                   <li>
-                    <Link to="/addexpanceCategory">Add Expance Category</Link>
+                    <Link to="/addexpanceCategory"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Add Expance Category</Link>
                   </li>
                 </ul>
               )}
@@ -112,20 +164,31 @@ const Sidebar = () => {
             <li>
               <a
                 className="has-arrow"
-
                 aria-expanded={openMenu === 'apps'}
                 onClick={() => toggleMenu('apps')}
               >
                 <i class="fa-solid fa-sack-dollar"></i>
-                <span className="nav-text">Expance</span>
+                <span className="nav-text"
+                  onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                  onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                  style={spanStyle}
+                >Expance</span>
               </a>
               {openMenu === 'apps' && (
                 <ul>
                   <li>
-                    <Link to="/showexpance">Show Expance</Link>
+                    <Link to="/showexpance" 
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Show Expance</Link>
                   </li>
                   <li>
-                    <Link to="/addexpance">Add Expance</Link>
+                    <Link to="/addexpance"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Add Expance</Link>
                   </li>
                 </ul>
               )}
@@ -139,12 +202,20 @@ const Sidebar = () => {
                 onClick={() => toggleMenu('attendance')}
               >
                 <i class="fa-regular fa-calendar-days"></i>
-                <span className="nav-text">Attendance</span>
+                <span className="nav-text" 
+                  onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                  onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                  style={spanStyle}
+                >Attendance</span>
               </a>
               {openMenu === 'attendance' && (
                 <ul>
                   <li>
-                    <Link to="/showattendance">Attendence History</Link>
+                    <Link to="/showattendance"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Attendence History</Link>
                   </li>
                 </ul>
               )}
@@ -159,15 +230,27 @@ const Sidebar = () => {
               >
                 {/* <i class="fa-solid fa-user-shield"></i> */}
                 <i class="fa-solid fa-hand-holding-dollar"></i>
-                <span className="nav-text">Salary</span>
+                <span className="nav-text"
+                  onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                  onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                  style={spanStyle}
+                >Salary</span>
               </a>
               {openMenu === 'salary' && (
                 <ul>
                   <li>
-                    <Link to="/showSalaries">Salary History</Link>
+                    <Link to="/showSalaries"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Salary History</Link>
                   </li>
                   <li>
-                    <Link to="/SelectSalaryusers">Pay Salary</Link>
+                    <Link to="/SelectSalaryusers"
+                      onMouseEnter={() => setIsHovered(true)}  // Set hover state
+                      onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                      style={spanStyle}
+                    >Pay Salary</Link>
                   </li>
                 </ul>
               )}

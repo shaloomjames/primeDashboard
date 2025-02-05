@@ -619,7 +619,7 @@ const AddSalary = () => {
                     </div>
                     <div class="form-group row">
                       <div class="col-sm-12">
-                        <center> <button type="submit" class="btn btn-dark px-5">Confirm Pay Salary</button></center>
+                        <center> <button type="submit" class="btn btn-primary px-5">Confirm Pay Salary</button></center>
                       </div>
                     </div>
                     {/* </form> */}

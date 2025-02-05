@@ -182,7 +182,7 @@ const SalaryUser = () => {
                 setSalaryRange((prev) => ({ ...prev, max: e.target.value }))
               }
             />
-            <button className="btn btn-secondary mx-3"
+            <button className="btn btn-primary mx-3"
               onClick={() => setSalaryRange({ min: "", max: "" })} // Reset salary range
             >
               Clear Filter

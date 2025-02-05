@@ -316,7 +316,7 @@ const AddEmployee = () => {
                                         Add Another Allowance
                                     </button>
                                 </div>
-                                <button type="submit" className="btn btn-dark">
+                                <button type="submit" className="btn btn-primary">
                                     Add Employee
                                 </button>
                             </form>

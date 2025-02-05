@@ -163,7 +163,7 @@ const AddExpance = () => {
                                                 </select>
                                             </div>
                                         </div>
-                                        <button type="submit" className="btn btn-dark">Add Expense</button>
+                                        <button type="submit" className="btn btn-primary">Add Expense</button>
                                     </form>
                                 </div>
                             </div>

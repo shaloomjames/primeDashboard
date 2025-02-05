@@ -169,7 +169,7 @@ const ShowSalary = () => {
                       <th>Total Deduction</th>
                       <th>Net Salary</th>
                       <th>Remarks</th>
-                      <th>Actions</th>
+                      {/* <th>Actions</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -214,13 +214,13 @@ const ShowSalary = () => {
                           <td>{Number(salary?.totalDeduction|| "N/A").toFixed(2)}</td>
                           <td>{Number(salary?.netSalary|| "N/A").toFixed(2)}</td>
                           <td>{salary?.remarks|| "N/A"}</td>
-                          <td>
+                          {/* <td>
                             <span>
                               <Link data-toggle="tooltip" data-placement="top" title="Edit">
                                 <i className="fa fa-pencil color-muted mx-2"></i>
                               </Link>
                             </span>
-                          </td>
+                          </td> */}
                         </tr>
                       ))
                     ) : (

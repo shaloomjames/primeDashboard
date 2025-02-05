@@ -32,6 +32,33 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   background-image: linear-gradient(230deg, #759bff, #843cf6);
 }
 
+/* Customize the scrollbar */
+::-webkit-scrollbar {
+  width: 12px; /* Adjust the width of the scrollbar */
+  height: 12px; /* Adjust the height of the scrollbar (for horizontal scrollbar) */
+}
+
+/* Style the track (the part the scrollbar moves within) */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Light gray background */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/* Style the thumb (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  background-color: #304153; /* Dark gray color */
+  border-radius: 10px; /* Rounded corners */
+  border: 2px solid #f1f1f1; /* Optional border around the thumb */
+}
+
+/* Optional: change the thumb color on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker color when hovered */
+}
+
+
+
 .gradient-2,
 .dropdown-mega-menu .ext-link.link-3 a {
   background-image: linear-gradient(230deg, #fc5286, #fbaaa2);
