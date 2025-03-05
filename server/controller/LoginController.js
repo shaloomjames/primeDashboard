@@ -36,14 +36,15 @@ const loginController = async (req, res) => {
 
     // if password is valid generate a token
     // Extract roleName
-    // const roleName = checkUserExistance.employeeRoles.map((role,index)=>(role.roleName)) || [];
-    const roleName =
-      checkUserExistance.employeeRoles.length === 1
-        ? checkUserExistance.employeeRoles[0].roleName
-        : checkUserExistance.employeeRoles.map((role) => role.roleName) || [];
+    const roleName = checkUserExistance.employeeRoles.map((role,index)=>(role.roleName)) || [];
+    // const roleName =
+      // checkUserExistance.employeeRoles.length === 1
+      //   ? checkUserExistance.employeeRoles.roleName
+      //   : checkUserExistance.employeeRoles.map((role) => role.roleName) || [];
 
     const token = jwt.sign(
       {
+        user_employeeId: checkUserExistance.employeeId,
         userid: checkUserExistance._id,
         useremail: checkUserExistance.employeeEmail,
         userrole: roleName, // Include roleName only

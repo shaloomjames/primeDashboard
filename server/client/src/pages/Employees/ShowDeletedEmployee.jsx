@@ -13,13 +13,10 @@ const ShowDeletedEmployee = () => {
   const [RoleFilter, setRoleFilter] = useState(""); // State to store selected role filter
   const [salaryRange, setSalaryRange] = useState({ min: "", max: "" }); // State for salary range filter
 
-
-    // Pagination states
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
-    const [totalPages, setTotalPages] = useState(0);
-  
-
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
 
   const navigate = useNavigate();
 
@@ -62,25 +59,31 @@ const ShowDeletedEmployee = () => {
     fetchDeletedEmployees();
   }, []);
 
-     // Handle pagination logic on changes
-      useEffect(() => {
-        setTotalPages(Math.ceil(filteredData.length / pageSize));
-      }, [filteredData, pageSize]);
-    
-      const handlePageChange = (newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-          setPage(newPage);
-        }
-      };
+  // Handle pagination logic on changes
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredData.length / pageSize));
+  }, [filteredData, pageSize]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   useEffect(() => {
     // Filter deleted employees whenever search, RoleFilter, or salaryRange changes
     const filteredEmployees = deletedEmployeeData.filter((employee) => {
       // Check if the employee matches the search term
       const matchesSearch =
-        employee?.employeeName.toLowerCase().includes(search.toLowerCase().trim()) ||
-        employee?.employeeEmail.toLowerCase().includes(search.toLowerCase().trim()) ||
-        employee?.employeeId.toLowerCase().includes(search.toLowerCase().trim());
+        employee?.employeeName
+          .toLowerCase()
+          .includes(search.toLowerCase().trim()) ||
+        employee?.employeeEmail
+          .toLowerCase()
+          .includes(search.toLowerCase().trim()) ||
+        employee?.employeeId
+          .toLowerCase()
+          .includes(search.toLowerCase().trim());
 
       // Check if the employee matches the role filter (handles role being an array)
       const matchesRole = RoleFilter
@@ -91,8 +94,10 @@ const ShowDeletedEmployee = () => {
 
       // Check if the employee matches the salary range
       const matchesSalary =
-        (!salaryRange?.min || employee?.employeeSalary >= parseFloat(salaryRange?.min)) &&
-        (!salaryRange?.max || employee?.employeeSalary <= parseFloat(salaryRange?.max));
+        (!salaryRange?.min ||
+          employee?.employeeSalary >= parseFloat(salaryRange?.min)) &&
+        (!salaryRange?.max ||
+          employee?.employeeSalary <= parseFloat(salaryRange?.max));
 
       return matchesSearch && matchesRole && matchesSalary;
     });
@@ -104,7 +109,9 @@ const ShowDeletedEmployee = () => {
   const allRoles = [
     ...new Set(
       deletedEmployeeData
-        .map((employee) => employee?.employeeRoles?.map((role) => role.roleName)) // Extract role names from employeeRole array
+        .map((employee) =>
+          employee?.employeeRoles?.map((role) => role.roleName)
+        ) // Extract role names from employeeRole array
         .flat()
     ),
   ];
@@ -121,14 +128,23 @@ const ShowDeletedEmployee = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.post(`/api/employee/deletedemployee/restoreemployee/${employeeid}`);
-          setDeletedEmployeeData(deletedEmployeeData.filter((employee) => employee._id !== employeeid));
-          setFilteredData(filteredData.filter((employee) => employee._id !== employeeid));
+          const response = await axios.post(
+            `/api/employee/deletedemployee/restoreemployee/${employeeid}`
+          );
+          setDeletedEmployeeData(
+            deletedEmployeeData.filter(
+              (employee) => employee._id !== employeeid
+            )
+          );
+          setFilteredData(
+            filteredData.filter((employee) => employee._id !== employeeid)
+          );
           Swal.fire("Restored!", response.data.msg, "success");
         } catch (error) {
           Swal.fire(
             "Error",
-            error?.response?.data?.err || "An unexpected error occurred. Please try again.",
+            error?.response?.data?.err ||
+              "An unexpected error occurred. Please try again.",
             "error"
           );
           console.error("Error restoring employee:", error);
@@ -148,14 +164,23 @@ const ShowDeletedEmployee = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.delete(`/api/employee/deletedemployee/delete/${employeeid}`);
-          setDeletedEmployeeData(deletedEmployeeData.filter((employee) => employee._id !== employeeid));
-          setFilteredData(filteredData.filter((employee) => employee._id !== employeeid));
+          const response = await axios.delete(
+            `/api/employee/deletedemployee/delete/${employeeid}`
+          );
+          setDeletedEmployeeData(
+            deletedEmployeeData.filter(
+              (employee) => employee._id !== employeeid
+            )
+          );
+          setFilteredData(
+            filteredData.filter((employee) => employee._id !== employeeid)
+          );
           Swal.fire("Deleted!", response.data.msg, "success");
         } catch (error) {
           Swal.fire(
             "Error",
-            error?.response?.data?.err || "An unexpected error occurred. Please try again.",
+            error?.response?.data?.err ||
+              "An unexpected error occurred. Please try again.",
             "error"
           );
           console.error("Error deleting employee:", error);
@@ -164,108 +189,116 @@ const ShowDeletedEmployee = () => {
     });
   };
 
-  
-    // Pagination slice
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = page * pageSize;
-    const currentData = filteredData.slice(startIndex, endIndex);
-  
+  // Pagination slice
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = page * pageSize;
+  const currentData = filteredData.slice(startIndex, endIndex);
 
   return (
     <>
       <div className="container-fluid mb-5">
         {/* Search and Filters */}
-        <div className="row mt-3">
-          <div className="col-lg-4 col-md-5 col-sm-6 my-2">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by Name, Email, or ID"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)} // Update search query
-            />
-          </div>
+        <div className="row mt-1">
+          <div className="col-lg-12">
+            <div className="card">
+              <div className="card-body">
+                <div className="row mt-2">
+                  <div className="col-lg-4 col-md-5 col-sm-6 my-2">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Search by Name, Email, or ID"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)} // Update search query
+                    />
+                  </div>
 
-          {/* <div className="col-lg-3 col-md-5 col-sm-5 my-2">
-            <select
-              id="inputState"
-              className="form-control"
-              onChange={(e) => setRoleFilter(e.target.value)}
-            >
-              <option disabled selected>
-                Search By Role
-              </option>
-              <option value={""}>All</option>
-              {allRoles.length > 0 ? (
-                allRoles.map((role, index) => (
-                  <option value={role || ""} key={index}>
-                    {role || "N/A"}
-                  </option>
-                ))
-              ) : (
-                <option disabled>No Roles Available</option>
-              )}
-            </select>
-          </div> */}
-
-          {/* Salary Range Filter */}
-          <div className="col-lg-5 col-md-10 col-sm-11 d-flex align-items-center my-2">
-            <input
-              min={1}
-              className="form-control"
-              type="number"
-              placeholder="Min Salary"
-              value={salaryRange.min}
-              onChange={(e) =>
-                setSalaryRange((prev) => ({ ...prev, min: e.target.value }))
-              }
-            />
-            <span className="mx-2">to</span>
-            <input
-              min={1}
-              className="form-control"
-              type="number"
-              placeholder="Max Salary"
-              value={salaryRange.max}
-              onChange={(e) =>
-                setSalaryRange((prev) => ({ ...prev, max: e.target.value }))
-              }
-            />
-            <button
-              className="btn btn-primary mx-3"
-              onClick={() => setSalaryRange({ min: "", max: "" })} // Reset salary range
-            >
-              Clear Filter
-            </button>
+                  {/* Salary Range Filter */}
+                  <div className="col-lg-5 col-md-10 col-sm-11 d-flex align-items-center my-2">
+                    <input
+                      min={1}
+                      className="form-control"
+                      type="number"
+                      placeholder="Min Salary"
+                      value={salaryRange.min}
+                      onChange={(e) =>
+                        setSalaryRange((prev) => ({
+                          ...prev,
+                          min: e.target.value,
+                        }))
+                      }
+                    />
+                    <span className="mx-2">to</span>
+                    <input
+                      min={1}
+                      className="form-control"
+                      type="number"
+                      placeholder="Max Salary"
+                      value={salaryRange.max}
+                      onChange={(e) =>
+                        setSalaryRange((prev) => ({
+                          ...prev,
+                          max: e.target.value,
+                        }))
+                      }
+                    />
+                    <button
+                      className="btn btn-primary mx-3"
+                      onClick={() => setSalaryRange({ min: "", max: "" })} // Reset salary range
+                    >
+                      Clear Filter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Deleted Employee Table */}
-        <div className="row mt-5">
+        <div className="row mt-2">
           <div className="col-lg-12">
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title">Deleted Employees</h4>
-                                                {/* Pagination Controls */}
-                                                {filteredData.length > pageSize && (    <div className="mt-5 mb-2 d-flex  justify-content-end">
-        <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-          First
-        </button>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Prev
-        </button>
-        <span className='mx-2'>
-          Page {page} of {totalPages}
-        </span>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-          Next
-        </button>
-        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-          Last
-        </button>
-      </div>)}
+                {/* Pagination Controls */}
+                {filteredData.length > pageSize && (
+                  <div className="mt-5 mb-2 d-flex  justify-content-end">
+                    <button
+                      className="btn btn-sm mx-2"
+                      onClick={() => handlePageChange(1)}
+                      disabled={page <= 1}
+                    >
+                      First
+                    </button>
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => handlePageChange(page - 1)}
+                      disabled={page <= 1}
+                    >
+                      Prev
+                    </button>
+                    <span className="mx-2">
+                      Page {page} of {totalPages}
+                    </span>
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => handlePageChange(page + 1)}
+                      disabled={page >= totalPages}
+                    >
+                      Next
+                    </button>
+                    <button
+                      className="btn mx-2 btn-sm"
+                      onClick={() => handlePageChange(totalPages)}
+                      disabled={page >= totalPages}
+                    >
+                      Last
+                    </button>
+                  </div>
+                )}
 
-                <div className="table-responsive">
+                <div className="table-responsive table-hover">
                   <table className="table header-border">
                     <thead>
                       <tr>
@@ -274,7 +307,8 @@ const ShowDeletedEmployee = () => {
                         <th>Employee Email</th>
                         <th>Employee Role</th>
                         <th>Employee Salary</th>
-                        <th>Employee Allowances</th> {/* New column for allowances */}
+                        <th>Employee Allowances</th>{" "}
+                        {/* New column for allowances */}
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -287,81 +321,115 @@ const ShowDeletedEmployee = () => {
                             <td>{employee?.employeeEmail || "N/A"}</td>
                             <td>
                               {employee.employeeRoles
-                                ?.map((role) => role?.roleName|| "N/A")
+                                ?.map((role) => role?.roleName || "N/A")
                                 .join(", ") || "N/A"}
                             </td>
                             <td>{employee?.employeeSalary || "N/A"}</td>
                             <td>
                               {/* Show allowances if available */}
-                              {employee?.employeeallowances && employee?.employeeallowances.length > 0
+                              {employee?.employeeallowances &&
+                              employee?.employeeallowances.length > 0
                                 ? employee.employeeallowances
-                                    .map((allowance, idx) => `${allowance?.name|| "N/A"}: $${allowance?.amount|| "N/A"}`)
+                                    .map(
+                                      (allowance, idx) =>
+                                        `${allowance?.name || "N/A"}: $${
+                                          allowance?.amount || "N/A"
+                                        }`
+                                    )
                                     .join(", ")
                                 : "No Allowances"}
                             </td>
-                            <td style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                            <td
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
                               <span>
-                              <span>
-                                <button
-                                  data-toggle="tooltip"
-                                  data-placement="top"
-                                  title="Restore"
-                                  className="btn btn-success btn-sm mt-1 mx-1"
-                                  onClick={() => restoreEmployee(employee._id)}
-                                >
-                                  <i className="fa fa-undo"></i>
-                                </button>
-                                
-                              </span>
-                              <span>
-                                <button
-                                  data-toggle="tooltip"
-                                  data-placement="top"
-                                  title="delete permanently"
-                                  className="btn btn-danger btn-sm mt-1 mx-1"
-                                  onClick={() => deleteEmployeePermanently(employee._id)}
-                                >
-                                  <i className="fa fa-trash"></i>
-                                </button>
-                              </span>
+                                <span>
+                                  <button
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="Restore"
+                                    className="btn btn-success btn-sm mt-1 mx-1"
+                                    onClick={() =>
+                                      restoreEmployee(employee._id)
+                                    }
+                                  >
+                                    <i className="fa fa-undo"></i>
+                                  </button>
+                                </span>
+                                <span>
+                                  <button
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="delete permanently"
+                                    className="btn btn-danger btn-sm mt-1 mx-1"
+                                    onClick={() =>
+                                      deleteEmployeePermanently(employee._id)
+                                    }
+                                  >
+                                    <i className="fa fa-trash"></i>
+                                  </button>
+                                </span>
                               </span>
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="6" className="text-center">No Deleted Employees</td>
+                          <td colSpan="6" className="text-center">
+                            No Deleted Employees
+                          </td>
                         </tr>
                       )}
                     </tbody>
                   </table>
                 </div>
-                                                {/* Pagination Controls */}
-                                                {filteredData.length > pageSize && ( <div className=" d-flex  justify-content-end">
-        <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-          First
-        </button>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Prev
-        </button>
-        <span className='mx-2'>
-          Page {page} of {totalPages}
-        </span>
-        <button  className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-          Next
-        </button>
-        <button  className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-          Last
-        </button>
-      </div>)}
-
+                {/* Pagination Controls */}
+                {filteredData.length > pageSize && (
+                  <div className=" d-flex  justify-content-end">
+                    <button
+                      className="btn mx-2 btn-sm"
+                      onClick={() => handlePageChange(1)}
+                      disabled={page <= 1}
+                    >
+                      First
+                    </button>
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => handlePageChange(page - 1)}
+                      disabled={page <= 1}
+                    >
+                      Prev
+                    </button>
+                    <span className="mx-2">
+                      Page {page} of {totalPages}
+                    </span>
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => handlePageChange(page + 1)}
+                      disabled={page >= totalPages}
+                    >
+                      Next
+                    </button>
+                    <button
+                      className="btn mx-2 btn-sm"
+                      onClick={() => handlePageChange(totalPages)}
+                      disabled={page >= totalPages}
+                    >
+                      Last
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
-        <center className=" card py-5" style={{visibility:"hidden"}}>
-        <div className="row">
-        </div ></center>
+        <center className=" card py-5" style={{ visibility: "hidden" }}>
+          <div className="row"></div>
+        </center>
       </div>
     </>
   );

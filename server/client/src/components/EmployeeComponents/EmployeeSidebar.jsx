@@ -119,7 +119,45 @@ const EmployeeSidebar = () => {
                 </ul>
               )}
             </li>
-           
+            <li className='mt-1'>
+  <a
+    className="has-arrow"
+    aria-expanded={openMenu === 'leaveHoliday'}
+    onClick={() => toggleMenu('leaveHoliday')}
+  >
+    <i className="fa-solid fa-calendar-day"></i>
+    <span className="nav-text" 
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={spanStyle}
+    >Leave & Holiday</span>
+  </a>
+  {openMenu === 'leaveHoliday' && (
+    <ul>
+      <li>
+        <Link to="/employee/request-leave"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={spanStyle}
+        >Request Leave</Link>
+      </li>
+      <li>
+        <Link to="/employee/leave-history"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={spanStyle}
+        >Leave History</Link>
+      </li>
+      <li>
+        <Link to="/employee/view-holidays"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={spanStyle}
+        >View Holidays</Link>
+      </li>
+    </ul>
+  )}
+</li>
           
           </ul>
         </div>

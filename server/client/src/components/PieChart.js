@@ -49,13 +49,15 @@ const PieChart = ({ chartData, title }) => {
             legend: {
               position: 'top',
               labels: {
-                color: isDark ? 'white' : 'black', // Change the legend font color based on theme
+                // color: isDark ? 'white' : 'black', // Change the legend font color based on theme
+                color: 'white' , // Change the legend font color based on theme
               },
             },
             title: {
               display: true,
               text: title,
-              color: isDark ? 'white' : 'black', // Change the title font color based on theme
+              // color: isDark ? 'white' : 'black', // Change the title font color based on theme
+              color: 'white' , // Change the legend font color based on theme
             },
           },
         }}

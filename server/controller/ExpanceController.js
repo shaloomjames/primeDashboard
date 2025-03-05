@@ -197,7 +197,7 @@ const updateExpance = async (req, res) => {
         if (!expanceName || !nameRegex.test(expanceName)) return res.status(400).json({ err: "Invalid Expense Name. Only letters and spaces are allowed." });
 
         // Validate expanceAmount
-            if (!expanceAmount || !numberRegex.test(expanceAmount)) return res.status(400).json({ err: "Invalid Expense Amount. Only numeric values are allowed." });
+        if (!expanceAmount || !numberRegex.test(expanceAmount)) return res.status(400).json({ err: "Invalid Expense Amount. Only numeric values are allowed." });
 
         // Validate expanceDate
         if (!expanceDate || !dateRegex.test(expanceDate)) return res.status(400).json({ err: "Invalid Expense Date. Date should be in 'YYYY-MM-DD' format." });

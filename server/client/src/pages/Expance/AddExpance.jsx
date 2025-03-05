@@ -13,6 +13,7 @@ const AddExpance = () => {
     const [addedBy, setAddedBy] = useState('');
     const [expanceCategory, setExpanceCategory] = useState('');
     const [expanceCategoryData, setExpanceCategoryData] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
     
@@ -53,6 +54,8 @@ const AddExpance = () => {
           try {
             const decodedToken = jwtDecode(userToken); // Decode the JWT token
             const userRole = decodedToken.userrole;   // Get the user role(s)
+            setAddedBy(decodedToken.userid);
+            console.log(decodedToken.userid);
       
             // Redirect to login if the user is not an Admin
             if (
@@ -89,6 +92,22 @@ const AddExpance = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+
+                // Check submission status first
+                if (isSubmitting) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Request Already Sent',
+                        text: 'Please wait while we process your previous request',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+        
+                setIsSubmitting(true);
+        
+
         try {
             const formData = new FormData();
             formData.append("expanceAmount", expanceAmount);
@@ -112,6 +131,8 @@ const AddExpance = () => {
             }, 4000);
         } catch (error) {
             showErrorAlert(error.response?.data?.err || "Failed to add Expense");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -163,7 +184,11 @@ const AddExpance = () => {
                                                 </select>
                                             </div>
                                         </div>
-                                        <button type="submit" className="btn btn-primary">Add Expense</button>
+                                        <button type="submit" className="btn btn-primary"
+                                                      disabled={isSubmitting}>
+                                            {isSubmitting ? "Adding Expense..." : "Add Expense"}
+                                        {/* // >Add Expense */}
+                                        </button>
                                     </form>
                                 </div>
                             </div>

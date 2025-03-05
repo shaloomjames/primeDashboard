@@ -11,6 +11,7 @@ const EmployeeHome = () => {
   const [currentDate, setCurrentDate] = useState("");
   const [attendanceStatus, setAttendanceStatus] = useState(null);
   const [Id, setId] = useState("");
+  const [employeeId, setemployeeId] = useState("");
   const [InTime, setInTime] = useState("");
   const [OutTime, setOutTime] = useState("");
 
@@ -41,6 +42,7 @@ const EmployeeHome = () => {
         const decodedToken = jwtDecode(userToken); // Decode the JWT token
         const userRole = decodedToken.userrole;   // Get the user role(s)
         setId(decodedToken.userid)
+        setemployeeId(decodedToken.user_employeeId)
         // Redirect to login if the user is not an Admin
         if (
           !(Array.isArray(userRole) && userRole.includes("Employee")) && // Array case
@@ -115,6 +117,7 @@ const EmployeeHome = () => {
         timeIn: now.toISOString(),
         status: lateBy > 0 ? "Late" : "On Time",
         lateBy,
+        employeeId:employeeId
       };
 
       const response = await axios.post("/api/attendance", attendance);

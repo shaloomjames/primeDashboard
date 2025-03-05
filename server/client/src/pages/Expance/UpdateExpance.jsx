@@ -14,6 +14,7 @@ const UpdateExpance = () => {
     const [imageFile, setImageFile] = useState(null); // Store image file if uploaded
     const [expanceCategory, setExpanceCategory] = useState(''); // Store selected category ID
     const [expanceCategoryData, setExpanceCategoryData] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
     
@@ -99,6 +100,21 @@ const UpdateExpance = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+          // Check submission status first
+                if (isSubmitting) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Request Already Sent',
+                        text: 'Please wait while we process your previous request',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+        
+                setIsSubmitting(true);
+        
+
         try {
             // Prepare form data for submission
             const formData = new FormData();
@@ -122,6 +138,8 @@ const UpdateExpance = () => {
             setTimeout(() => navigate("/showexpance"), 4000);
         } catch (error) {
             showErrorAlert(error.response?.data?.err || "Failed to update Expance");
+        }finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -208,7 +226,11 @@ const UpdateExpance = () => {
                                                 </select>
                                             </div>
                                         </div>
-                                        <button type="submit" className="btn btn-dark">Update Expance</button>
+                                        <button type="submit" className="btn btn-dark"
+                                        // >Update Expance
+                                        disabled={isSubmitting}>
+                                            {isSubmitting ? "Updating Expance..." : "Update Expance"}
+                                        </button>
                                     </form>
                                 </div>
                             </div>

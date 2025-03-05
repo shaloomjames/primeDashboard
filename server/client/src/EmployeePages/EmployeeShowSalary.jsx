@@ -225,7 +225,9 @@ const ShowSalary = () => {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="22" className="text-center">
+                        <td></td>
+                        <td></td>
+                        <td colSpan="20">
                           {selectedMonth === "" ? (
                             "No Salary records found to display."
                           ) : (

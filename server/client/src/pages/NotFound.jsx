@@ -20,10 +20,6 @@ const NotFound = () => {
                            <div 
     className="login-form-bg vh-100" 
     style={{ 
-        backgroundImage: `url('/images/loginBg-4.JPG')`, 
-        backgroundRepeat: "no-repeat", // Corrected this to "no-repeat"
-        backgroundSize: "cover", // Ensures the background image covers the whole screen
-        backgroundPosition: "center", // Centers the image within the container
         display: "flex", 
         justifyContent: "center", 
         alignItems: "center", 

@@ -9,7 +9,7 @@ const UpdateExpanceCategory = () => {
     const [ExpanceCategoryName, setexpanceCategoryName] = useState('');
     const [ExpanceCategoryColor, setExpanceCategoryColor] = useState('');
     const [ExpanceCategoryStatus, setexpanceCategoryStatus] = useState('');
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
     
@@ -79,6 +79,21 @@ const UpdateExpanceCategory = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+         // Check submission status first
+                if (isSubmitting) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Request Already Sent',
+                        text: 'Please wait while we process your previous request',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+        
+                setIsSubmitting(true);
+
         const formData = {
             ExpanceCategoryName,
             ExpanceCategoryColor,
@@ -92,6 +107,8 @@ const UpdateExpanceCategory = () => {
             }, 4000);
         } catch (error) {
             showErrorAlert(error.response?.data?.err || "Failed to update Expance Category");
+        }finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -126,7 +143,11 @@ const UpdateExpanceCategory = () => {
                                                 <input type="color" class="form-control" placeholder="Expance Category COlor" value={ExpanceCategoryColor} onChange={(e) => setExpanceCategoryColor(e.target.value)} />
                                             </div>
                                         </div>
-                                        <button type="submit" className="btn btn-dark">Update Expance Category</button>
+                                        <button type="submit" className="btn btn-dark"
+                                        // >Update Expance Category
+                                        disabled={isSubmitting}>
+                                        {isSubmitting ? "Updateing Expance Category..." : "Update Expance Category"}
+                                        </button>
                                     </form>
                                 </div>
                             </div>

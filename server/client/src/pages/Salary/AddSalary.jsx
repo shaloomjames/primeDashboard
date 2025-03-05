@@ -27,6 +27,7 @@ const AddSalary = () => {
   const [totalDeduction, setTotalDeduction] = useState(0);
   const [netSalary, setNetSalary] = useState(0);
   const [remarks, setRemarks] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
   const { month, id } = useParams();
@@ -175,6 +176,21 @@ const AddSalary = () => {
   // Handle form submission to post salary data
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check submission status first
+    if (isSubmitting) {
+      Swal.fire({
+        icon: "warning",
+        title: "Request Already Sent",
+        text: "Please wait while we process your previous request",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
     const formData = {
       selectedMonth: month,
       employeeId,
@@ -197,17 +213,18 @@ const AddSalary = () => {
       deductions: employeeDeductions,
       totalDeduction,
       remarks,
-
     };
-    console.log(formData)
+    // console.log(formData)
     try {
-      const res = await axios.post('/api/salary', formData);
+      const res = await axios.post("/api/salary", formData);
       showSuccessAlert(res.data.msg);
       setTimeout(() => {
-        navigate('/showSalaries');
+        navigate("/showSalaries");
       }, 4000);
     } catch (error) {
-      showErrorAlert(error.response?.data?.err || 'Failed to add salary');
+      showErrorAlert(error.response?.data?.err || "Failed to add salary");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -311,6 +328,8 @@ const AddSalary = () => {
                           <th>Working Days (Excluding Sundays)</th>
                           <th>Days On Time</th>
                           <th>Days Late</th>
+                          <th>On Holiday</th>
+                          <th>On Leave</th>
                           <th>Absent Days (Excluding Sundays)</th>
                           <th>Effective Absents (Conversion from lates)</th>
                           <th>Effective Lates left (after conversion to absent)</th>
@@ -326,6 +345,8 @@ const AddSalary = () => {
                           <td> {totalWorkingDays || 0} </td> {/* Correct index calculation */}
                           <td> {daysOnTime || 0} </td> {/* Correct index calculation */}
                           <td> {daysLate || 0} </td> {/* Correct index calculation */}
+                          <td>{attendanceReport.Holiday || 0}</td>
+                          <td>{attendanceReport.OnLeave || 0}</td>
                           <td> {absentDays || 0} </td> {/* Correct index calculation */}
                           <td> {effectiveAbsentDays || 0} </td> {/* Correct index calculation */}
                           <td> {daysLateLeft || 0} </td> {/* Correct index calculation */}
@@ -619,7 +640,11 @@ const AddSalary = () => {
                     </div>
                     <div class="form-group row">
                       <div class="col-sm-12">
-                        <center> <button type="submit" class="btn btn-primary px-5">Confirm Pay Salary</button></center>
+                        <center> <button type="submit" class="btn btn-primary px-5"
+                         disabled={isSubmitting}>
+                          {isSubmitting ? "Confirming Pay Salary..." : "Confirm Pay Salary"}
+                        {/* // >Confirm Pay Salary */}
+                        </button></center>
                       </div>
                     </div>
                     {/* </form> */}

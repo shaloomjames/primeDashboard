@@ -164,7 +164,11 @@ const ShowSalary = () => {
   return (
     <div className="container-fluid">
       {/* Filter Section */}
-      <div className="row d-flex justify-content-between align-items-center mx-3 my-5">
+      <div className="row mt-1">
+          <div className="col-lg-12">
+            <div className="card">
+              <div className="card-body">
+      <div className="row d-flex justify-content-between align-items-center mx-3 mt-2">
         <div className="col-lg-3 col-md-4">
           <label>Select Month</label>
           <input
@@ -185,9 +189,13 @@ const ShowSalary = () => {
           />
         </div>
       </div>
+      </div>
+      </div>
+      </div>
+      </div>
 
       {/* Salary Table */}
-      <div className="row mt-5">
+      <div className="row mt-2">
         <div className="col-lg-12">
           <div className="card p-4">
             <div className="card-body">
@@ -211,7 +219,7 @@ const ShowSalary = () => {
                 </button>
               </div>)}
 
-              <div className="table-responsive">
+              <div className="table-responsive table-hover">
                 <table className="table header-border">
                   <thead>
                     <tr>

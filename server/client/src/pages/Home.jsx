@@ -313,7 +313,7 @@ const Home = () => {
 
                 <div class="row d-flex">
                     <div class="col-lg-3 col-sm-6 flex-fill">
-                        <div class="card gradient-1">
+                        <div class="card gradient-1 text-center">
                             <div class="card-body">
                                 <h3 class="card-title text-white">Total Employees</h3>
                                 <div class="d-inline-block">
@@ -323,7 +323,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 flex-fill">
-                        <div class="card gradient-2">
+                        <div class="card gradient-2 text-center">
                             <div class="card-body">
                                 <h3 class="card-title text-white">Grand Total Expance</h3>
                                 <div class="d-inline-block">
@@ -333,7 +333,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 flex-fill">
-                        <div class="card gradient-3">
+                        <div class="card gradient-3 text-center">
                             <div class="card-body">
                                 <h3 class="card-title text-white">Roles</h3>
                                 <div class="d-inline-block">
@@ -343,7 +343,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 flex-fill">
-                        <div class="card gradient-4">
+                        <div class="card gradient-4 text-center">
                             <div class="card-body">
                                 <h3 class="card-title text-white">Expance Categories</h3>
                                 <div class="d-inline-block">
@@ -428,7 +428,7 @@ const Home = () => {
                             </div>
                             <div className="card-body mb-3">
                                 <h4 className="mt-4">Category Totals</h4>
-                                <div className="table-responsive">
+                                <div className="table-responsive table-hover">
                                     <table className="table header-border mt-4 zero-configuration">
                                         <thead>
                                             <tr>
@@ -539,7 +539,7 @@ const Home = () => {
                                         Last
                                     </button>
                                 </div>)}
-                                <div className="table-responsive">
+                                <div className="table-responsive table-hover">
                                     <table className="table header-border">
                                         <thead>
                                             <tr>

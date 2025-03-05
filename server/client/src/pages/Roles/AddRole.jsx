@@ -7,6 +7,7 @@ import Swal from 'sweetalert2'; // Import SweetAlert2_
 
 const AddRole = () => {
     const [roleName, setRoleName] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -61,6 +62,21 @@ const AddRole = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+         // Check submission status first
+                if (isSubmitting) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Request Already Sent',
+                        text: 'Please wait while we process your previous request',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+        
+                setIsSubmitting(true);
+
         try {
             const formData = {
                 roleName
@@ -73,6 +89,8 @@ const AddRole = () => {
             }, 2000);
         } catch (error) {
             showErrorAlert(error.response?.data?.err)
+        }finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -96,7 +114,11 @@ const AddRole = () => {
                                                 <input type="text" class="form-control" placeholder="Role Name" onChange={(e) => setRoleName(e.target.value)} />
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Add Role</button>
+                                        <button type="submit" class="btn btn-primary"
+                                           disabled={isSubmitting}>
+                                            {isSubmitting ? "Adding Role..." : "Add Role"}
+                                        {/* // >Add Role */}
+                                        </button>
                                     </form>
                                 </div>
                             </div>

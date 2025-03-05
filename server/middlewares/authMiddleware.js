@@ -3,9 +3,10 @@ const userModel = require("../models/EmployeeModel");
 
 const authMiddleware = async (req, res, next) => {
   const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ err: "Unauthorized: Token not found" });
+  if (!token)
+    return res.status(401).json({ err: "Unauthorized: Token not found" });
 
-  const jwtToken = token.replace("Bearer ", "").trim(); 
+  const jwtToken = token.replace("Bearer ", "").trim();
 
   try {
     // Verifying the token

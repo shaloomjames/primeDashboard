@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';  // Correct import for jwt-decode
 const AddExpanceCategory = () => {
     const [ExpanceCategoryName, setExpanceCategoryName] = useState('');
     const [ExpanceCategoryColor, setExpanceCategoryColor] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
     
@@ -60,6 +61,21 @@ const AddExpanceCategory = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+         // Check submission status first
+                if (isSubmitting) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Request Already Sent',
+                        text: 'Please wait while we process your previous request',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+        
+                setIsSubmitting(true);
+
         const formData = {
             ExpanceCategoryName,
             ExpanceCategoryColor
@@ -72,6 +88,8 @@ const AddExpanceCategory = () => {
             }, 2000);
         } catch (error) {
             showErrorAlert(error.response?.data?.err || "Failed to add Employee");
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -98,7 +116,11 @@ const AddExpanceCategory = () => {
                                                 <input type="color" class="form-control" placeholder="Expance Category Color" onChange={(e) => setExpanceCategoryColor(e.target.value)} />
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Add Expance Category</button>
+                                        <button type="submit" class="btn btn-primary"
+                                        // >Add Expance Category
+                                        disabled={isSubmitting}>
+                                        {isSubmitting ? "Adding Expance Category..." : "Add Expance Category"}
+                                        </button>
                                     </form>
                                 </div>
                             </div>

@@ -1,7 +1,9 @@
 const moment = require("moment");
 const AttendanceModel = require("../models/AttendanceModel");
 const  EmployeeModel = require("../models/EmployeeModel");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const HolidayModel = require("../models/HolidayModel");
+const LeaveModel = require("../models/LeaveModel");
 
 // Generate a Monthly Attendance Report
 // @Request   GET
@@ -43,6 +45,8 @@ const getAttendanceReport = async (req, res) => {
     // Calculate "On Time" and "Late" days
     const daysLate = attendanceLogs.filter((log) => log.status === "Late").length;
     const daysOnTime = attendanceLogs.filter((log) => log.status === "On Time").length;
+    const Holiday = attendanceLogs.filter((log) => log.status === "Holiday").length;
+    const OnLeave = attendanceLogs.filter((log) => log.status === "On Leave").length;
 
     // ** Calculate Sundays in the month **
     let totalSundays = 0;
@@ -54,7 +58,7 @@ const getAttendanceReport = async (req, res) => {
 
     // ** Calculate Absent Days (exclude Sundays) ** // ** Calculate Working Days **
     const workingDays = totalDays - totalSundays; // Exclude Sundays from the total days
-    const loggedDays = daysOnTime + daysLate; // Only consider days with logs
+    const loggedDays = daysOnTime + daysLate + Holiday + OnLeave; // Only consider days with logs
     const absentDays = workingDays - loggedDays; // Absent days exclude Sundays
 
 
@@ -83,6 +87,8 @@ const getAttendanceReport = async (req, res) => {
       absentDays,           // Correct number of absent days (excluding Sundays)
       daysLate,             // Total late days
       daysOnTime,           // Total on-time days
+      Holiday,
+      OnLeave,
       effectiveAbsentDays,    // Effective absent days due to late-to-absent conversion
       remainingLates,         // Late days left after conversion
       totalAbsentDays,        // Final total absent days (combined manual + effective)
@@ -92,6 +98,7 @@ const getAttendanceReport = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 };
+
 
 
 // @Request   GET
@@ -146,7 +153,7 @@ const getSingleAttendance = async (req, res) => {
 }
 
 
-// @Request   PODT
+// @Request   POST
 // @Route     http://localhost:5000/api/attendance
 // @Access    Private
 const createAttendance = async (req, res) => {
@@ -161,19 +168,25 @@ const createAttendance = async (req, res) => {
         return res.status(400).json({ err: "Attendance already marked for today." });
       }
 
+      const holiday = await HolidayModel.findOne({ date: attendanceDate });
+      if(holiday) return res.status(400).json({err:"You cannot mark attendance. Today is a holiday"});
+
+      const leave = await LeaveModel.findOne({ employee, startDate: { $gte: new Date(attendanceDate), $lte: new Date(attendanceDate) } });
+      if(leave) return res.status(400).json({err:"You cannot mark attendance. You are on leave"});
+      
+    if(leave) return res.status(400).json({err:"You cannot mark attendance. You are on leave"});
+
+      if(leave) return res.status(400).json({err:"You cannot mark attendance. You are on leave"});
+
     if (!timeIn) return res.status(400).json({ err: "Check-in time is required." });
 
     const timeInDate = new Date(timeIn);
-    // const timeOutDate = timeOut ? new Date(timeOut) : null;
-
-    // if (timeOutDate && timeOutDate <= timeInDate)
-    //   return res.status(400).json({ err: "Check-out time must be after check-in time." });
 
     const attendance = await AttendanceModel.create({
       employee,
       attendanceDate: new Date(attendanceDate || Date.now()),
       timeIn: timeInDate,
-      // timeOut: timeOutDate,
+      
       status: status || "On Time",
       lateBy: lateBy || 0,
       totalHours: totalHours || 0,

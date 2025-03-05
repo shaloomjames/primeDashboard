@@ -125,7 +125,11 @@ const ShowRoles = () => {
       </div>
 
         {/* Search Field */}
-        <div className="row mt-3">
+        <div className="row mt-1">
+          <div className="col-lg-12">
+            <div className="card">
+              <div className="card-body">
+        <div className="row mt-1">
           <div className="col-lg-4 col-md-5 col-sm-6 col-10 my-2">
             <input
               type="text"
@@ -149,8 +153,12 @@ const ShowRoles = () => {
             </select>
           </div>
         </div>
+        </div>
+        </div>
+        </div>
+        </div>
 
-        <div className="row mt-5">
+        <div className="row mt-2">
           <div className="col-lg-12">
             <div className="card">
               <div className="card-body">
@@ -173,7 +181,7 @@ const ShowRoles = () => {
           Last
         </button>
       </div>)}
-                <div className="table-responsive">
+                <div className="table-responsive table-hover">
                   <table className="table header-border">
                     <thead>
                       <tr>

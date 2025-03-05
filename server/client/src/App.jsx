@@ -35,6 +35,19 @@ import EmployeeShowAttendance from './EmployeePages/EmployeeShowAttendance'
 import EmployeeShowProfile from './EmployeePages/EmployeeShowProfile'
 import EmployeeShowSalary from './EmployeePages/EmployeeShowSalary'
 
+import RequestLeave from './EmployeePages/RequestLeave'
+import LeaveHistory from './EmployeePages/LeaveHistory'
+import ViewHolidays from './EmployeePages/ViewHolidays'
+
+import AddHoliday from './pages/Holiday/AddHoliday'
+import HolidayCalender from './pages/Holiday/HolidayCalender'
+import ManageLeaveRequests from './pages/Leaves/ManageLeaveRequests'
+import UpdateHoliday from './pages/Holiday/UpdateHoliday'
+import ShowLeaveType from './pages/Leaves/ShowLeaveType'
+import AddLeaveType from './pages/Leaves/AddLeaveType'
+import UpdateLeaveType from './pages/Leaves/UpdateLeaveType'
+import MarkAbsences from './pages/Attendance/MarkAbsent'
+
 const App = () => {
   return (
     <>
@@ -69,6 +82,15 @@ const App = () => {
               <Route path='/showSalaries' element={<ShowSalary/>} />
               <Route path='/addSalary/:month/:id' element={<AddSalary />} />
               <Route path='/SelectSalaryusers' element={<SalaryUser/>} />
+              {/* Leave And Holiday Routes */}
+              <Route path='/add-holiday' element={<AddHoliday/>} />
+              <Route path='/update-calendar/:id' element={<UpdateHoliday/>} />
+              <Route path='/holiday-calendar' element={<HolidayCalender/>} />
+              <Route path='/manage-leave-request' element={<ManageLeaveRequests/>} />
+              <Route path='/show-leavetype' element={<ShowLeaveType/>} />
+              <Route path='/add-leavetype' element={<AddLeaveType/>} />
+              <Route path='/update-leavetype/:id' element={<UpdateLeaveType/>} />
+              <Route path='/mark-absence' element={<MarkAbsences/>} />
             </Route>
 
             <Route  path='/employee' element={<EmployeeOutlet/>}>
@@ -76,6 +98,9 @@ const App = () => {
               <Route path='/employee/showattendance' element={<EmployeeShowAttendance/>}/>
               <Route path='/employee/showsalary' element={<EmployeeShowSalary/>}/>
               <Route path='/employee/showprofile' element={<EmployeeShowProfile/>}/>
+              <Route path='/employee/request-leave' element={<RequestLeave/>}/>
+              <Route path='/employee/leave-history' element={<LeaveHistory/>}/>
+              <Route path='/employee/view-holidays' element={<ViewHolidays/>}/>
             </Route>
 
             <Route path='/login' element={<Login />} />

@@ -165,9 +165,20 @@ const EmployeeShowAttendance = () => {
         <div className="row my-1">
           <div className="col-lg-12">
             <div className="card">
+              
               <div className="card-body">
+                <div className="d-flex justify-content-end">
+                <button 
+              className="btn btn-sm btn-danger"
+              onClick={() => setAttendanceReport(null)}
+              title="Close report"
+            >
+              <i className="fa fa-times"></i>
+            </button>
+                </div>
                 <div className="table-responsive">
                   <h4>Attendance Summary for {attendanceReport?.reportMonth || 'N/A'}</h4>
+                  
                   <table className="table header-border  ">
                     <thead>
                       <tr>
@@ -176,6 +187,8 @@ const EmployeeShowAttendance = () => {
                         <th>Working Days (Excluding Sundays)</th>
                         <th>Days On Time</th>
                         <th>Days Late</th>
+                        <th>On Holiday</th>
+                        <th>On Leave</th>
                         <th>Absent Days (Excluding Sundays)</th>
                         <th>Effective Absents (Conversion from lates)</th>
                         <th>Effective Lates left (after conversion to absent)</th>
@@ -189,6 +202,8 @@ const EmployeeShowAttendance = () => {
                         <td>{attendanceReport.workingDays || 0}</td>
                         <td>{attendanceReport.daysOnTime || 0}</td>
                         <td>{attendanceReport.daysLate || 0}</td>
+                        <td>{attendanceReport.Holiday || 0}</td>
+                        <td>{attendanceReport.OnLeave || 0}</td>
                         <td>{attendanceReport.absentDays || 0}</td>
                         <td>{attendanceReport.effectiveAbsentDays || 0}</td>
                         <td>{attendanceReport.remainingLates || 0}</td>
@@ -244,10 +259,11 @@ const EmployeeShowAttendance = () => {
                     attendanceRecords.map((record, index) => (
                       <tr key={index}>
                         <td>{record?.employee?.employeeName || "N/A"}</td>
-                        <td>{formatDate(record?.attendanceDate || "N/A")}</td>
-                        <td>{record.timeIn ? new Date(record?.timeIn || "N/A").toLocaleTimeString() : "-"}</td>
-                        <td>{record.timeOut ? new Date(record?.timeOut || "N/A").toLocaleTimeString() : "-"}</td>
-                        <td><i className={`fa fa-circle-o text-${record?.status === "Late" ? "warning" : "success"}  mr-2`}></i>{record?.status || "N/A"}</td>
+                        {/* <td>{formatDate(record?.attendanceDate || "N/A")}</td> */}
+                        <td>{new Date(record?.attendanceDate).toLocaleDateString() || "N/A"}</td>
+                        <td>{record.timeIn ? new Date(record?.timeIn || "N/A").toLocaleTimeString() : "0"}</td>
+                        <td>{record.timeOut ? new Date(record?.timeOut || "N/A").toLocaleTimeString() : "0"}</td>
+                        <td> <i className={`fa fa-circle-o text-${record?.status === "Late" ? "warning" : "success"}  mr-2`}></i> {record?.status || "N/A"}</td>
                         <td>{record?.lateBy || 0}</td>
                         <td>{record?.totalHours.toFixed(2) || 0}</td>
                       </tr>

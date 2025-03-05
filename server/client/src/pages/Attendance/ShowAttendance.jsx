@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const ShowAttendance = () => {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -18,12 +18,14 @@ const ShowAttendance = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   // Helper to format date
-    // Format helpers
-    const formatDate = (date) => new Date(date).toISOString().split("T")[0];
-    const formatTime = (date) =>
-      new Date(date).toLocaleTimeString('en-GB', { hour12:true,hour: "2-digit", minute: "2-digit" });
-  
-  
+  // Format helpers
+  const formatDate = (date) => new Date(date).toISOString().split("T")[0];
+  const formatTime = (date) =>
+    new Date(date).toLocaleTimeString("en-GB", {
+      hour12: true,
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   const navigate = useNavigate();
 
@@ -104,16 +106,15 @@ const ShowAttendance = () => {
       filtered.every(
         (record) =>
           record?.employee?.employeeId === filtered[0]?.employee?.employeeId &&
-        formatDate(record?.attendanceDate).startsWith(
-          formatDate(filtered[0]?.attendanceDate).slice(0, 7) // Compare by "YYYY-MM"
-        )
+          formatDate(record?.attendanceDate).startsWith(
+            formatDate(filtered[0]?.attendanceDate).slice(0, 7) // Compare by "YYYY-MM"
+          )
       )
     ) {
       setId(filtered[0]?.employee?._id);
     } else {
       setId(null);
     }
-
   }, [search, selectedMonth, attendanceData]);
 
   // Fetch attendance report
@@ -137,34 +138,42 @@ const ShowAttendance = () => {
   return (
     <div className="container-fluid">
       {/* Filters */}
-      <div className="row d-flex justify-content-between align-items-center mx-3 my-5">
-        <div className="col-lg-3 col-md-4">
-          <label>Select Month</label>
-          <input
-            type="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="form-control"
-          />
-        </div>
-        <div className="col-lg-4 col-md-5 col-sm-10">
-          <label>Search User</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by Name, Email, or ID"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="col-lg-2 col-md-3">
-          <button
-            onClick={fetchAttendanceReport}
-            className="btn btn-primary mt-3 py-2"
-            disabled={!Id}
-          >
-            Generate Report
-          </button>
+      <div className="row mt-1">
+        <div className="col-lg-12">
+          <div className="card">
+            <div className="card-body">
+              <div className="row d-flex justify-content-between align-items-center mx-3 mt-2">
+                <div className="col-lg-3 col-md-4">
+                  <label>Select Month</label>
+                  <input
+                    type="month"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-lg-4 col-md-5 col-sm-10">
+                  <label>Search User</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by Name, Email, or ID"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <button
+                    onClick={fetchAttendanceReport}
+                    className="btn btn-primary mt-3 py-2"
+                    disabled={!Id}
+                  >
+                    Generate Report
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -174,8 +183,20 @@ const ShowAttendance = () => {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-body">
+              <div className="d-flex justify-content-end">
+                <button 
+              className="btn btn-sm btn-danger"
+              onClick={() => setAttendanceReport(null)}
+              title="Close report"
+            >
+              <i className="fa fa-times"></i>
+            </button>
+                </div>
                 <div className="table-responsive">
-                  <h4>Attendance Summary for {attendanceReport?.reportMonth || 'N/A'}</h4>
+                  <h4>
+                    Attendance Summary for{" "}
+                    {attendanceReport?.reportMonth || "N/A"}
+                  </h4>
                   <table className="table header-border  ">
                     <thead>
                       <tr>
@@ -184,19 +205,26 @@ const ShowAttendance = () => {
                         <th>Working Days (Excluding Sundays)</th>
                         <th>Days On Time</th>
                         <th>Days Late</th>
+                        <th>On Holiday</th>
+                        <th>On Leave</th>
+                        <th>Days Late</th>
                         <th>Absent Days (Excluding Sundays)</th>
                         <th>Effective Absents (Conversion from lates)</th>
-                        <th>Effective Lates left (after conversion to absent)</th>
+                        <th>
+                          Effective Lates left (after conversion to absent)
+                        </th>
                         <th>Total Absents</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr >
+                      <tr>
                         <td>{attendanceReport.totalDays || 0}</td>
                         <td>{attendanceReport.totalSundays || 0}</td>
                         <td>{attendanceReport.workingDays || 0}</td>
                         <td>{attendanceReport.daysOnTime || 0}</td>
                         <td>{attendanceReport.daysLate || 0}</td>
+                        <td>{attendanceReport.Holiday || 0}</td>
+                        <td>{attendanceReport.OnLeave || 0}</td>
                         <td>{attendanceReport.absentDays || 0}</td>
                         <td>{attendanceReport.effectiveAbsentDays || 0}</td>
                         <td>{attendanceReport.remainingLates || 0}</td>
@@ -208,7 +236,8 @@ const ShowAttendance = () => {
               </div>
             </div>
           </div>
-        </div>)}
+        </div>
+      )}
 
       {/* Attendance Records */}
       <div className="row ">
@@ -216,29 +245,45 @@ const ShowAttendance = () => {
           <div className="card">
             <div className="card-body">
               <h4>Attendance Records</h4>
-                            {/* Pagination Controls */}
-                            {filteredRecords.length > pageSize && (<div className="mt-5 mb-2 d-flex  justify-content-end">
-                
-                <button className='btn btn-sm mx-2' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-                  First
-                </button>
-                <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-                  Prev
-                </button>
-                <span className='mx-2'>
-                  Page {page} of {totalPages}
-                </span>
-                <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-                  Next
-                </button>
-                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-                  Last
-                </button>
-              </div>
-            )}
+              {/* Pagination Controls */}
+              {filteredRecords.length > pageSize && (
+                <div className="mt-5 mb-2 d-flex  justify-content-end">
+                  <button
+                    className="btn btn-sm mx-2"
+                    onClick={() => handlePageChange(1)}
+                    disabled={page <= 1}
+                  >
+                    First
+                  </button>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                  >
+                    Prev
+                  </button>
+                  <span className="mx-2">
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= totalPages}
+                  >
+                    Next
+                  </button>
+                  <button
+                    className="btn mx-2 btn-sm"
+                    onClick={() => handlePageChange(totalPages)}
+                    disabled={page >= totalPages}
+                  >
+                    Last
+                  </button>
+                </div>
+              )}
 
-              <div className="table-responsive">
-                                <table className="table">
+              <div className="table-responsive table-hover">
+                <table className="table">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -256,89 +301,117 @@ const ShowAttendance = () => {
                   <tbody>
                     {currentData.length > 0 ? (
                       currentData.map((record, index) => {
-                        const timeIn = record?.timeIn ? new Date(record.timeIn) : null;
+                        const timeIn = record?.timeIn
+                          ? new Date(record.timeIn)
+                          : null;
                         const timeOut = record?.timeOut
                           ? new Date(record.timeOut)
                           : null;
 
                         return (
                           <tr key={index}>
-                            <td>{startIndex + index + 1}</td> {/* Correct index calculation */}
-                            <td>{record?.employee.employeeId || "N/A"}</td>
-                            <td>{record?.employee.employeeName || "N/A"}</td>
-                            <td>{record?.employee.employeeEmail || "N/A"}</td>
+                            <td>{startIndex + index + 1}</td>{" "}
+                            {/* Correct index calculation */}
+                            <td>{record?.employee?.employeeId || "N/A"}</td>
+                            <td>{record?.employee?.employeeName || "N/A"}</td>
+                            <td>{record?.employee?.employeeEmail || "N/A"}</td>
                             <td>
                               {record?.attendanceDate
-                                ? new Date(record.attendanceDate).toLocaleDateString('en-GB',)
+                                ? new Date(
+                                    record?.attendanceDate
+                                  ).toLocaleDateString("en-GB")
                                 : "-"}
                             </td>
                             <td>{timeIn ? formatTime(timeIn) : "-"}</td>
                             <td>{timeOut ? formatTime(timeOut) : "-"}</td>
-                            <td> <i className={`fa fa-circle-o text-${record?.status === "Late" ? "warning" : "success"}  mr-2`}></i>
+                            <td>
+                              {" "}
+                              <i
+                                className={`fa fa-circle-o text-${
+                                  record?.status === "Late"
+                                    ? "warning"
+                                    : "success"
+                                }  mr-2`}
+                              ></i>
                               {record?.status || "N/A"}
                             </td>
-                            <td>{record.lateBy || 0}</td>
-                            <td>{record.totalHours.toFixed(2) || 0}</td>
+                            <td>{record?.lateBy || 0}</td>
+                            <td>{record?.totalHours.toFixed(2) || 0}</td>
                           </tr>
                         );
                       })
                     ) : (
                       <tr>
                         <td colSpan="9" className="text-center">
-                          {selectedMonth === "" ? (
-                            // If no month is selected
-                            search === "" ? (
-                              `No Attendance Found. Please select a Month and/or search for a user.`
-                            ) : (
-                              `No Attendance Found For the Search Term "${search}". Please select a Month.`
-                            )
-                          ) : (
-                            // If a month is selected
-                            search === "" ? (
-                              `No Attendance Found For the Selected Month ${new Date(
+                          {selectedMonth === ""
+                            ? // If no month is selected
+                              search === ""
+                              ? `No Attendance Found. Please select a Month and/or search for a user.`
+                              : `No Attendance Found For the Search Term "${search}". Please select a Month.`
+                            : // If a month is selected
+                            search === ""
+                            ? `No Attendance Found For the Selected Month ${new Date(
                                 `${selectedMonth}-01`
-                              ).toLocaleString("default", { month: "long", year: "numeric" })}`
-                            ) : (
-                              `No Attendance Found For the Search Term "${search}" in the Selected Month ${new Date(
+                              ).toLocaleString("default", {
+                                month: "long",
+                                year: "numeric",
+                              })}`
+                            : `No Attendance Found For the Search Term "${search}" in the Selected Month ${new Date(
                                 `${selectedMonth}-01`
-                              ).toLocaleString("default", { month: "long", year: "numeric" })}`
-                            )
-                          )}
+                              ).toLocaleString("default", {
+                                month: "long",
+                                year: "numeric",
+                              })}`}
                         </td>
                       </tr>
-
                     )}
                   </tbody>
                 </table>
               </div>
 
-                {/* Pagination Controls */}
-                {filteredRecords.length > pageSize && (<div className="d-flex  justify-content-end">
-                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(1)} disabled={page <= 1}>
-                  First
-                </button>
-                <button className='btn btn-sm' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-                  Prev
-                </button>
-                <span className='mx-2'>
-                  Page {page} of {totalPages}
-                </span>
-                <button className='btn btn-sm' onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-                  Next
-                </button>
-                <button className='btn mx-2 btn-sm' onClick={() => handlePageChange(totalPages)} disabled={page >= totalPages}>
-                  Last
-                </button>
-              </div>)}
-
+              {/* Pagination Controls */}
+              {filteredRecords.length > pageSize && (
+                <div className="d-flex  justify-content-end">
+                  <button
+                    className="btn mx-2 btn-sm"
+                    onClick={() => handlePageChange(1)}
+                    disabled={page <= 1}
+                  >
+                    First
+                  </button>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                  >
+                    Prev
+                  </button>
+                  <span className="mx-2">
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= totalPages}
+                  >
+                    Next
+                  </button>
+                  <button
+                    className="btn mx-2 btn-sm"
+                    onClick={() => handlePageChange(totalPages)}
+                    disabled={page >= totalPages}
+                  >
+                    Last
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
       <center style={{ visibility: "hidden", height: "255px" }}>
-                    <div className="row">
-                    </div >
-                </center>
+        <div className="row"></div>
+      </center>
     </div>
   );
 };

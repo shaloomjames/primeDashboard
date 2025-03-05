@@ -8,6 +8,7 @@ import Swal from 'sweetalert2'; // Import SweetAlert2
 const UpdateRole = () => {
     const [roleName, setRoleName] = useState('');
     const [roleStatus, setRoleStatus] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -76,6 +77,21 @@ const UpdateRole = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+             // Check submission status first
+                        if (isSubmitting) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Request Already Sent',
+                                text: 'Please wait while we process your previous request',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            return;
+                        }
+                
+                        setIsSubmitting(true);
+
         try {
             const formData = {
                 roleName,
@@ -88,6 +104,8 @@ const UpdateRole = () => {
             }, 4000);
         } catch (error) {
             showErrorAlert(error.response?.data?.err || "Failed to Update Role");
+        }finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -129,7 +147,11 @@ const UpdateRole = () => {
                                                 </select>
                                             </div>
                                         </div>
-                                        <button type="submit" className="btn btn-dark">Update Role</button>
+                                        <button type="submit" className="btn btn-dark"
+                                         disabled={isSubmitting}>
+                                            {isSubmitting ? "Updating Role..." : "Update Role"}
+                                        {/* >Update Role */}
+                                        </button>
                                     </form>
                                 </div>
                             </div>
