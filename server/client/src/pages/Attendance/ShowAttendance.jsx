@@ -207,7 +207,6 @@ const ShowAttendance = () => {
                         <th>Days Late</th>
                         <th>On Holiday</th>
                         <th>On Leave</th>
-                        <th>Days Late</th>
                         <th>Absent Days (Excluding Sundays)</th>
                         <th>Effective Absents (Conversion from lates)</th>
                         <th>

@@ -263,12 +263,22 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <Link
-                    to="/mark-absence"
+                    to="/mark-absence-date"
                     onMouseEnter={() => setIsHovered(true)} // Set hover state
                     onMouseLeave={() => setIsHovered(false)} // Remove hover state
                     style={spanStyle}
                   >
-                    Mark Absent
+                    Mark Absent for Day
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/mark-absence-month"
+                    onMouseEnter={() => setIsHovered(true)} // Set hover state
+                    onMouseLeave={() => setIsHovered(false)} // Remove hover state
+                    style={spanStyle}
+                  >
+                    Mark Absent for Month
                   </Link>
                 </li>
               </ul>

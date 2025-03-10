@@ -301,7 +301,7 @@ const createEmployee = async (req, res) => {
     });
     if (existingEmployeeInDelete) {
       return res.status(400).json({
-        err: "Employee with this email already exists in our deleted employees database.",
+        err: "Employee with this email already exists in our deleted employees database.You can recover from there",
       });
     }
 

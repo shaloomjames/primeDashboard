@@ -503,44 +503,246 @@ if (employeeLeaveBalance) {
 //   }
 // };
 
+// const deleteLeaveType = async (req, res) => {
+//   try {
+//     const _id = req.params.id;
+
+//     if (!mongoose.Types.ObjectId.isValid(_id))
+//       return res.status(400).json({ err: "Invalid Object Id" });
+
+//     const leaveTypeInUse = await EmployeeModel.findOne({ leaveType: _id });
+    
+//     if (leaveTypeInUse) {
+//       const [updatedLeaveType] = await Promise.all([
+//         LeaveTypeModel.findByIdAndUpdate(
+//           _id, 
+//           { leaveTypeStatus: 'inactive' }, 
+//           { new: true }
+//         )
+//       ]);
+
+//       return res.status(200).json({
+//         msg: "Leave Type is in use, it has been inactivated successfully.",
+//         data: updatedLeaveType,
+//       });
+//     } else {
+//       // If not in use, proceed to delete it
+//       const [deletedLeaveType] = await Promise.all([
+//         LeaveTypeModel.findByIdAndDelete(_id)
+//       ]);
+      
+//       if (!deletedLeaveType)
+//         return res.status(404).json({ err: "Leave Type not found" });
+      
+//       return res.status(200).json({ msg: "Leave Type Deleted Successfully" });
+//     }
+//   } catch (error) {
+//     console.log("Error Deleting Leave Type", error);
+//     return res.status(500).json({ err: "Internal Server Error", error: error.message });
+//   }
+// };
+
+// const deleteLeaveType = async (req, res) => {
+//   try {
+//     const _id = req.params.id;
+
+//     // Validate ObjectId
+//     if (!mongoose.Types.ObjectId.isValid(_id))
+//       return res.status(400).json({ err: "Invalid Object Id" });
+
+//     // Step 1: Remove the leave type from all employees' leaveBalances
+//     const updateResult = await EmployeeModel.updateMany(
+//       { "leaveBalances.leaveTypeId": _id },
+//       { $pull: { leaveBalances: { leaveTypeId: _id } } }
+//     );
+
+//     // Step 2: Delete the leave type from LeaveTypeModel
+//     const deletedLeaveType = await LeaveTypeModel.findByIdAndDelete(_id);
+
+//     // Check if the leave type existed
+//     if (!deletedLeaveType) {
+//       return res.status(404).json({ err: "Leave Type not found" });
+//     }
+
+//     // Success message returned only after both operations are completed
+//     return res.status(200).json({
+//       msg: "Leave Type deleted successfully from LeaveTypeModel and all employee records",
+//       employeesUpdated: updateResult.modifiedCount,
+//       deletedLeaveType: deletedLeaveType
+//     });
+
+//   } catch (error) {
+//     console.log("Error Deleting Leave Type", error);
+//     return res.status(500).json({ err: "Internal Server Error", error: error.message });
+//   }
+// };
+// Updated deleteLeaveType function
+// const deleteLeaveType = async (req, res) => {
+//   try {
+//     const _id = req.params.id;
+
+//     // Validate ObjectId
+//     if (!mongoose.Types.ObjectId.isValid(_id)) {
+//       return res.status(400).json({ err: "Invalid Object Id" });
+//     }
+
+//     // Step 1: Get the leave type to be deleted
+//     const leaveTypeToDelete = await LeaveTypeModel.findById(_id);
+//     if (!leaveTypeToDelete) {
+//       return res.status(404).json({ err: "Leave Type not found" });
+//     }
+//     const leaveTypeName = leaveTypeToDelete.leaveTypeName; // Updated to match your schema
+
+//     // Step 2: Check if leave type is in use (optional validation)
+//     const leavesInUse = await LeaveModel.countDocuments({ leaveType: _id });
+//     const employeesWithBalance = await EmployeeModel.countDocuments({ "leaveBalances.leaveTypeId": _id });
+
+//     // Step 3: Update LeaveModel - replace ObjectId with leave type name
+//     const leaveUpdateResult = await LeaveModel.updateMany(
+//       { leaveType: _id },
+//       { $set: { leaveType: leaveTypeName } }
+//     );
+
+//     // Step 4: Remove the leave type from all employees' leaveBalances
+//     const employeeUpdateResult = await EmployeeModel.updateMany(
+//       { "leaveBalances.leaveTypeId": _id },
+//       { $pull: { leaveBalances: { leaveTypeId: _id } } }
+//     );
+
+//     // Step 5: Delete the leave type from LeaveTypeModel
+//     const deletedLeaveType = await LeaveTypeModel.findByIdAndDelete(_id);
+
+//     // Success response with detailed information
+//     return res.status(200).json({
+//       msg: "Leave Type deleted successfully and updated in all records",
+//       data: {
+//         deletedLeaveType: deletedLeaveType,
+//         affectedRecords: {
+//           employeesUpdated: employeeUpdateResult.modifiedCount,
+//           leavesUpdated: leaveUpdateResult.modifiedCount,
+//           leavesPreviouslyInUse: leavesInUse,
+//           employeesWithBalancePreviously: employeesWithBalance
+//         }
+//       }
+//     });
+
+//   } catch (error) {
+//     console.error("Error Deleting Leave Type:", error); // More detailed logging
+//     return res.status(500).json({ 
+//       err: "Internal Server Error", 
+//       details: error.message,
+//       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined // Optional: include stack trace in dev
+//     });
+//   }
+// };
+
+// const deleteLeaveType = async (req, res) => {
+//   try {
+//     const _id = req.params.id;
+
+//     // Validate ObjectId
+//     if (!mongoose.Types.ObjectId.isValid(_id)) {
+//       return res.status(400).json({ err: "Invalid Object Id" });
+//     }
+
+//     // Step 1: Get the leave type to be deleted
+//     const leaveTypeToDelete = await LeaveTypeModel.findById(_id);
+//     if (!leaveTypeToDelete) {
+//       return res.status(404).json({ err: "Leave Type not found" });
+//     }
+//     const leaveTypeName = leaveTypeToDelete.leaveTypeName;
+
+//     // Step 2: Update LeaveModel - keep leaveType ObjectId but set leaveTypeName
+//     const leaveUpdateResult = await LeaveModel.updateMany(
+//       { leaveType: _id },
+//       { $set: { leaveType: leaveTypeName } }
+//     );
+
+//     // Step 3: Remove the leave type from all employees' leaveBalances
+//     const employeeUpdateResult = await EmployeeModel.updateMany(
+//       { "leaveBalances.leaveTypeId": _id },
+//       { $pull: { leaveBalances: { leaveTypeId: _id } } }
+//     );
+
+//     // Step 4: Delete the leave type from LeaveTypeModel
+//     const deletedLeaveType = await LeaveTypeModel.findByIdAndDelete(_id);
+
+//     // Success response
+//     return res.status(200).json({
+//       msg: "Leave Type deleted successfully and updated in all records",
+//       data: {
+//         deletedLeaveType: deletedLeaveType,
+//         affectedRecords: {
+//           employeesUpdated: employeeUpdateResult.modifiedCount,
+//           leavesUpdated: leaveUpdateResult.modifiedCount,
+//         },
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Error Deleting Leave Type:", error);
+//     return res.status(500).json({
+//       err: "Internal Server Error",
+//       details: error.message,
+//     });
+//   }
+// };
+
 const deleteLeaveType = async (req, res) => {
   try {
     const _id = req.params.id;
 
-    if (!mongoose.Types.ObjectId.isValid(_id))
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
       return res.status(400).json({ err: "Invalid Object Id" });
-
-    // Check if the leave type is being used in any leave record
-    const leaveTypeInUse = await LeaveModel.findOne({ leaveType: _id });
-    
-    if (leaveTypeInUse) {
-      // If the leave type is in use, we cannot delete it; instead, inactivate it.
-      const [updatedLeaveType] = await Promise.all([
-        LeaveTypeModel.findByIdAndUpdate(
-          _id, 
-          { leaveTypeStatus: 'inactive' }, 
-          { new: true }
-        )
-      ]);
-
-      return res.status(200).json({
-        msg: "Leave Type is in use, it has been inactivated successfully.",
-        data: updatedLeaveType,
-      });
-    } else {
-      // If not in use, proceed to delete it
-      const [deletedLeaveType] = await Promise.all([
-        LeaveTypeModel.findByIdAndDelete(_id)
-      ]);
-      
-      if (!deletedLeaveType)
-        return res.status(404).json({ err: "Leave Type not found" });
-      
-      return res.status(200).json({ msg: "Leave Type Deleted Successfully" });
     }
+
+    // Step 1: Get the leave type to be deleted
+    const leaveTypeToDelete = await LeaveTypeModel.findById(_id);
+    if (!leaveTypeToDelete) {
+      return res.status(404).json({ err: "Leave Type not found" });
+    }
+    const leaveTypeName = leaveTypeToDelete.leaveTypeName;
+
+    // // Step 2: Update LeaveModel - replace leaveType ObjectId with leaveTypeName
+    const leaveUpdateResult = await LeaveModel.updateMany(
+      { leaveType: _id }, // Find all leaves with this leaveType ObjectId
+      { 
+        $set: { 
+          leaveTypeName: leaveTypeName// Replace ObjectId with the name
+        }
+      }
+    );
+
+    // Step 3: Remove the leave type from all employees' leaveBalances
+    const employeeUpdateResult = await EmployeeModel.updateMany(
+      { "leaveBalances.leaveTypeId": _id },
+      { 
+        $pull: { 
+          leaveBalances: { leaveTypeId: _id } 
+        } 
+      }
+    );
+
+    // Step 4: Delete the leave type from LeaveTypeModel
+    const deletedLeaveType = await LeaveTypeModel.findByIdAndDelete(_id);
+
+    // Success response
+    return res.status(200).json({
+      msg: "Leave Type deleted successfully and references updated",
+      data: {
+        deletedLeaveType: deletedLeaveType,
+        affectedRecords: {
+          employeesUpdated: employeeUpdateResult.modifiedCount,
+          leavesUpdated: leaveUpdateResult.modifiedCount,
+        },
+      },
+    });
   } catch (error) {
-    console.log("Error Deleting Leave Type", error);
-    return res.status(500).json({ err: "Internal Server Error", error: error.message });
+    console.error("Error Deleting Leave Type:", error);
+    return res.status(500).json({
+      err: "Internal Server Error",
+      details: error.message,
+    });
   }
 };
 

@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-const MarkAbsences = () => {
+const MarkAbsencesDate = () => {
   const [date, setDate] = useState("");
   const navigate = useNavigate();
 
@@ -66,4 +66,4 @@ const MarkAbsences = () => {
   );
 };
 
-export default MarkAbsences;
+export default MarkAbsencesDate;

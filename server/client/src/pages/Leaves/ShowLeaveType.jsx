@@ -313,7 +313,9 @@ const ShowLeaveType = () => {
 
                   {/* // Updated table body */}
                   <tbody>
-                    {currentData.map((leavetype, index) => (
+                    {
+                      currentData.length > 0 ?
+                    currentData.map((leavetype, index) => (
                       <tr key={leavetype._id}>
                         <td>{startIndex + index + 1}</td>
                         <td>{leavetype.leaveTypeName}</td>
@@ -351,7 +353,19 @@ const ShowLeaveType = () => {
                           </span>
                         </td>
                       </tr>
-                    ))}
+                    )):(
+                      <tr>
+                      <td colSpan="9" className="text-center">
+                        {statusFilter === ""
+                          ? search === ""
+                            ? "No Leaves Found. Please select a Status."
+                            : `No Leaves Found For the Search Term "${search}". Please select a Status.`
+                          : search === ""
+                          ? `No Leaves Found For the Selected Status "${statusFilter}" `
+                          : `No Leaves Found For the Search Term "${search}" in the Selected Status "${statusFilter}" `}
+                      </td>
+                    </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

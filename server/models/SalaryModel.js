@@ -35,6 +35,7 @@ const salarySchema = new mongoose.Schema(
     totalDeduction: { type: Number, required: true, default: 0 },
     netSalary: { type: Number, required: true, default: 0 },
     remarks: { type: String, default: "" },
+    totalAttendanceRecordDays: { type: Number,  default: 0 },
   },
   {
     timestamps: true,

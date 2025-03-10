@@ -46,7 +46,8 @@ import UpdateHoliday from './pages/Holiday/UpdateHoliday'
 import ShowLeaveType from './pages/Leaves/ShowLeaveType'
 import AddLeaveType from './pages/Leaves/AddLeaveType'
 import UpdateLeaveType from './pages/Leaves/UpdateLeaveType'
-import MarkAbsences from './pages/Attendance/MarkAbsent'
+import MarkAbsencesDate from './pages/Attendance/MarkAbsencesDate'
+import MarkAttendanceMonth from './pages/Attendance/MarkAttendanceMonth'
 
 const App = () => {
   return (
@@ -90,7 +91,8 @@ const App = () => {
               <Route path='/show-leavetype' element={<ShowLeaveType/>} />
               <Route path='/add-leavetype' element={<AddLeaveType/>} />
               <Route path='/update-leavetype/:id' element={<UpdateLeaveType/>} />
-              <Route path='/mark-absence' element={<MarkAbsences/>} />
+              <Route path='/mark-absence-date' element={<MarkAbsencesDate/>} />
+              <Route path='/mark-absence-month' element={<MarkAttendanceMonth/>} />
             </Route>
 
             <Route  path='/employee' element={<EmployeeOutlet/>}>

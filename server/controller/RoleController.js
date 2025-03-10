@@ -149,6 +149,9 @@ const deleteRole = async (req, res) => {
                         employeeSalary: employee.employeeSalary,
                         employeePassword: employee.employeePassword,
                         employeeRoles: employee.employeeRoles,
+                        employeeallowances: employee.employeeallowances,
+                        employeeTimeIn: employee.employeeTimeIn,
+                        employeeTimeOut: employee.employeeTimeOut,
                     };
 
                     // Push the creation of the deleted employee to the update array
@@ -163,6 +166,7 @@ const deleteRole = async (req, res) => {
             await Promise.all(employeeUpdates);
         } else {
             console.log("No employees found with this role.");
+            return res.status(404).json({ err: "No employees found with this role." });
         }
 
         // Step 4: Delete the role

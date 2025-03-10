@@ -384,6 +384,8 @@
 
 // module.exports = mongoose.model("LeaveModel", LeaveSchema);
 
+
+
 const mongoose = require("mongoose");
 
 // Define the schema
@@ -395,9 +397,13 @@ const LeaveSchema = new mongoose.Schema(
       required: true,
     },
     leaveType: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "LeaveTypeModel",
       required: true,
+    },
+    leaveTypeName: { // Stores the name for historical reference
+      type: String,
+      // required: true,
     },
     startDate: {
       type: Date,
@@ -472,27 +478,20 @@ LeaveSchema.pre("save", function (next) {
   next();
 });
 
-// Middleware to prevent overlapping leave requests
-// LeaveSchema.pre('save', async function (next) {
-//   const leave = this;
-  
-//   // Ensure that LeaveModel is available here (model definition should be after middleware)
-//   const LeaveModel = mongoose.model('LeaveModel');  // Now we safely refer to the model
-  
-//   const existingLeave = await LeaveModel.findOne({
-//     employee: leave.employee,
-//     status: 'Approved',
-//     $or: [
-//       { startDate: { $lte: leave.endDate }, endDate: { $gte: leave.startDate } }
-//     ]
-//   });
-
-//   if (existingLeave) {
-//     return next(new Error('Leave request overlaps with an existing approved leave.'));
-//   }
-
-//   next();
-// });
+// Pre-save middleware to set leaveTypeName
+LeaveSchema.pre("save", async function(next) {
+  if (this.isNew || this.isModified("leaveType")) {
+    try {
+      const leaveType = await mongoose.model("LeaveTypeModel").findById(this.leaveType);
+      if (leaveType) {
+        this.leaveTypeName = leaveType.leaveTypeName;
+      }
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
 
 // Export the model after the schema and middleware are defined
 module.exports = mongoose.model("LeaveModel", LeaveSchema);

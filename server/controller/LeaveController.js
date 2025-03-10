@@ -20,8 +20,9 @@ const getLeaveHistory = async (req, res) => {
       .populate("holidays")
       .populate("affectedAttendance")
       .sort("-createdAt");
-      
-    if (!leaves)  return res.status(404).json({ err: "No Leave Requests Found" }); 
+
+    if (!leaves)
+      return res.status(404).json({ err: "No Leave Requests Found" });
 
     res.status(200).json(leaves);
   } catch (error) {
@@ -43,15 +44,15 @@ const getSingleLeave = async (req, res) => {
       .populate("employee")
       .populate("leaveType")
       .populate("approvedBy")
-      .sort("-createdAt")
-      ;
-
+      .sort("-createdAt");
     if (!leave) return res.status(404).json({ err: "No Leave Request Found" });
 
     return res.status(200).json(leave);
   } catch (error) {
     console.log("Error Fetching Leave history", error);
-    return res.status(500).json({ err: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ err: "Internal Server Error", error: error.message });
   }
 };
 
@@ -83,7 +84,7 @@ const getSingleLeave = async (req, res) => {
 
 //     // Validate reason
 //      if (!reason || !nameRegex.test(reason)) return res.status(400).json({ err: "Invalid Reason" });
-    
+
 //     // Validate startDate and endDate existence and format
 //     if (!startDate || isNaN(Date.parse(startDate))) {
 //       return res.status(400).json({ err: "Invalid Start Date" });
@@ -102,9 +103,9 @@ const getSingleLeave = async (req, res) => {
 //     if (!employeeExists) {
 //       return res.status(404).json({ err: "Employee not found" });
 //     }
-    
-//     first i want to calculate the number of days from the starting date to ending date then subtract the weekends/sunday and holidays then set the remaining days in number to calculatedDays 
-//     Check for overlapping leaves. If there are overlapping leave requests, the existing leaves in the leave model that overlap will remain, and the number of overlapping days will be subtracted 
+
+//     first i want to calculate the number of days from the starting date to ending date then subtract the weekends/sunday and holidays then set the remaining days in number to calculatedDays
+//     Check for overlapping leaves. If there are overlapping leave requests, the existing leaves in the leave model that overlap will remain, and the number of overlapping days will be subtracted
 //     from the total leave days between the start and end dates
 
 //     const overlappingLeave = await LeaveModel.find({
@@ -131,7 +132,7 @@ const getSingleLeave = async (req, res) => {
 //       startDate,
 //       endDate,
 //       reason,
-//       Holidays ,//Send all holidays overlapping in the holiday array field so the employee can see which leave dates overlap with holidays and also subtract the number of holidays. 
+//       Holidays ,//Send all holidays overlapping in the holiday array field so the employee can see which leave dates overlap with holidays and also subtract the number of holidays.
 //       calculatedDays //Total leave days to be approved, adjusted by subtracting the days that overlap with holidays or other leave requests, and to be deducted from the leave balance.
 //     });
 
@@ -164,7 +165,6 @@ const getSingleLeave = async (req, res) => {
 //      if (!leaveType || !mongoose.Types.ObjectId.isValid(leaveType)) {
 //       return res.status(400).json({ err: "Invalid or missing Leave Type ID" });
 //     }
-
 
 //     // Validate leave type by checking if it exists in the database
 //     const leaveTypeExist = await LeaveTypeModel.findById(leaveType);
@@ -202,7 +202,7 @@ const getSingleLeave = async (req, res) => {
 //         startDate: { $eq: start },
 //         endDate: { $eq: end }
 //       });
-  
+
 //       if (existingLeave) {
 //         return res.status(400).json({ err: "Duplicate leave request for the same dates" });
 //       }
@@ -275,14 +275,14 @@ const getSingleLeave = async (req, res) => {
 //     // Calculate overlapping days
 //     let overlappingDays = 0;
 //     const checkDate = new Date(start); // Start checking from the leave start date
-    
+
 //     while (checkDate <= end) {
 //       const day = checkDate.getDay(); // Get day of the week
 //       const dateStr = checkDate.toISOString().split('T')[0]; // Convert date to ISO string
 
 //       // Check if the day is a weekend (Sunday or off Saturday)
 //       const isWeekend = day === 0 || (day === 6 && offSaturdays.includes(dateStr));
-      
+
 //       // Check if the day is a holiday
 //       const isHoliday = holidays.some(holidayId => holidayId.toString() === dateStr);
 
@@ -294,11 +294,11 @@ const getSingleLeave = async (req, res) => {
 //           const leaveEnd = new Date(leave.endDate);
 //           return checkDate >= leaveStart && checkDate <= leaveEnd;
 //         });
-        
+
 //         // Increment overlapping days if there's an overlap
 //         if (isOverlapping) overlappingDays++;
 //       }
-      
+
 //       // Move to the next day
 //       checkDate.setDate(checkDate.getDate() + 1);
 //     }
@@ -308,8 +308,8 @@ const getSingleLeave = async (req, res) => {
 
 //     // If no eligible leave days remain, return an error
 //     if (calculatedDays <= 0) {
-//       return res.status(400).json({ 
-//         err: "No eligible leave days remaining after accounting for weekends, holidays, and overlapping leaves." 
+//       return res.status(400).json({
+//         err: "No eligible leave days remaining after accounting for weekends, holidays, and overlapping leaves."
 //       });
 //     }
 
@@ -320,8 +320,8 @@ const getSingleLeave = async (req, res) => {
 
 //     // If insufficient leave balance, return an error
 //     if (!balanceEntry || balanceEntry.currentBalance < calculatedDays) {
-//       return res.status(400).json({ 
-//         err: `Insufficient leave balance for ${leaveTypeExist.leaveTypeName}. You have ${balanceEntry.currentBalance} days Left, but you requested ${calculatedDays} days.` 
+//       return res.status(400).json({
+//         err: `Insufficient leave balance for ${leaveTypeExist.leaveTypeName}. You have ${balanceEntry.currentBalance} days Left, but you requested ${calculatedDays} days.`
 //       });
 //     }
 
@@ -347,9 +347,253 @@ const getSingleLeave = async (req, res) => {
 //   } catch (error) {
 //     // Handle any unexpected errors
 //     console.error("Leave creation error:", error);
-//     res.status(500).json({ 
-//       err: "Internal Server Error", 
-//       message: error.message 
+//     res.status(500).json({
+//       err: "Internal Server Error",
+//       message: error.message
+//     });
+//   }
+// };
+
+// const createLeaveRequest = async (req, res) => {
+//   try {
+//     // Destructure request body to extract required fields
+//     const { employee, leaveType, startDate, endDate, reason } = req.body;
+
+//     // Regex to validate reason (letters and spaces only)
+//     const nameRegex = /^[A-Za-z\s]+$/;
+
+//     // Validate employee ID format using Mongoose's ObjectId validation
+//     if (!mongoose.Types.ObjectId.isValid(employee)) {
+//       return res.status(400).json({ err: "Invalid Employee ID format" });
+//     }
+
+//     // Validate leave type - Ensure it's provided and is a valid ObjectId
+//     if (!leaveType || !mongoose.Types.ObjectId.isValid(leaveType)) {
+//       return res.status(400).json({ err: "Invalid or missing Leave Type ID" });
+//     }
+
+//     // Validate leave type by checking if it exists in the database
+//     const leaveTypeExist = await LeaveTypeModel.findById(leaveType);
+//     if (!leaveTypeExist) {
+//       return res.status(400).json({ err: "Invalid Leave Type" });
+//     }
+
+//     // Validate reason field: must exist and match the regex
+//     if (!reason || !nameRegex.test(reason)) {
+//       return res
+//         .status(400)
+//         .json({ err: "Reason must contain only letters and spaces" });
+//     }
+
+//     // Parse start and end dates into Date objects
+//     const start = new Date(startDate);
+//     const end = new Date(endDate);
+//     start.setHours(0, 0, 0, 0);
+//     end.setHours(0, 0, 0, 0);
+
+//     // Validate date formats and ensure start date is before or equal to end date
+//     if (!start.getTime() || !end.getTime()) {
+//       return res.status(400).json({ err: "Invalid Date format" });
+//     }
+
+//     //     // Ensure leave is created only for today or future dates
+//     // const today = new Date();
+//     // today.setHours(0, 0, 0, 0); // Remove time from today
+
+//     // if ( { $gte: startDate, $lte: endDate } < today) {
+//     //   return res
+//     //     .status(400)
+//     //     .json({ err: "Leave date must be today or a future date" });
+//     // }
+//     // Ensure leave is created only for today or future dates
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Normalize today's date
+
+//     // Loop through each day from start to end and check if any date is in the past
+//     let current = new Date(start);
+//     while (current <= end) {
+//       if (current.getTime() < today.getTime()) {
+//         return res
+//           .status(400)
+//           .json({ err: "Leave date must be today or a future date" });
+//       }
+//       // Move to the next day
+//       current.setDate(current.getDate() + 1);
+//     }
+
+//     if (start > end) {
+//       return res
+//         .status(400)
+//         .json({ err: "Start date must be before or equal to the end date" });
+//     }
+
+//     // Check if the employee exists in the database
+//     const employeeExists = await EmployeeModel.findById(employee);
+//     if (!employeeExists) {
+//       return res.status(404).json({ err: "Employee not found" });
+//     }
+
+//     // Calculate total number of days between start and end dates (inclusive)
+//     const totalDays = Math.ceil((end - start) / 86400000) + 1;
+
+//     // Initialize variables to track weekends, holidays, and overlapping days
+//     let weekendsCount = 0; // Count of weekends (Sundays and alternate Saturdays)
+//     let weekends = []; // Store weekend days
+//     let holidays = []; // Store non-weekend holidays
+//     let overlappingLeaves = []; // Store overlapping approved leaves
+//     let skippedDates = []; // To track skipped dates (due to overlap)
+
+//     // // Track off Saturdays (alternating weekends)
+//     // const offSaturdays = [];
+//     // let saturdayFlag = true;
+
+//     // Iterate through each day in the date range to count weekends (sundays and alternate saturdays)
+//     const currentDate = new Date(start);
+//     while (currentDate <= end) {
+//       const day = currentDate.getDay(); // Get day of the week (0 = Sunday, 6 = Saturday)
+//       const dateStr = currentDate.toISOString().split("T")[0]; // Convert date to ISO string
+
+//       // Check if the day is Sunday (always a weekend)
+//       if (day === 0) {
+//         weekendsCount++;
+//         weekends.push(dateStr);
+//       }
+//       // Check if the day is Saturday (alternate weekends)
+//       else if (day === 6) {
+//         // if (saturdayFlag) {
+//         //   weekendsCount++;
+//         //   weekends.push(dateStr); // Add to weekends array
+//         //   offSaturdays.push(dateStr); // Track off Saturdays
+//         // }
+//         // saturdayFlag = !saturdayFlag; // Toggle the flag for alternating Saturdays
+//         const saturdayNumber = Math.ceil(currentDate.getDate() / 7); // Get the Saturday number of the month (1st, 2nd, etc.)
+
+//         // If it's an even Saturday, treat it as a weekend
+//         if (saturdayNumber % 2 === 0) {
+//           weekendsCount++;
+//           weekends.push(dateStr); // Add to weekends array
+//         }
+//       }
+
+//       // Move to the next day
+//       currentDate.setDate(currentDate.getDate() + 1);
+//     }
+
+//     // Retrieve holidays within the leave period, excluding weekends
+//     const holidayRecords = await HolidayModel.find({
+//       date: { $gte: start, $lte: end },
+//     });
+
+//     // Extract holidays falling on weekends
+//     holidays = holidayRecords
+//       .filter((holiday) => {
+//         const hDate = new Date(holiday.date);
+//         const hDay = hDate.getDay();
+//         const hDateStr = hDate.toISOString().split("T")[0];
+
+//         // Exclude holidays on weekends (Sundays or off Saturdays)
+//         return hDay !== 0 && !(hDay === 6 && offSaturdays.includes(hDateStr));
+//       })
+//       .map((holiday) => holiday._id); // Only store the holiday ID
+
+//     // Calculate base working days by subtracting weekends and holidays
+//     let workingDays = totalDays - weekendsCount - holidays.length;
+
+//     // Check for overlapping approved leaves for the same employee
+//     const overlappingLeavesRecords = await LeaveModel.find({
+//       employee,
+//       status: "Approved",
+//       $or: [{ startDate: { $lte: end }, endDate: { $gte: start } }],
+//     });
+
+//     // Iterate through the leave period and check each date for overlap
+//     const checkDate = new Date(start); // Start checking from the leave start date
+//     while (checkDate <= end) {
+//       const dateStr = checkDate.toISOString().split("T")[0]; // Convert date to ISO string
+
+//       // Check if the day is a weekend (Sunday or off Saturday)
+//       const isWeekend =
+//         checkDate.getDay() === 0 ||
+//         (checkDate.getDay() === 6 && offSaturdays.includes(dateStr));
+
+//       // Check if the day is a holiday
+//       const isHoliday = holidays.some(
+//         (holidayId) => holidayId.toString() === dateStr
+//       );
+
+//       // Skip weekends and holidays
+//       if (isWeekend || isHoliday) {
+//         checkDate.setDate(checkDate.getDate() + 1);
+//         continue;
+//       }
+
+//       // If the day is a working day, check if the day overlaps with any approved leave
+//       const isOverlapping = overlappingLeavesRecords.some((leave) => {
+//         const leaveStart = new Date(leave.startDate);
+//         const leaveEnd = new Date(leave.endDate);
+//         return checkDate >= leaveStart && checkDate <= leaveEnd;
+//       });
+
+//       // If the day overlaps with an approved leave, skip this day
+//       if (isOverlapping) {
+//         skippedDates.push(dateStr);
+//         workingDays--; // Decrease working days since this day is already taken
+//       }
+
+//       // Move to the next day
+//       checkDate.setDate(checkDate.getDate() + 1);
+//     }
+
+//     // Final leave days calculation after deductions
+//     const calculatedDays = workingDays;
+
+//     // If no eligible leave days remain, return an error
+//     if (calculatedDays <= 0) {
+//       return res.status(400).json({
+//         err: "No eligible leave days remaining after accounting for weekends, holidays, and overlapping leaves.",
+//       });
+//     }
+
+//     // Check the employee's leave balance for the requested leave type
+//     const employeeData = await EmployeeModel.findById(employee).populate(
+//       "leaveBalances"
+//     );
+//     const balanceEntry = employeeData.leaveBalances.find((b) =>
+//       b.leaveTypeId.equals(leaveType)
+//     );
+
+//     // If insufficient leave balance, return an error
+//     if (!balanceEntry || balanceEntry.currentBalance < calculatedDays) {
+//       return res.status(400).json({
+//         err: `Insufficient leave balance for ${leaveTypeExist.leaveTypeName}. You have ${balanceEntry.currentBalance} days Left, but you requested ${calculatedDays} days.`,
+//       });
+//     }
+
+//     // Create the leave request in the database
+//     const leave = await LeaveModel.create({
+//       employee,
+//       leaveType,
+//       startDate: start,
+//       endDate: end,
+//       reason,
+//       weekends, // Store weekends (Sundays & off Saturdays)
+//       holidays, // Store holidays
+//       skippedDates, // Store skipped dates due to overlap
+//       calculatedDays, // Final calculated leave days
+//       status: "Pending", // Default status for new leave requests
+//     });
+
+//     // Return success response with the created leave request
+//     res.status(201).json({
+//       msg: "Leave request created successfully",
+//       data: leave,
+//     });
+//   } catch (error) {
+//     // Handle any unexpected errors
+//     console.error("Leave creation error:", error);
+//     res.status(500).json({
+//       err: "Internal Server Error",
+//       message: error.message,
 //     });
 //   }
 // };
@@ -380,31 +624,42 @@ const createLeaveRequest = async (req, res) => {
 
     // Validate reason field: must exist and match the regex
     if (!reason || !nameRegex.test(reason)) {
-      return res.status(400).json({ err: "Reason must contain only letters and spaces" });
+      return res
+        .status(400)
+        .json({ err: "Reason must contain only letters and spaces" });
     }
 
     // Parse start and end dates into Date objects
     const start = new Date(startDate);
     const end = new Date(endDate);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
 
     // Validate date formats and ensure start date is before or equal to end date
     if (!start.getTime() || !end.getTime()) {
       return res.status(400).json({ err: "Invalid Date format" });
     }
 
-        // Ensure holiday is created only for today or future dates
+    // Ensure leave is created only for today or future dates
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Remove time from today
+    today.setHours(0, 0, 0, 0); // Normalize today's date
 
-    if (date < today) {
-      return res
-        .status(400)
-        .json({ err: "Holiday date must be today or a future date" });
+    // Loop through each day from start to end and check if any date is in the past
+    let current = new Date(start);
+    while (current <= end) {
+      if (current.getTime() < today.getTime()) {
+        return res
+          .status(400)
+          .json({ err: "Leave date must be today or a future date" });
+      }
+      // Move to the next day
+      current.setDate(current.getDate() + 1);
     }
 
-
     if (start > end) {
-      return res.status(400).json({ err: "Start date must be before or equal to the end date" });
+      return res
+        .status(400)
+        .json({ err: "Start date must be before or equal to the end date" });
     }
 
     // Check if the employee exists in the database
@@ -417,35 +672,32 @@ const createLeaveRequest = async (req, res) => {
     const totalDays = Math.ceil((end - start) / 86400000) + 1;
 
     // Initialize variables to track weekends, holidays, and overlapping days
-    let weekendsCount = 0; // Count of weekends (Sundays and alternate Saturdays)
+    let weekendsCount = 0; // Count of weekends (Sundays and even Saturdays)
     let weekends = []; // Store weekend days
     let holidays = []; // Store non-weekend holidays
     let overlappingLeaves = []; // Store overlapping approved leaves
     let skippedDates = []; // To track skipped dates (due to overlap)
 
-    // Track off Saturdays (alternating weekends)
-    const offSaturdays = [];
-    let saturdayFlag = true;
-
-    // Iterate through each day in the date range to count weekends
+    // Iterate through each day in the date range to count weekends (Sundays and even Saturdays)
     const currentDate = new Date(start);
     while (currentDate <= end) {
       const day = currentDate.getDay(); // Get day of the week (0 = Sunday, 6 = Saturday)
-      const dateStr = currentDate.toISOString().split('T')[0]; // Convert date to ISO string
+      const dateStr = currentDate.toISOString().split("T")[0]; // Convert date to ISO string
 
       // Check if the day is Sunday (always a weekend)
       if (day === 0) {
         weekendsCount++;
         weekends.push(dateStr);
       }
-      // Check if the day is Saturday (alternate weekends)
+      // Check if the day is Saturday (even Saturdays as weekends)
       else if (day === 6) {
-        if (saturdayFlag) {
+        const saturdayNumber = Math.ceil(currentDate.getDate() / 7); // Get the Saturday number of the month (1st, 2nd, etc.)
+
+        // If it's an even Saturday, treat it as a weekend
+        if (saturdayNumber % 2 === 0) {
           weekendsCount++;
           weekends.push(dateStr); // Add to weekends array
-          offSaturdays.push(dateStr); // Track off Saturdays
         }
-        saturdayFlag = !saturdayFlag; // Toggle the flag for alternating Saturdays
       }
 
       // Move to the next day
@@ -454,18 +706,20 @@ const createLeaveRequest = async (req, res) => {
 
     // Retrieve holidays within the leave period, excluding weekends
     const holidayRecords = await HolidayModel.find({
-      date: { $gte: start, $lte: end }
+      date: { $gte: start, $lte: end },
     });
 
     // Extract holidays falling on weekends
-    holidays = holidayRecords.filter(holiday => {
-      const hDate = new Date(holiday.date);
-      const hDay = hDate.getDay();
-      const hDateStr = hDate.toISOString().split('T')[0];
+    holidays = holidayRecords
+      .filter((holiday) => {
+        const hDate = new Date(holiday.date);
+        const hDay = hDate.getDay();
+        const hDateStr = hDate.toISOString().split("T")[0];
 
-      // Exclude holidays on weekends (Sundays or off Saturdays)
-      return hDay !== 0 && !(hDay === 6 && offSaturdays.includes(hDateStr));
-    }).map(holiday => holiday._id); // Only store the holiday ID
+        // Exclude holidays on weekends (Sundays or even Saturdays)
+        return hDay !== 0 && !(hDay === 6 && weekends.includes(hDateStr));
+      })
+      .map((holiday) => holiday._id); // Only store the holiday ID
 
     // Calculate base working days by subtracting weekends and holidays
     let workingDays = totalDays - weekendsCount - holidays.length;
@@ -473,22 +727,24 @@ const createLeaveRequest = async (req, res) => {
     // Check for overlapping approved leaves for the same employee
     const overlappingLeavesRecords = await LeaveModel.find({
       employee,
-      status: 'Approved',
-      $or: [
-        { startDate: { $lte: end }, endDate: { $gte: start } }
-      ]
+      status: "Approved",
+      $or: [{ startDate: { $lte: end }, endDate: { $gte: start } }],
     });
 
     // Iterate through the leave period and check each date for overlap
     const checkDate = new Date(start); // Start checking from the leave start date
     while (checkDate <= end) {
-      const dateStr = checkDate.toISOString().split('T')[0]; // Convert date to ISO string
+      const dateStr = checkDate.toISOString().split("T")[0]; // Convert date to ISO string
 
-      // Check if the day is a weekend (Sunday or off Saturday)
-      const isWeekend = checkDate.getDay() === 0 || (checkDate.getDay() === 6 && offSaturdays.includes(dateStr));
-      
+      // Check if the day is a weekend (Sunday or even Saturday)
+      const isWeekend =
+        checkDate.getDay() === 0 ||
+        (checkDate.getDay() === 6 && weekends.includes(dateStr));
+
       // Check if the day is a holiday
-      const isHoliday = holidays.some(holidayId => holidayId.toString() === dateStr);
+      const isHoliday = holidays.some(
+        (holidayId) => holidayId.toString() === dateStr
+      );
 
       // Skip weekends and holidays
       if (isWeekend || isHoliday) {
@@ -497,7 +753,7 @@ const createLeaveRequest = async (req, res) => {
       }
 
       // If the day is a working day, check if the day overlaps with any approved leave
-      const isOverlapping = overlappingLeavesRecords.some(leave => {
+      const isOverlapping = overlappingLeavesRecords.some((leave) => {
         const leaveStart = new Date(leave.startDate);
         const leaveEnd = new Date(leave.endDate);
         return checkDate >= leaveStart && checkDate <= leaveEnd;
@@ -518,20 +774,23 @@ const createLeaveRequest = async (req, res) => {
 
     // If no eligible leave days remain, return an error
     if (calculatedDays <= 0) {
-      return res.status(400).json({ 
-        err: "No eligible leave days remaining after accounting for weekends, holidays, and overlapping leaves." 
+      return res.status(400).json({
+        err: "No eligible leave days remaining after accounting for weekends, holidays, and overlapping leaves.",
       });
     }
 
     // Check the employee's leave balance for the requested leave type
-    const employeeData = await EmployeeModel.findById(employee)
-      .populate('leaveBalances');
-    const balanceEntry = employeeData.leaveBalances.find(b => b.leaveTypeId.equals(leaveType));
+    const employeeData = await EmployeeModel.findById(employee).populate(
+      "leaveBalances"
+    );
+    const balanceEntry = employeeData.leaveBalances.find((b) =>
+      b.leaveTypeId.equals(leaveType)
+    );
 
     // If insufficient leave balance, return an error
     if (!balanceEntry || balanceEntry.currentBalance < calculatedDays) {
-      return res.status(400).json({ 
-        err: `Insufficient leave balance for ${leaveTypeExist.leaveTypeName}. You have ${balanceEntry.currentBalance} days Left, but you requested ${calculatedDays} days.` 
+      return res.status(400).json({
+        err: `Insufficient leave balance for ${leaveTypeExist.leaveTypeName}. You have ${balanceEntry.currentBalance} days Left, but you requested ${calculatedDays} days.`,
       });
     }
 
@@ -542,32 +801,30 @@ const createLeaveRequest = async (req, res) => {
       startDate: start,
       endDate: end,
       reason,
-      weekends, // Store weekends (Sundays & off Saturdays)
+      weekends, // Store weekends (Sundays & even Saturdays)
       holidays, // Store holidays
       skippedDates, // Store skipped dates due to overlap
       calculatedDays, // Final calculated leave days
-      status: 'Pending' // Default status for new leave requests
+      status: "Pending", // Default status for new leave requests
     });
 
     // Return success response with the created leave request
     res.status(201).json({
       msg: "Leave request created successfully",
-      data: leave
+      data: leave,
     });
-
   } catch (error) {
     // Handle any unexpected errors
     console.error("Leave creation error:", error);
-    res.status(500).json({ 
-      err: "Internal Server Error", 
-      message: error.message 
+    res.status(500).json({
+      err: "Internal Server Error",
+      message: error.message,
     });
   }
-}
+};
 
 
-
-// It uses Moment.js to iterate over the leave period, identifies Sundays (always weekends) and alternating Saturdays as weekends, fetches holiday 
+// It uses Moment.js to iterate over the leave period, identifies Sundays (always weekends) and alternating Saturdays as weekends, fetches holiday
 // records, and then excludes these dates when marking the actual leave days in attendance. Any attendance already marked as a holiday is preserved.
 //  The _id of each created/updated attendance record is stored in the leave request’s affectedAttendance field.
 // Approve/Reject Leave
@@ -595,7 +852,7 @@ const createLeaveRequest = async (req, res) => {
 //           employee: leave.employee._id,
 //           attendanceDate: currentDate.toDate(),
 //           status: "On Leave",
-//           totalHours: 0, 
+//           totalHours: 0,
 //         });
 //         attendanceRecords.push(newAttendance._id);
 //         currentDate.add(1, "days");
@@ -614,7 +871,7 @@ const createLeaveRequest = async (req, res) => {
 //           employee: leave.employee._id,
 //           attendanceDate: currentDate.toDate(),
 //           status: "On Leave",
-//           totalHours: 0, 
+//           totalHours: 0,
 //         });
 //         attendanceRecords.push(newAttendance._id);
 //         currentDate.add(1, "days");
@@ -747,8 +1004,6 @@ const createLeaveRequest = async (req, res) => {
 //       .json({ err: "Internal Server Error", error: error.message });
 //   }
 // };
-
-
 
 // const updateLeaveStatus = async (req, res) => {
 //   try {
@@ -1068,31 +1323,31 @@ const createLeaveRequest = async (req, res) => {
 //         totalDates.push(current.format("YYYY-MM-DD"));
 //         current.add(1, "days");
 //       }
-    
+
 //       // STEP 2: Delete attendance records for the employee with status "On Leave" for each date in the leave period
 //       await AttendanceModel.deleteMany({
 //         employee: leave.employee._id,
 //         status: "On Leave",
 //         attendanceDate: { $in: totalDates.map(date => moment(date, "YYYY-MM-DD").toDate()) }
 //       });
-    
+
 //       // STEP 3: Prepare bulk update operations to restore previous attendance status
 //       const bulkOps = [];
-    
+
 //       // Loop through each date in the leave period
 //       for (const dateStr of totalDates) {
 //         const attendanceDate = moment(dateStr, "YYYY-MM-DD").toDate();
-    
+
 //         // Find attendance records for this employee and date
 //         let attendance = await AttendanceModel.findOne({
 //           employee: leave.employee._id,
 //           attendanceDate: attendanceDate,
 //         });
-    
+
 //         // If attendance exists and has previousAttendance, restore it
 //         if (attendance && attendance.previousAttendance && attendance.previousAttendance.length > 0) {
 //           const previousAttendance = attendance.previousAttendance.pop(); // Get the last stored record
-    
+
 //           // Prepare bulk update operation for attendance restoration
 //           bulkOps.push({
 //             updateOne: {
@@ -1113,22 +1368,21 @@ const createLeaveRequest = async (req, res) => {
 //           });
 //         }
 //       }
-    
+
 //       // If there are any bulk operations, execute them in bulk
 //       if (bulkOps.length > 0) {
 //         await AttendanceModel.bulkWrite(bulkOps);
 //       }
-    
+
 //       // STEP 4: Update leave status to "Rejected" and save
 //       leave.status = "Rejected";
 //       await leave.save();
-      
+
 //       return res.status(200).json({
 //         msg: "Leave status updated successfully and attendance restored",
 //         data: leave,
 //       });
 //     }
-    
 
 //     // Save the updated leave request
 //     await leave.save();
@@ -1259,8 +1513,6 @@ const createLeaveRequest = async (req, res) => {
 //       leave.leaveConvertedToHolidayCount = leaveCount;
 //     }
 
-    
-
 //     if (req.body.status === "Rejected") {
 //       // STEP 1: Save all the dates in the leave period from startDate to endDate
 //       const totalDates = [];
@@ -1339,7 +1591,7 @@ const createLeaveRequest = async (req, res) => {
 //   }
 // };
 
-// this is al correct in stead of over writing 
+// this is al correct in stead of over writing
 // const updateLeaveStatus = async (req, res) => {
 //   try {
 //     // Retrieve the leave request and populate employee and approver info
@@ -1721,7 +1973,6 @@ const createLeaveRequest = async (req, res) => {
 //   }
 // };
 
-
 const calculateDateRange = (startDate, endDate) => {
   const start = moment(startDate);
   const end = moment(endDate);
@@ -1759,9 +2010,11 @@ const updateLeaveStatus = async (req, res) => {
       let saturdayFlag = true;
       totalDates.forEach((dateStr) => {
         const day = moment(dateStr, "YYYY-MM-DD").day();
-        if (day === 0) { // Sunday
+        if (day === 0) {
+          // Sunday
           weekends.push(dateStr);
-        } else if (day === 6) { // Saturday
+        } else if (day === 6) {
+          // Saturday
           if (saturdayFlag) {
             weekends.push(dateStr);
           }
@@ -1772,17 +2025,17 @@ const updateLeaveStatus = async (req, res) => {
 
       // STEP 3: Retrieve holiday records within the leave period
       const holidayRecords = await HolidayModel.find({
-        date: { $gte: leave.startDate, $lte: leave.endDate }
+        date: { $gte: leave.startDate, $lte: leave.endDate },
       });
       leave.holidays = holidayRecords;
 
       // Convert holiday dates to string format for comparison
-      const holidayDates = holidayRecords.map(holiday =>
+      const holidayDates = holidayRecords.map((holiday) =>
         moment(holiday.date).format("YYYY-MM-DD")
       );
 
       // STEP 4: Determine actual leave dates by excluding weekends and holiday dates
-      const actualLeaveDates = totalDates.filter(dateStr => {
+      const actualLeaveDates = totalDates.filter((dateStr) => {
         return !weekends.includes(dateStr) && !holidayDates.includes(dateStr);
       });
 
@@ -1792,12 +2045,15 @@ const updateLeaveStatus = async (req, res) => {
 
         let attendance = await AttendanceModel.findOne({
           employee: leave.employee._id,
-          attendanceDate: attendanceDate
+          attendanceDate: attendanceDate,
         });
 
         // Skip attendance updates if the status is already "On Leave" or "Holiday"
-        if (attendance && (attendance.status === "On Leave" || attendance.status === "Holiday")) {
-          continue;  // Skip if already "On Leave" or "Holiday"
+        if (
+          attendance &&
+          (attendance.status === "On Leave" || attendance.status === "Holiday")
+        ) {
+          continue; // Skip if already "On Leave" or "Holiday"
         }
 
         if (attendance) {
@@ -1830,7 +2086,7 @@ const updateLeaveStatus = async (req, res) => {
             employee: leave.employee._id,
             attendanceDate: attendanceDate,
             status: "On Leave",
-            totalHours: 0
+            totalHours: 0,
           });
           affectedAttendanceIds.push(newAttendance._id);
         }
@@ -1847,7 +2103,9 @@ const updateLeaveStatus = async (req, res) => {
       await AttendanceModel.deleteMany({
         employee: leave.employee._id,
         status: "On Leave",
-        attendanceDate: { $in: totalDates.map(date => moment(date, "YYYY-MM-DD").toDate()) }
+        attendanceDate: {
+          $in: totalDates.map((date) => moment(date, "YYYY-MM-DD").toDate()),
+        },
       });
 
       // STEP 2: Restore previous attendance statuses using bulkWrite
@@ -1859,7 +2117,11 @@ const updateLeaveStatus = async (req, res) => {
           attendanceDate: attendanceDate,
         });
 
-        if (attendance && attendance.previousAttendance && attendance.previousAttendance.length > 0) {
+        if (
+          attendance &&
+          attendance.previousAttendance &&
+          attendance.previousAttendance.length > 0
+        ) {
           const previousAttendance = attendance.previousAttendance.pop();
 
           bulkOps.push({
@@ -1909,9 +2171,6 @@ const updateLeaveStatus = async (req, res) => {
   }
 };
 
-
-
-
 const deleteLeave = async (req, res) => {
   try {
     const _id = req.params.id;
@@ -1922,9 +2181,9 @@ const deleteLeave = async (req, res) => {
     const leave = await LeaveModel.findById(_id);
     if (!leave) return res.status(404).json({ err: "Leave Request Not Found" });
 
-
-    const holidaycheck = await HolidayModel.findByIdAndDelete(_id)
-    if (!holidaycheck) return res.status(404).json({ err: "Leave Request Not Found" });
+    const holidaycheck = await HolidayModel.findByIdAndDelete(_id);
+    if (!holidaycheck)
+      return res.status(404).json({ err: "Leave Request Not Found" });
 
     res.status(200).json({ msg: "Leave Request Deleted" });
   } catch (error) {
@@ -1933,5 +2192,11 @@ const deleteLeave = async (req, res) => {
       .status(500)
       .json({ err: "Internal Server Error", error: error.message });
   }
-}
-module.exports = { createLeaveRequest, updateLeaveStatus, getLeaveHistory ,getSingleLeave,deleteLeave};
+};
+module.exports = {
+  createLeaveRequest,
+  updateLeaveStatus,
+  getLeaveHistory,
+  getSingleLeave,
+  deleteLeave,
+};

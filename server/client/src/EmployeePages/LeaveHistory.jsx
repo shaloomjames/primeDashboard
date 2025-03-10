@@ -217,7 +217,7 @@ const LeaveHistory = () => {
                       <th>Leave Reason</th> {/* Reason */}
                       <th>Leave Status</th> {/* Status */}
                       <th>Leave Approved By</th> {/* Approved By */}
-                      <th>Skipped Dates</th> {/* Skipped Dates */}
+                      <th>Skipped Overlaped Dates</th> {/* Skipped Dates */}
                       <th>Weekends During Leave</th> {/* Weekends */}
                       <th>Holidays During Leave</th> {/* Holidays */}
                       {/* <th>Actions</th> Actions like Approve/Reject */}
