@@ -94,7 +94,6 @@ const AttendanceSchema = mongoose.Schema(
       type: Date,
       required: true,
       default: Date.now,
-      // Removed unique: true to avoid global uniqueness
     },
     timeIn: {
       type: Date,

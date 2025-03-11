@@ -37,3 +37,5 @@ const HolidaySchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("HolidayModel", HolidaySchema);
+// same for creating holiday can be created on leave date and overlap/update it as holilday === after completing all work make sure if the 
+// attendance record which is being replaced increase the leave balance of that leave type and when the holday is deleted again update the employee leave type balance

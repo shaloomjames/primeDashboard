@@ -333,7 +333,7 @@ const ManageLeaveRequests = () => {
                         <td>
                           <button
                             className="btn btn-success btn-sm me-2"
-                            disabled={leave.status === "Approved" && leave.status === "Rejected" }
+                            disabled={leave.status === "Approved" || leave.status === "Pending" }
                             onClick={() =>
                               handleStatusUpdate(leave._id, "Approved", Id)
                             }
@@ -342,7 +342,7 @@ const ManageLeaveRequests = () => {
                           </button>
                           <button
                             className="btn btn-danger btn-sm my-2"
-                            disabled={leave.status === "Rejected" && leave.status === "Pending" }
+                            disabled={leave.status === "Rejected" || leave.status === "Pending" }
                             onClick={() =>
                               handleStatusUpdate(leave._id, "Rejected")
                             }
