@@ -3,12 +3,12 @@ const {
   createLeaveRequest,
   getLeaveHistory,
   updateLeaveStatus,
-  getSingleLeave,
+  getLeaveHistoryByEmployee,
   deleteLeave,
 } = require("../controller/LeaveController");
 const router = express.Router();
 
 router.route("/").post(createLeaveRequest).get(getLeaveHistory);
-router.route("/:id").get(getSingleLeave ).put(updateLeaveStatus).delete(deleteLeave);
+router.route("/:id").get(getLeaveHistoryByEmployee).put(updateLeaveStatus).delete(deleteLeave);
 
 module.exports = router;

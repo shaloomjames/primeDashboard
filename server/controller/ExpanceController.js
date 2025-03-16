@@ -118,7 +118,7 @@ const getSingleExpance = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid Id Format" });
 
         const Expance = await ExpanceModel.findById({ _id }).populate("addedBy").populate("expanceCategory");
-        if (!Expance) return res.status(404).json({ err: "No Data Found" });
+        if (!Expance.length) return res.status(404).json({ err: "No Data Found" });
 
         return res.status(200).json(Expance);
     } catch (error) {

@@ -300,11 +300,13 @@ const getAttendanceReport = async (req, res) => {
       if (date.day() === 0) { // Sunday
         totalSundays++;
       } else if (date.day() === 6) { // Saturday
+        
+        const saturdayNumber = Math.ceil(date.date() / 7); // Calculate the "nth Saturday" like the first code
         totalSaturdays++;
-        if (totalSaturdays % 2 === 1) { // Odd Saturdays are working days
-          workingSaturdays++;
-        } else { // Even Saturdays are weekends
-          weekendSaturdays++;
+        if (saturdayNumber % 2 === 0) {
+          weekendSaturdays++; // Even Saturdays are weekends
+        } else {
+          workingSaturdays++; // Odd Saturdays are working days
         }
       }
     }
@@ -337,7 +339,7 @@ const getAttendanceReport = async (req, res) => {
       absentDays,           // Days explicitly marked as "Absence"
       daysLate,             // Total late days
       daysOnTime,           // Total on-time days
-      Holiday,              // Total holiday days
+      Holiday,              // Total holiday days 
       OnLeave,              // Total leave days
       effectiveAbsentDays,  // Absent days from late conversion
       remainingLates,       // Late days left after conversion
@@ -366,40 +368,90 @@ const getAttendance = async (req, res) => {
     }
 }
 
-// @Request   GET
-// @Route     http://localhost:5000/api/attendance/:id
-// @Access    Private
+// // @Request   GET
+// // @Route     http://localhost:5000/api/attendance/:id
+// // @Access    Private
+// const getAttendanceByEmployeeId = async (req, res) => {
+//   try {
+//     const { id } = req.params; // Extract the employee ID from the request parameters
+
+//     // Fetch attendance records for the specified employee ID
+//     const attendanceRecords = await AttendanceModel.find({ employee: id }).populate("employee");
+    
+//     if (!attendanceRecords.length) return res.status(404).json({ err: "No Data Found" });
+
+//     return res.status(200).json(attendanceRecords);
+//   } catch (error) {
+//     console.error("Error fetching attendance records:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
 const getAttendanceByEmployeeId = async (req, res) => {
   try {
-    const { id } = req.params; // Extract the employee ID from the request parameters
+    const { id } = req.params;
+    console.log(`Fetching attendance for employee ID: ${id}`);
 
-    // Fetch attendance records for the specified employee ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ err: "Invalid employee ID" });
+    }
+
     const attendanceRecords = await AttendanceModel.find({ employee: id }).populate("employee");
-    res.status(200).json(attendanceRecords);
+    console.log(`Found ${attendanceRecords.length} records`);
+
+    if (!attendanceRecords.length) {
+      return res.status(404).json({ err: "No attendance records found" });
+    }
+
+    return res.status(200).json(attendanceRecords);
   } catch (error) {
-    console.error("Error fetching attendance records:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error fetching attendance records:", error.message);
+    if (error.name === "MongoServerSelectionError") {
+      return res.status(503).json({ message: "Database temporarily unavailable, please try again later" });
+    }
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// // @Request   GET
+// // @Route     http://localhost:5000/api/attendance
+// // @Access    Private
+// const getSingleAttendance = async (req, res) => {
+//     try {
+//         const employee = req.params.id;
+//         const attendanceDate = req.params.date;
+//         if (!mongoose.Types.ObjectId.isValid(employee)) return res.status(400).json({ err: "Invalid ID Format" });
+
+//         const Attendance = await AttendanceModel.findOne({employee,attendanceDate}).populate("employee");
+//         if (!Attendance.length) return res.status(404).json({ err: "No Data Found" });
+
+//         return res.status(200).json(Attendance)
+//     } catch (error) {
+//         console.log("Error Reading Attendance", error);
+//         return res.status(500).json({ err: "Internal Server Error", error: error.message });
+//     }
+// }
+
 
 // @Request   GET
 // @Route     http://localhost:5000/api/attendance
 // @Access    Private
 const getSingleAttendance = async (req, res) => {
-    try {
-        const employee = req.params.id;
-        const attendanceDate = req.params.date;
-        if (!mongoose.Types.ObjectId.isValid(employee)) return res.status(400).json({ err: "Invalid ID Format" });
+  try {
+      const employee = req.params.id;
+      const attendanceDate = req.params.date;
+      if (!mongoose.Types.ObjectId.isValid(employee)) return res.status(400).json({ err: "Invalid ID Format" });
 
-        const Attendance = await AttendanceModel.findOne({employee,attendanceDate}).populate("employee");
-        if (!Attendance) return res.status(404).json({ err: "No Data Found" });
+      const Attendance = await AttendanceModel.findOne({employee,attendanceDate}).populate("employee");
+      if (!Attendance) return res.status(404).json({ err: "No Data Found" });
 
-        return res.status(200).json(Attendance)
-    } catch (error) {
-        console.log("Error Reading Attendance", error);
-        return res.status(500).json({ err: "Internal Server Error", error: error.message });
-    }
+      return res.status(200).json(Attendance)
+  } catch (error) {
+      console.log("Error Reading Attendance", error);
+      return res.status(500).json({ err: "Internal Server Error", error: error.message });
+  }
 }
+
 
 
 // @Request   POST

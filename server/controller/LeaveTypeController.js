@@ -276,7 +276,7 @@ const getSingleLeaveType = async (req, res) => {
 
     const leaveType = await LeaveTypeModel.findById({ _id });
 
-    if (!leaveType)
+    if (!leaveType.length)
       return res.status(404).json({ err: "No data found" });
 
     return res.status(200).json(leaveType);

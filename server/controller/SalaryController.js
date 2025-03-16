@@ -11,7 +11,7 @@ const getsalary = async (req, res) => {
   try {
     const Salaries = await SalaryModel.find().populate("employeeId");
 
-    if (!Salaries) return res.status(400).json({ err: "No Salaries Data Found" });
+    if (!Salaries.length) return res.status(400).json({ err: "No Salaries Data Found" });
 
     return res.status(200).json(Salaries)
   } catch (error) {
@@ -35,7 +35,7 @@ const getsingleUserSalary = async (req, res) => {
     const Salaries = await SalaryModel.find({ employeeId: id }).populate("employeeId");
 
     // Check if salaries exist
-    if (!Salaries || Salaries.length === 0)
+    if (!Salaries.length || Salaries.length === 0)
       return res.status(400).json({ err: "No Salaries Data Found" });
 
     // Always return the data as an array (even if a single object is found)

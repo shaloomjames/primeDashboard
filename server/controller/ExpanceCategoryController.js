@@ -46,7 +46,7 @@ const getSingleExpanceCategory = async (req, res) => {
 
         const ExpanceCategory = await ExpanceCategoryModel.findOne({ _id });
 
-        if (!ExpanceCategory) return res.status(404).json({ err: "No Expance Category Found" });
+        if (!ExpanceCategory.length) return res.status(404).json({ err: "No Expance Category Found" });
 
         return res.status(201).json(ExpanceCategory);
     } catch (error) {

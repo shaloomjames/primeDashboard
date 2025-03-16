@@ -201,7 +201,7 @@ const ShowAttendance = () => {
                     <thead>
                       <tr>
                         <th>Total Days In Month</th>
-                        <th>Total SunDays in Month</th>
+                        <th>Total Weekends in Month</th>
                         <th>Working Days (Excluding Sundays)</th>
                         <th>Days On Time</th>
                         <th>Days Late</th>
@@ -218,7 +218,7 @@ const ShowAttendance = () => {
                     <tbody>
                       <tr>
                         <td>{attendanceReport.totalDays || 0}</td>
-                        <td>{attendanceReport.totalSundays || 0}</td>
+                        <td>{attendanceReport.totalWeekends || 0}</td>
                         <td>{attendanceReport.workingDays || 0}</td>
                         <td>{attendanceReport.daysOnTime || 0}</td>
                         <td>{attendanceReport.daysLate || 0}</td>
@@ -318,7 +318,7 @@ const ShowAttendance = () => {
                               {record?.attendanceDate
                                 ? new Date(
                                     record?.attendanceDate
-                                  ).toLocaleDateString("en-GB")
+                                  ).toLocaleString("en-GB")
                                 : "-"}
                             </td>
                             <td>{timeIn ? formatTime(timeIn) : "-"}</td>

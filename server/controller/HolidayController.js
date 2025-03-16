@@ -1,4 +1,5 @@
 const HolidayModel = require("../models/HolidayModel");
+const LeaveModel = require("../models/LeaveModel");
 const AttendanceModel = require("../models/AttendanceModel");
 const { default: mongoose } = require("mongoose");
 const EmployeeModel = require("../models/EmployeeModel");
@@ -117,45 +118,6 @@ const EmployeeModel = require("../models/EmployeeModel");
 // };
 
 
-// Get Holidays
-const getHolidays = async (req, res) => {
-  try {
-    const holidays = await HolidayModel.find()
-      .populate("createdBy")
-      .populate("affectedAttendance");
-      
-    if (!holidays) return res.status(404).json({ err: "NO Holidays Found" });
-
-    res.status(200).json(holidays);
-  } catch (error) {
-    console.error("Holiday fetch error:", error);
-    return res
-      .status(500)
-      .json({ err: "Internal Server Error", error: error.message });
-    }
-};
-
-const getSingleHoliday = async (req, res) => {
-  try {
-    const _id = req.params.id;
-    
-    if (!mongoose.Types.ObjectId.isValid(_id))
-      return res.status(400).json({ err: "Invalid Id Format" });
-    
-    const holiday = await HolidayModel.findById(_id)
-    .populate("createdBy")
-    .populate("affectedAttendance");
-    
-    if (!holiday) return res.status(404).json({ err: "Holiday Not Found" });
-    
-    return res.status(200).json(holiday);
-  } catch (error) {
-    console.log("Error Fetching Single Holiday", error);
-    return res
-    .status(500)
-    .json({ err: "Internal Server Error", error: error.message });
-  }
-};
 
 // // Create Holiday
 // const createHoliday = async (req, res) => {
@@ -548,136 +510,139 @@ const getSingleHoliday = async (req, res) => {
 //   }
 // };
 
-const createHoliday = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+// const createHoliday = async (req, res) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
 
-  try {
-    const { name, date, description, createdBy } = req.body;
+//   try {
+//     const { name, date, description, createdBy } = req.body;
 
-    const nameRegex = /^[A-Za-z0-9\s.,!?'"()-]+$/;
+//     const nameRegex = /^[A-Za-z0-9\s.,!?'"()-]+$/;
 
-    if (!name || !nameRegex.test(name)) {
-      return res.status(400).json({
-        err: "Invalid name. Only letters, numbers, spaces, and some punctuation are allowed.",
-      });
-    }
-    if (description && !nameRegex.test(description)) {
-      return res.status(400).json({
-        err: "Invalid description. Only letters, numbers, spaces, and some punctuation are allowed.",
-      });
-    }
-    if (!date) {
-      return res.status(400).json({ err: "Date is required" });
-    }
+//     if (!name || !nameRegex.test(name)) {
+//       return res.status(400).json({
+//         err: "Invalid name. Only letters, numbers, spaces, and some punctuation are allowed.",
+//       });
+//     }
+//     if (description && !nameRegex.test(description)) {
+//       return res.status(400).json({
+//         err: "Invalid description. Only letters, numbers, spaces, and some punctuation are allowed.",
+//       });
+//     }
+//     if (!date) {
+//       return res.status(400).json({ err: "Date is required" });
+//     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0);
 
-    const newDate = new Date(date);
-    newDate.setHours(0, 0, 0, 0);
+//     const newDate = new Date(date);
+//     newDate.setHours(0, 0, 0, 0);
 
-    if (newDate.getTime() < today.getTime()) {
-      return res.status(400).json({ err: "Holiday date must be today or a future date" });
-    }
+//     if (newDate.getTime() < today.getTime()) {
+//       return res.status(400).json({ err: "Holiday date must be today or a future date" });
+//     }
 
-    const dayOfWeek = newDate.getDay();
-    if (dayOfWeek === 0) {
-      return res.status(400).json({ err: "Holiday cannot be created on Sunday. It is a weekend" });
-    }
-    if (dayOfWeek === 6) {
-      const weekNumber = Math.ceil(newDate.getDate() / 7);
-      if (weekNumber % 2 === 0) {
-        return res.status(400).json({ err: "Holiday cannot be created on alternate Saturdays. They are weekends" });
-      }
-    }
+//     const dayOfWeek = newDate.getDay();
+//     if (dayOfWeek === 0) {
+//       return res.status(400).json({ err: "Holiday cannot be created on Sunday. It is a weekend" });
+//     }
+//     if (dayOfWeek === 6) {
+//       const weekNumber = Math.ceil(newDate.getDate() / 7);
+//       if (weekNumber % 2 === 0) {
+//         return res.status(400).json({ err: "Holiday cannot be created on alternate Saturdays. They are weekends" });
+//       }
+//     }
 
-    const existingHoliday = await HolidayModel.findOne({ date: newDate });
-    if (existingHoliday) {
-      return res.status(409).json({ err: "Holiday already exists for this date" });
-    }
+//     const existingHoliday = await HolidayModel.findOne({ date: newDate });
+//     if (existingHoliday) {
+//       return res.status(409).json({ err: "Holiday already exists for this date" });
+//     }
 
-    const holiday = await HolidayModel.create(
-      [
-        {
-          name,
-          date: newDate,
-          description: description || "",
-          createdBy,
-          affectedAttendance: [],
-        },
-      ],
-      { session }
-    ).then((result) => result[0]);
+//     const holiday = await HolidayModel.create(
+//       [
+//         {
+//           name,
+//           date: newDate,
+//           description: description || "",
+//           createdBy,
+//           affectedAttendance: [],
+//         },
+//       ],
+//       { session }
+//     ).then((result) => result[0]);
 
-    const employees = await EmployeeModel.find();
+//     const employees = await EmployeeModel.find();
 
-    await Promise.all(
-      employees.map(async (employee) => {
-        let attendance = await AttendanceModel.findOne({
-          employee: employee._id,
-          attendanceDate: newDate,
-        });
+//     await Promise.all(
+//       employees.map(async (employee) => {
+//         let attendance = await AttendanceModel.findOne({
+//           employee: employee._id,
+//           attendanceDate: newDate,
+//         });
 
-        if (attendance) {
-          const statusesToReplace = ["On Time", "Late", "Absence", "On Leave"];
-          if (statusesToReplace.includes(attendance.status)) {
-            if (!attendance.previousAttendance) {
-              attendance.previousAttendance = [];
-            }
-            holiday.affectedAttendance.push(attendance._id);
-            attendance.previousAttendance.push({
-              timeIn: attendance.timeIn,
-              timeOut: attendance.timeOut,
-              status: attendance.status,
-              lateBy: attendance.lateBy,
-              totalHours: attendance.totalHours,
-              leaveConvertedToHolidayCount: attendance.status === "On Leave" ? 1 : 0,
-              updatedAt: Date.now(),
-            });
-            attendance.status = "Holiday";
-            attendance.timeIn = null;
-            attendance.timeOut = null;
-            attendance.lateBy = 0;
-            attendance.totalHours = 0;
-            await attendance.save({ session });
-          }
-        } else {
-          const newAttendance = await AttendanceModel.create(
-            [
-              {
-                employee: employee._id,
-                employeeModell: "employeeModel",
-                attendanceDate: newDate,
-                status: "Holiday",
-                timeIn: null,
-                timeOut: null,
-                lateBy: 0,
-                totalHours: 0,
-                previousAttendance: [],
-              },
-            ],
-            { session }
-          ).then((result) => result[0]);
-          holiday.affectedAttendance.push(newAttendance._id);
-        }
-      })
-    );
+//         if (attendance) {
+//           const statusesToReplace = ["On Time", "Late", "Absence", "On Leave"];
+//           if (statusesToReplace.includes(attendance.status)) {
+//             if (!attendance.previousAttendance) {
+//               attendance.previousAttendance = [];
+//             }
+//             holiday.affectedAttendance.push(attendance._id);
+//             attendance.previousAttendance.push({
+//               timeIn: attendance.timeIn,
+//               timeOut: attendance.timeOut,
+//               status: attendance.status,
+//               lateBy: attendance.lateBy,
+//               totalHours: attendance.totalHours,
+//               leaveConvertedToHolidayCount: attendance.status === "On Leave" ? 1 : 0,
+//               updatedAt: Date.now(),
+//             });
+//             attendance.status = "Holiday";
+//             attendance.timeIn = null;
+//             attendance.timeOut = null;
+//             attendance.lateBy = 0;
+//             attendance.totalHours = 0;
+//             await attendance.save({ session });
+//           }
+//         } else {
+//           const newAttendance = await AttendanceModel.create(
+//             [
+//               {
+//                 employee: employee._id,
+//                 employeeModell: "employeeModel",
+//                 attendanceDate: newDate,
+//                 status: "Holiday",
+//                 timeIn: null,
+//                 timeOut: null,
+//                 lateBy: 0,
+//                 totalHours: 0,
+//                 previousAttendance: [],
+//               },
+//             ],
+//             { session }
+//           ).then((result) => result[0]);
+//           holiday.affectedAttendance.push(newAttendance._id);
+//         }
+//       })
+//     );
 
-    await holiday.save({ session });
-    await session.commitTransaction();
-    return res.status(201).json({ msg: "Holiday created successfully", data: holiday });
-  } catch (error) {
-    await session.abortTransaction();
-    console.error("Holiday creation error:", error);
-    if (error.code === 11000) {
-      return res.status(409).json({ err: "Holiday or attendance already exists for this date" });
-    }
-    return res.status(500).json({ err: "Internal Server Error", details: error.message });
-  } finally {
-    session.endSession();
-  }
-};
+//     await holiday.save({ session });
+//     await session.commitTransaction();
+//     return res.status(201).json({ msg: "Holiday created and attendance updated successfully", data: holiday });
+//   } catch (error) {
+//     await session.abortTransaction();
+//     console.error("Holiday creation error:", error);
+//     if (error.code === 11000) {
+//       return res.status(409).json({ err: "Holiday or attendance already exists for this date" });
+//     }
+//     return res.status(500).json({ err: "Internal Server Error", details: error.message });
+//   } finally {
+//     session.endSession();
+//   }
+// };
+
+// Create a new holiday and update attendance records
+
 
 // When deleting a holiday, we need to check the attendance records for that holiday date in the Attendance model for each employee. If the employee
 //  has a record in the previousAttendance field, we must first update the attendance record for the holiday date to the value in the previousAttendance
@@ -851,90 +816,6 @@ const createHoliday = async (req, res) => {
   //   }
   // };
 
-  const deleteHoliday = async (req, res) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-  
-    try {
-      const _id = req.params.id;
-  
-      if (!mongoose.Types.ObjectId.isValid(_id)) {
-        return res.status(400).json({ err: "Invalid Id Format" });
-      }
-  
-      const holiday = await HolidayModel.findById(_id);
-      if (!holiday) {
-        return res.status(404).json({ err: "Holiday Not Found" });
-      }
-  
-      const holidayDate = new Date(holiday.date);
-      holidayDate.setHours(0, 0, 0, 0);
-  
-      const currentDate = new Date();
-      currentDate.setHours(0, 0, 0, 0);
-  
-      // Optional: Comment out if you want to allow past holiday deletion
-      if (holidayDate < currentDate) {
-        return res.status(400).json({
-          err: "Holiday date is in the past. Deletion is not allowed.",
-        });
-      }
-  
-      const attendanceRecords = await AttendanceModel.find({
-        attendanceDate: holidayDate,
-        status: "Holiday",
-      });
-  
-      const bulkOps = attendanceRecords.map((attendance) => {
-        if (attendance.previousAttendance && attendance.previousAttendance.length > 0) {
-          const previousAttendance = attendance.previousAttendance.pop();
-          return {
-            updateOne: {
-              filter: { _id: attendance._id },
-              update: {
-                $set: {
-                  timeIn: previousAttendance.timeIn,
-                  timeOut: previousAttendance.timeOut,
-                  status: previousAttendance.status,
-                  lateBy: previousAttendance.lateBy,
-                  totalHours: previousAttendance.totalHours,
-                  leaveConvertedToHolidayCount: previousAttendance.leaveConvertedToHolidayCount,
-                  updatedAt: previousAttendance.updatedAt,
-                  previousAttendance: attendance.previousAttendance, // Keep remaining entries
-                },
-              },
-            },
-          };
-        } else {
-          return {
-            deleteOne: {
-              filter: { _id: attendance._id },
-            },
-          };
-        }
-      });
-  
-      if (bulkOps.length > 0) {
-        await AttendanceModel.bulkWrite(bulkOps, { session });
-      }
-  
-      const deletedHoliday = await HolidayModel.findByIdAndDelete(_id, { session });
-      await session.commitTransaction();
-      return res.status(200).json({
-        msg: "Holiday deleted successfully",
-        data: deletedHoliday,
-      });
-    } catch (error) {
-      await session.abortTransaction();
-      console.error("Error deleting Holiday:", error.message);
-      if (error.code === 11000) {
-        return res.status(409).json({ err: "Conflict in attendance or holiday data" });
-      }
-      return res.status(500).json({ err: "Internal Server Error", details: error.message });
-    } finally {
-      session.endSession();
-    }
-  };
 
 // const updateHoliday = async (req, res) => {
 //   try {
@@ -1279,6 +1160,135 @@ const createHoliday = async (req, res) => {
 //     return res.status(500).json({ err: "Internal Server Error", error: error.message });
 //   }
 // };
+
+
+// Get Holidays
+const getHolidays = async (req, res) => {
+  try {
+    const holidays = await HolidayModel.find()
+      .populate("createdBy")
+      .populate("affectedAttendance");
+      
+    if (!holidays.length) return res.status(404).json({ err: "No Holidays Found" });
+
+    res.status(200).json(holidays);
+  } catch (error) {
+    console.error("Holiday fetch error:", error);
+    return res
+      .status(500)
+      .json({ err: "Internal Server Error", error: error.message });
+    }
+};
+
+const getSingleHoliday = async (req, res) => {
+  try {
+    const _id = req.params.id;
+    
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(400).json({ err: "Invalid Id Format" });
+    
+    const holiday = await HolidayModel.findById(_id)
+    .populate("createdBy")
+    .populate("affectedAttendance");
+    
+    if (!holiday.length) return res.status(404).json({ err: "Holiday Not Found" });
+    
+    return res.status(200).json(holiday);
+  } catch (error) {
+    console.log("Error Fetching Single Holiday", error);
+    return res
+    .status(500)
+    .json({ err: "Internal Server Error", error: error.message });
+  }
+};
+
+
+
+
+const deleteHoliday = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const _id = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      return res.status(400).json({ err: "Invalid Id Format" });
+    }
+
+    const holiday = await HolidayModel.findById(_id);
+    if (!holiday) {
+      return res.status(404).json({ err: "Holiday Not Found" });
+    }
+
+    const holidayDate = new Date(holiday.date);
+    holidayDate.setHours(0, 0, 0, 0);
+
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Optional: Comment out if you want to allow past holiday deletion
+    if (holidayDate < currentDate) {
+      return res.status(400).json({
+        err: "Holiday date is in the past. Deletion is not allowed.",
+      });
+    }
+
+    const attendanceRecords = await AttendanceModel.find({
+      attendanceDate: holidayDate,
+      status: "Holiday",
+    });
+
+    const bulkOps = attendanceRecords.map((attendance) => {
+      if (attendance.previousAttendance && attendance.previousAttendance.length > 0) {
+        const previousAttendance = attendance.previousAttendance.pop();
+        return {
+          updateOne: {
+            filter: { _id: attendance._id },
+            update: {
+              $set: {
+                timeIn: previousAttendance.timeIn,
+                timeOut: previousAttendance.timeOut,
+                status: previousAttendance.status,
+                lateBy: previousAttendance.lateBy,
+                totalHours: previousAttendance.totalHours,
+                leaveConvertedToHolidayCount: previousAttendance.leaveConvertedToHolidayCount,
+                updatedAt: previousAttendance.updatedAt,
+                previousAttendance: attendance.previousAttendance, // Keep remaining entries
+              },
+            },
+          },
+        };
+      } else {
+        return {
+          deleteOne: {
+            filter: { _id: attendance._id },
+          },
+        };
+      }
+    });
+
+    if (bulkOps.length > 0) {
+      await AttendanceModel.bulkWrite(bulkOps, { session });
+    }
+
+    const deletedHoliday = await HolidayModel.findByIdAndDelete(_id, { session });
+    await session.commitTransaction();
+    return res.status(200).json({
+      msg: "Holiday deleted successfully",
+      data: deletedHoliday,
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Error deleting Holiday:", error.message);
+    if (error.code === 11000) {
+      return res.status(409).json({ err: "Conflict in attendance or holiday data" });
+    }
+    return res.status(500).json({ err: "Internal Server Error", details: error.message });
+  } finally {
+    session.endSession();
+  }
+};
 
 const updateHoliday = async (req, res) => {
   try {
