@@ -284,6 +284,18 @@ const LeaveHistory = () => {
                                     ))
                                   : "No weekends"}
                               </td>
+                              {/* <td>
+                                {record?.holidays?.length > 0
+                                  ? record.holidays.map((holiday, idx) => (
+                                      <div key={idx}>
+                                        {holiday.name}:
+                                        {new Date(
+                                          holiday.date
+                                        ).toLocaleDateString()}
+                                      </div>
+                                    ))
+                                  : "No holidays"}
+                              </td> */}
                               <td>
                                 {record?.holidays?.length > 0
                                   ? record.holidays.map((holiday, idx) => (

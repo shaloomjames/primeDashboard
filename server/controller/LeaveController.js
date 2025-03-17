@@ -72,6 +72,7 @@ const getLeaveHistoryByEmployee = async (req, res) => {
       .populate("employee") // Get employee details
       .populate("leaveType") // Get leave type details
       .populate("approvedBy") // Get approver details
+      .populate("holidays")
       .sort({ createdAt: -1 }); // Sort by newest first
 
     // If no leaves are found, send a message

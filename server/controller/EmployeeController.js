@@ -837,7 +837,7 @@ const resetPasswordController = async (req, res) => {
       return res.status(400).json({ error: "Invalid or expired token." });
     }
 
-    if (!employeePassword || !passwordRegex.test(newPassword))
+    if (!newPassword || !passwordRegex.test(newPassword))
       return res.status(400).json({
         err: "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
       });

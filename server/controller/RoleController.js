@@ -110,75 +110,164 @@ const updateRole = async (req, res) => {
     }
 };
 
-// Role Assinged to User
-// @Request   DELETE
-// @Route     http://localhost:5000/api/role/:id
-// @Access    Private
-const deleteRole = async (req, res) => {
-    try {
-        const { id } = req.params; // Capture role ID from URL
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ err: "Invalid ID format" });
+// // Role Assinged to User
+// // @Request   DELETE
+// // @Route     http://localhost:5000/api/role/:id
+// // @Access    Private
+// const deleteRole = async (req, res) => {
+//     try {
+//         const { id } = req.params; // Capture role ID from URL
+//         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ err: "Invalid ID format" });
 
-        // Step 1: Check if the role exists
-        const roleToDelete = await roleModel.findById(id);
-        if (!roleToDelete) return res.status(404).json({ err: "Role not found" });
+//         // Step 1: Check if the role exists
+//         const roleToDelete = await roleModel.findById(id);
+//         if (!roleToDelete) return res.status(404).json({ err: "Role not found" });
 
-        // Step 2: Find all employees associated with the role
-        const employeesWithRole = await employeeModel.find({ employeeRoles: id });
-        if (employeesWithRole.length > 0) {
-            // Step 3: Perform the update for each employee
-            const employeeUpdates = [];
+//         // Step 2: Find all employees associated with the role
+//         const employeesWithRole = await employeeModel.find({ employeeRoles: id });
+//         if (employeesWithRole.length > 0) {
+//             // Step 3: Perform the update for each employee
+//             const employeeUpdates = [];
             
-            // Looping through each employee and making sure we handle async correctly
-            for (const employee of employeesWithRole) {
-                if (employee.employeeRoles.length > 1) {
-                    // Employee has more than one role: Remove only the deleted role
-                    employeeUpdates.push(
-                        employeeModel.updateOne(
-                            { _id: employee._id },
-                            { $pull: { employeeRoles: id } }
-                        )
-                    );
-                } else {
-                    // Employee has only one role: Delete the employee entirely
-                    // Move the employee to the deletedEmployeeModel
-                    const deletedEmployeeData = {
-                        employeeId: employee.employeeId,
-                        employeeName: employee.employeeName,
-                        employeeEmail: employee.employeeEmail,
-                        employeeSalary: employee.employeeSalary,
-                        employeePassword: employee.employeePassword,
-                        employeeRoles: employee.employeeRoles,
-                        employeeallowances: employee.employeeallowances,
-                        employeeTimeIn: employee.employeeTimeIn,
-                        employeeTimeOut: employee.employeeTimeOut,
-                    };
+//             // Looping through each employee and making sure we handle async correctly
+//             for (const employee of employeesWithRole) {
+//                 if (employee.employeeRoles.length > 1) {
+//                     // Employee has more than one role: Remove only the deleted role
+//                     employeeUpdates.push(
+//                         employeeModel.updateOne(
+//                             { _id: employee._id },
+//                             { $pull: { employeeRoles: id } }
+//                         )
+//                     );
+//                 } else {
+//                     // Employee has only one role: Delete the employee entirely
+//                     // Move the employee to the deletedEmployeeModel
+//                     const deletedEmployeeData = {
+//                         employeeId: employee.employeeId,
+//                         employeeName: employee.employeeName,
+//                         employeeEmail: employee.employeeEmail,
+//                         employeeSalary: employee.employeeSalary,
+//                         employeePassword: employee.employeePassword,
+//                         employeeRoles: employee.employeeRoles,
+//                         employeeallowances: employee.employeeallowances,
+//                         employeeTimeIn: employee.employeeTimeIn,
+//                         employeeTimeOut: employee.employeeTimeOut,
+//                     };
 
-                    // Push the creation of the deleted employee to the update array
-                    employeeUpdates.push(deletedEmployeeModel.create(deletedEmployeeData));
+//                     // Push the creation of the deleted employee to the update array
+//                     employeeUpdates.push(deletedEmployeeModel.create(deletedEmployeeData));
 
-                    // Then push the delete of the employee itself
-                    employeeUpdates.push(employeeModel.deleteOne({ _id: employee._id }));
-                }
-            }
+//                     // Then push the delete of the employee itself
+//                     employeeUpdates.push(employeeModel.deleteOne({ _id: employee._id }));
+//                 }
+//             }
 
-            // Wait for all employee updates to finish
-            await Promise.all(employeeUpdates);
+//             // Wait for all employee updates to finish
+//             await Promise.all(employeeUpdates);
+//         } else {
+//             // console.log("No employees found with this role.");
+//             // return res.status(404).json({ err: "No employees found with this role." });
+//             // Employee has only this role: Archive and delete
+//         const deletedEmployeeData = {
+//             employeeId: employee.employeeId,
+//             employeeName: employee.employeeName,
+//             employeeEmail: employee.employeeEmail,
+//             employeeSalary: employee.employeeSalary,
+//             employeePassword: employee.employeePassword,
+//             employeeRoles: employee.employeeRoles,
+//             employeeallowances: employee.employeeallowances,
+//             employeeTimeIn: employee.employeeTimeIn,
+//             employeeTimeOut: employee.employeeTimeOut,
+//           };
+//           employeeUpdates.push(deletedEmployeeModel.create([deletedEmployeeData], { session }));
+//           employeeUpdates.push(employeeModel.deleteOne({ _id: employee._id }, { session }));
+//         }
+
+//         // Step 4: Delete the role
+//         const deletedRole = await roleModel.findByIdAndDelete(id);
+//         if (!deletedRole) return res.status(404).json({ err: "Role not found" });
+
+//         return res.status(200).json({ msg: "Role and associated employees deleted successfully", deletedRole });
+//     } catch (error) {
+//         console.log("Error deleting Role", error);
+//         return res.status(500).json({ err: "Internal Server Error", error: error.message });
+//     }
+// };
+
+const deleteRole = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+  
+    try {
+      const { id } = req.params;
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(400).json({ err: "Invalid ID format" });
+      }
+  
+      // Step 1: Check if the role exists
+      const roleToDelete = await roleModel.findById(id).session(session);
+      if (!roleToDelete) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(404).json({ err: "Role not found" });
+      }
+  
+      // Step 2: Find and process employees with the role (if any)
+      const employeesWithRole = await employeeModel.find({ employeeRoles: id }).session(session);
+      const employeeUpdates = [];
+  
+      for (const employee of employeesWithRole) {
+        if (employee.employeeRoles.length > 1) {
+          // Employee has multiple roles: Remove only this role
+          employeeUpdates.push(
+            employeeModel.updateOne(
+              { _id: employee._id },
+              { $pull: { employeeRoles: id } },
+              { session }
+            )
+          );
         } else {
-            console.log("No employees found with this role.");
-            return res.status(404).json({ err: "No employees found with this role." });
+          // Employee has only this role: Archive and delete
+          const deletedEmployeeData = {
+            employeeId: employee.employeeId,
+            employeeName: employee.employeeName,
+            employeeEmail: employee.employeeEmail,
+            employeeSalary: employee.employeeSalary,
+            employeePassword: employee.employeePassword,
+            employeeRoles: employee.employeeRoles,
+            employeeallowances: employee.employeeallowances,
+            employeeTimeIn: employee.employeeTimeIn,
+            employeeTimeOut: employee.employeeTimeOut,
+          };
+          employeeUpdates.push(deletedEmployeeModel.create([deletedEmployeeData], { session }));
+          employeeUpdates.push(employeeModel.deleteOne({ _id: employee._id }, { session }));
         }
-
-        // Step 4: Delete the role
-        const deletedRole = await roleModel.findByIdAndDelete(id);
-        if (!deletedRole) return res.status(404).json({ err: "Role not found" });
-
-        return res.status(200).json({ msg: "Role and associated employees deleted successfully", deletedRole });
+      }
+  
+      // Execute employee updates (if any)
+      if (employeeUpdates.length > 0) {
+        await Promise.all(employeeUpdates);
+      }
+  
+      // Step 3: Delete the role
+      await roleModel.findByIdAndDelete(id, { session });
+  
+      await session.commitTransaction();
+      session.endSession();
+  
+      return res.status(200).json({
+        msg: "Role and associated employees (if any) deleted successfully",
+        deletedRole: roleToDelete,
+      });
     } catch (error) {
-        console.log("Error deleting Role", error);
-        return res.status(500).json({ err: "Internal Server Error", error: error.message });
+      await session.abortTransaction();
+      session.endSession();
+      console.error("Error deleting Role:", error);
+      return res.status(500).json({ err: "Internal Server Error", error: error.message });
     }
-};
+  };
 
 
 
