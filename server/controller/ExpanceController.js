@@ -112,20 +112,34 @@ const getExpance = async (req, res) => {
 // @Request   GET
 // @Route     http://localhost:5000/api/hall/:id
 // @access    private
+// const getSingleExpance = async (req, res) => {
+//     try {
+//         const _id = req.params.id;
+//         if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid Id Format" });
+
+//         const Expance = await ExpanceModel.findById({ _id }).populate("addedBy").populate("expanceCategory");
+//         if (!Expance.length) return res.status(404).json({ err: "No Data Found" });
+
+//         return res.status(200).json(Expance);
+//     } catch (error) {
+//         console.log("Error Reading Expance", error);
+//         return res.status(500).json({ err: "Internal Server Error", error: error.message })
+//     }
+// }
 const getSingleExpance = async (req, res) => {
     try {
         const _id = req.params.id;
         if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid Id Format" });
 
-        const Expance = await ExpanceModel.findById({ _id }).populate("addedBy").populate("expanceCategory");
-        if (!Expance.length) return res.status(404).json({ err: "No Data Found" });
+        const Expance = await ExpanceModel.findById(_id).populate("addedBy").populate("expanceCategory");
+        if (!Expance) return res.status(404).json({ err: "No Data Found" });
 
         return res.status(200).json(Expance);
     } catch (error) {
-        console.log("Error Reading Expance", error);
-        return res.status(500).json({ err: "Internal Server Error", error: error.message })
+        console.error("Error Reading Expance:", error); // Improved logging
+        return res.status(500).json({ err: "Internal Server Error", error: error.message });
     }
-}
+};
 
 // @Request   POST
 // @Route     http://localhost:5000/api/hall/

@@ -38,22 +38,51 @@ const getActiveExpanceCategory = async (req, res) => {
 // @Request   GET
 // @Route     http://localhost:5000/api/expance/category/:id
 // @Access    Private
+// const getSingleExpanceCategory = async (req, res) => {
+//     try {
+//         const _id = req.params.id;
+
+//         if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid Id Format" });
+
+//         const ExpanceCategory = await ExpanceCategoryModel.findOne({ _id });
+
+//         if (!ExpanceCategory.length) return res.status(404).json({ err: "No Expance Category Found" });
+
+//         return res.status(201).json(ExpanceCategory);
+//     } catch (error) {
+//         console.log("Error Reading Single Expance Category ", error);
+//         return res.status(500).json({ err: "Internal Server Error", error: error.message })
+//     }
+// }
+// const getSingleExpanceCategory = async (req, res) => {
+//     try {
+//         const _id = req.params.id;
+//         if (!mongoose.Types.ObjectId.isValid(_id)) return res.status (400).json({ err: "Invalid Id Format" });
+
+//         const ExpanceCategory = await ExpanceCategoryModel.findById(_id);
+//         if (!ExpanceCategory) return res.status(404).json({ err: "No Expance Category Found" });
+
+//         return res.status(200).json(ExpanceCategory);
+//     } catch (error) {
+//         console.error("Error Reading Single Expance Category:", error);
+//         return res.status(500).json({ err: "Internal Server Error", error: error.message });
+//     }
+// };
+
 const getSingleExpanceCategory = async (req, res) => {
     try {
         const _id = req.params.id;
-
         if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(400).json({ err: "Invalid Id Format" });
 
-        const ExpanceCategory = await ExpanceCategoryModel.findOne({ _id });
+        const ExpanceCategory = await ExpanceCategoryModel.findById(_id);
+        if (!ExpanceCategory) return res.status(404).json({ err: "No Expance Category Found" });
 
-        if (!ExpanceCategory.length) return res.status(404).json({ err: "No Expance Category Found" });
-
-        return res.status(201).json(ExpanceCategory);
+        return res.status(200).json(ExpanceCategory);
     } catch (error) {
-        console.log("Error Reading Single Expance Category ", error);
-        return res.status(500).json({ err: "Internal Server Error", error: error.message })
+        console.error("Error Reading Single Expance Category:", error);
+        return res.status(500).json({ err: "Internal Server Error", error: error.message });
     }
-}
+};
 
 // @Request   POST
 // @Route     http://localhost:5000/api/expance/category

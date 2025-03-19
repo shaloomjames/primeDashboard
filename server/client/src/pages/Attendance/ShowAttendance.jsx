@@ -213,6 +213,7 @@ const ShowAttendance = () => {
                           Effective Lates left (after conversion to absent)
                         </th>
                         <th>Total Absents</th>
+                        <th>Total Logged Days</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -228,6 +229,7 @@ const ShowAttendance = () => {
                         <td>{attendanceReport.effectiveAbsentDays || 0}</td>
                         <td>{attendanceReport.remainingLates || 0}</td>
                         <td>{attendanceReport.totalAbsentDays || 0}</td>
+                        <td>{attendanceReport.totalAttendanceRecordDays || 0}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -318,7 +320,7 @@ const ShowAttendance = () => {
                               {record?.attendanceDate
                                 ? new Date(
                                     record?.attendanceDate
-                                  ).toLocaleString("en-GB")
+                                  ).toLocaleDateString("en-GB")
                                 : "-"}
                             </td>
                             <td>{timeIn ? formatTime(timeIn) : "-"}</td>
