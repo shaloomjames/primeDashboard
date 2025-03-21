@@ -32,13 +32,13 @@ app.use("/api/leaveType", require("./routers/LeaveTypeRouter"));
 app.use("/api/markAbsences", require("./routers/AbsentRouter"));
 
 // deployment
-// if (process.env.NODE_ENV === "production") {
-// const dirPath = path.resolve();
-// app.use(express.static(path.join("client/build")));
-// app.get("*",(req,res)=>{
-//     res.sendFile(path.resolve(dirPath,"client","build","index.html"));
-// })
-// }
+if (process.env.NODE_ENV === "production") {
+const dirPath = path.resolve();
+app.use(express.static(path.join("client/build")));
+app.get("*",(req,res)=>{
+    res.sendFile(path.resolve(dirPath,"client","build","index.html"));
+})
+}
 
 // Server Listening
 const PORT = process.env.Port || 6000;

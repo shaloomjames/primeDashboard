@@ -1046,6 +1046,176 @@ const markAbsencesForDate = async (req, res) => {
 // @Request   POST
 // @Route     /api/attendance/mark-absences-month/:id/:month
 // @Access    Private (Admin only)
+// const markAbsencesForMonth = async (req, res) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
+//   try {
+//     const { id, month } = req.params;
+
+//     // Validate inputs
+//     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+//       await session.abortTransaction();
+//       session.endSession();
+//       return res.status(400).json({ success: false, error: "Valid Employee ID is required" });
+//     }
+//     if (!month) {
+//       await session.abortTransaction();
+//       session.endSession();
+//       return res.status(400).json({ success: false, error: "Month is required" });
+//     }
+
+//     const targetMonth = moment(month, "YYYY-MM", true);
+//     if (!targetMonth.isValid()) {
+//       await session.abortTransaction();
+//       session.endSession();
+//       return res.status(400).json({ success: false, error: "Invalid month format. Use YYYY-MM" });
+//     }
+
+//     const currentMonth = moment().startOf("month");
+//     if (targetMonth.isAfter(currentMonth)) {
+//       await session.abortTransaction();
+//       session.endSession();
+//       return res.status(400).json({ success: false, error: "Cannot mark absences for future months" });
+//     }
+
+//     const employee = await EmployeeModel.findById(id).session(session);
+//     if (!employee) {
+//       await session.abortTransaction();
+//       session.endSession();
+//       return res.status(404).json({ success: false, error: "Employee not found" });
+//     }
+
+//     const daysInMonth = targetMonth.daysInMonth();
+//     const startOfMonth = targetMonth.startOf("month");
+//     const endOfMonth = targetMonth.endOf("month");
+
+//     // Fetch existing data
+//     const [existingAttendance, holidays, approvedLeaves] = await Promise.all([
+//       AttendanceModel.find({
+//         employee: id,
+//         attendanceDate: {
+//           $gte: startOfMonth.toDate(),
+//           $lte: endOfMonth.toDate(),
+//         },
+//       }).session(session),
+//       HolidayModel.find({
+//         date: {
+//           $gte: startOfMonth.toDate(),
+//           $lte: endOfMonth.toDate(),
+//         },
+//       }).session(session),
+//       LeaveModel.find({
+//         employee: id,
+//         status: "Approved",
+//         $or: [
+//           { startDate: { $lte: endOfMonth.toDate() } },
+//           { endDate: { $gte: startOfMonth.toDate() } },
+//         ],
+//       }).session(session),
+//     ]);
+
+//     // Create Sets for efficient lookup
+//     const attendanceDates = new Set(
+//       existingAttendance.map((record) =>
+//         moment(record.attendanceDate).startOf("day").format("YYYY-MM-DD")
+//       )
+//     );
+//     const holidayDates = new Set(
+//       holidays.map((holiday) =>
+//         moment(holiday.date).startOf("day").format("YYYY-MM-DD")
+//       )
+//     );
+//     const leaveDates = new Set();
+//     approvedLeaves.forEach((leave) => {
+//       const start = moment(leave.startDate).startOf("day");
+//       const end = moment(leave.endDate).startOf("day");
+//       for (
+//         let date = start.clone();
+//         date.isSameOrBefore(end, "day");
+//         date.add(1, "day")
+//       ) {
+//         leaveDates.add(date.format("YYYY-MM-DD"));
+//       }
+//     });
+
+//     // Process each day in the month
+//     const attendanceRecords = [];
+//     let absenceCount = 0;
+
+//     for (let day = 1; day <= daysInMonth; day++) {
+//       const currentDate = moment(targetMonth).date(day).startOf("day");
+//       const dateString = currentDate.format("YYYY-MM-DD");
+
+//       // Skip if any attendance record exists (regardless of status)
+//       if (attendanceDates.has(dateString)) {
+//         continue;
+//       }
+
+//       // Skip approved leave dates
+//       if (leaveDates.has(dateString)) {
+//         continue;
+//       }
+
+//       // Skip Sundays
+//       if (currentDate.day() === 0) {
+//         continue;
+//       }
+
+//       // Skip holidays
+//       if (holidayDates.has(dateString)) {
+//         continue;
+//       }
+
+//       // Skip even-numbered Saturdays
+//       const isSaturday = currentDate.day() === 6;
+//       if (isSaturday) {
+//         const saturdayNumber = Math.ceil(currentDate.date() / 7);
+//         if (saturdayNumber % 2 === 0) {
+//           continue;
+//         }
+//       }
+
+//       // Mark as absent only if no prior record exists
+//       attendanceRecords.push({
+//         employee: id,
+//         employeeModell: "employeeModel",
+//         attendanceDate: currentDate.toDate(),
+//         status: "Absence",
+//         timeIn: null,
+//         timeOut: null,
+//         lateBy: 0,
+//         totalHours: 0,
+//         previousAttendance: [],
+//       });
+//       absenceCount++;
+//     }
+
+//     // Bulk insert absence records
+//     if (attendanceRecords.length > 0) {
+//       await AttendanceModel.insertMany(attendanceRecords, { session });
+//     }
+
+//     await session.commitTransaction();
+//     session.endSession();
+
+//     return res.status(200).json({
+//       success: true,
+//       msg: `Absences marked successfully for ${
+//         employee.employeeName || "Unknown Employee"
+//       } in ${month}. ${absenceCount} absence records created.`,
+//       data: { absenceCount },
+//     });
+//   } catch (error) {
+//     await session.abortTransaction();
+//     session.endSession();
+//     console.error("Error marking absences:", error);
+//     return res.status(500).json({
+//       success: false,
+//       error: error.message || "Internal Server Error",
+//     });
+//   }
+// };
 const markAbsencesForMonth = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -1065,7 +1235,7 @@ const markAbsencesForMonth = async (req, res) => {
       return res.status(400).json({ success: false, error: "Month is required" });
     }
 
-    const targetMonth = moment(month, "YYYY-MM", true);
+    const targetMonth = moment(month, "YYYY-MM", true).startOf("month");
     if (!targetMonth.isValid()) {
       await session.abortTransaction();
       session.endSession();
@@ -1087,35 +1257,35 @@ const markAbsencesForMonth = async (req, res) => {
     }
 
     const daysInMonth = targetMonth.daysInMonth();
-    const startOfMonth = targetMonth.startOf("month");
-    const endOfMonth = targetMonth.endOf("month");
+    const startOfMonth = targetMonth.clone().startOf("month").toDate();
+    const endOfMonth = targetMonth.clone().endOf("month").startOf("day").toDate();
 
-    // Fetch existing data
+    // Fetch existing data with midnight-normalized dates
     const [existingAttendance, holidays, approvedLeaves] = await Promise.all([
       AttendanceModel.find({
         employee: id,
         attendanceDate: {
-          $gte: startOfMonth.toDate(),
-          $lte: endOfMonth.toDate(),
+          $gte: startOfMonth,
+          $lte: endOfMonth,
         },
       }).session(session),
       HolidayModel.find({
         date: {
-          $gte: startOfMonth.toDate(),
-          $lte: endOfMonth.toDate(),
+          $gte: startOfMonth,
+          $lte: endOfMonth,
         },
       }).session(session),
       LeaveModel.find({
         employee: id,
         status: "Approved",
         $or: [
-          { startDate: { $lte: endOfMonth.toDate() } },
-          { endDate: { $gte: startOfMonth.toDate() } },
+          { startDate: { $lte: endOfMonth } },
+          { endDate: { $gte: startOfMonth } },
         ],
       }).session(session),
     ]);
 
-    // Create Sets for efficient lookup
+    // Create Sets for efficient lookup with midnight-normalized dates
     const attendanceDates = new Set(
       existingAttendance.map((record) =>
         moment(record.attendanceDate).startOf("day").format("YYYY-MM-DD")
@@ -1139,7 +1309,7 @@ const markAbsencesForMonth = async (req, res) => {
       }
     });
 
-    // Process each day in the month
+    // Process each day in the month with midnight-normalized dates
     const attendanceRecords = [];
     let absenceCount = 0;
 
@@ -1176,11 +1346,11 @@ const markAbsencesForMonth = async (req, res) => {
         }
       }
 
-      // Mark as absent only if no prior record exists
+      // Mark as absent only if no prior record exists, store date at midnight
       attendanceRecords.push({
         employee: id,
         employeeModell: "employeeModel",
-        attendanceDate: currentDate.toDate(),
+        attendanceDate: currentDate.startOf("day").toDate(), // Ensure midnight
         status: "Absence",
         timeIn: null,
         timeOut: null,
@@ -1216,5 +1386,6 @@ const markAbsencesForMonth = async (req, res) => {
     });
   }
 };
+
 // Export the controller
 module.exports = { markAbsencesForDate, markAbsencesForMonth };

@@ -354,7 +354,7 @@ const ShowSalary = () => {
     const fetchSalary = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/api/salary/${id}`);
+        const res = await axios.get(`/api/salary/${id}`);
         setSalaryData(res.data);
         setFilteredData(res.data); // Set both for immediate render
       } catch (error) {

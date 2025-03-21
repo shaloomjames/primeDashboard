@@ -266,8 +266,13 @@ const EmployeeHome = () => {
     return Math.max(0, currentTotalMinutes - targetTotalMinutes);
   };
 
+  // useEffect(() => {
+  //   const today = new Date();
+  //   setCurrentDate(formatDate(today));
+  // }, []);
   useEffect(() => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight (00:00:00.000)
     setCurrentDate(formatDate(today));
   }, []);
 

@@ -388,7 +388,7 @@ const EmployeeShowAttendance = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/attendance/${id}`
+          `/api/attendance/${id}`
         );
         setAttendanceData(response.data);
         setAttendanceRecords(response.data); // Set both for immediate render
@@ -433,7 +433,7 @@ const EmployeeShowAttendance = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/attendance/report/${id}/${selectedMonth}`
+        `/api/attendance/report/${id}/${selectedMonth}`
       );
       setAttendanceReport(response.data);
     } catch (error) {

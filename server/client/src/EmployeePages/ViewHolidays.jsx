@@ -332,7 +332,7 @@ const ViewHolidays = () => {
     const fetchHolidayData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:5000/api/holiday");
+        const response = await axios.get("/api/holiday");
         setHolidayData(response.data);
         setFilteredRecords(response.data);
       } catch (error) {
